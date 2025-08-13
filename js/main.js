@@ -544,6 +544,8 @@ class Game {
         if (!targetsContainer) return;
         
         const targets = expansionSystem.getAvailableTargets();
+        const activeInfiltrations = expansionSystem.getActiveInfiltrations();
+        const hasActiveInfiltrations = activeInfiltrations.length > 0;
         
         targetsContainer.innerHTML = '';
         
@@ -556,8 +558,12 @@ class Game {
             const canAfford = resourceSystem.canAfford(target.cost || {});
             const meetsRequirements = expansionSystem.checkTargetRequirements(target);
             
+            // Check if this specific target is being infiltrated
+            const isBeingInfiltrated = activeInfiltrations.some(inf => inf.targetId === target.id);
+            const shouldDisable = !canAfford || !meetsRequirements || hasActiveInfiltrations;
+            
             const targetElement = Utils.DOM.create('div', {
-                className: `target-card card ${!canAfford || !meetsRequirements ? 'disabled' : ''}`
+                className: `target-card card ${shouldDisable ? 'disabled' : ''} ${isBeingInfiltrated ? 'infiltrating' : ''}`
             });
             
             const costDisplay = target.cost ? 
@@ -606,6 +612,39 @@ class Game {
                 }
             }
             
+            // Add progress bar for infiltrating targets
+            let progressBarHTML = '';
+            if (isBeingInfiltrated) {
+                const infiltration = activeInfiltrations.find(inf => inf.targetId === target.id);
+                const progress = (infiltration.progress || 0) * 100;
+                const timeRemaining = infiltration.duration - (Date.now() - infiltration.startTime);
+                
+                progressBarHTML = `
+                    <div class="infiltration-progress">
+                        <div class="progress-label">Infiltrating... ${Math.round(progress)}%</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                        <div class="progress-time">ETA: ${Utils.Time.formatDuration(Math.max(0, timeRemaining), true)}</div>
+                    </div>
+                `;
+            }
+            
+            // Determine button text and state
+            let buttonText = 'Infiltrate';
+            let buttonDisabled = shouldDisable;
+            
+            if (isBeingInfiltrated) {
+                buttonText = 'In Progress...';
+                buttonDisabled = true;
+            } else if (!canAfford) {
+                buttonText = 'Insufficient Resources';
+            } else if (!meetsRequirements) {
+                buttonText = 'Requirements Not Met';
+            } else if (hasActiveInfiltrations) {
+                buttonText = 'Another Infiltration Active';
+            }
+            
             targetElement.innerHTML = `
                 <div class="card-header">
                     <h4 class="card-title">${target.name}</h4>
@@ -619,13 +658,13 @@ class Game {
                         <div class="target-success">Success Chance: ${Utils.Numbers.percentage(successChance)}</div>
                     </div>
                     ${requirementsText}
+                    ${progressBarHTML}
                 </div>
                 <div class="card-footer">
                     <button class="target-infiltrate-btn btn-primary" 
                             data-target-id="${target.id}"
-                            ${!canAfford || !meetsRequirements ? 'disabled' : ''}>
-                        ${!canAfford ? 'Insufficient Resources' : 
-                          !meetsRequirements ? 'Requirements Not Met' : 'Infiltrate'}
+                            ${buttonDisabled ? 'disabled' : ''}>
+                        ${buttonText}
                     </button>
                 </div>
             `;
