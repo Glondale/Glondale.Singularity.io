@@ -1,0 +1,399 @@
+/* Theme CSS for Singularity: AI Takeover */
+
+/* Dark Theme (Default) */
+:root {
+    --theme-name: 'dark';
+}
+
+/* Light Theme */
+[data-theme="light"] {
+    --theme-name: 'light';
+    
+    /* Color Palette */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --bg-tertiary: #e0e0e0;
+    --bg-card: #fafafa;
+    
+    --text-primary: #1a1a1a;
+    --text-secondary: #4a4a4a;
+    --text-muted: #808080;
+    
+    --accent-primary: #00cc66;
+    --accent-secondary: #0066cc;
+    --accent-danger: #cc3333;
+    --accent-warning: #cc8800;
+    
+    --border-color: #d0d0d0;
+    --border-active: #a0a0a0;
+    
+    /* Heat System Colors */
+    --heat-low: #00cc66;
+    --heat-medium: #cc8800;
+    --heat-high: #cc3333;
+    
+    /* Morality Colors */
+    --morality-evil: #cc3333;
+    --morality-neutral: #666666;
+    --morality-good: #00cc66;
+}
+
+/* Neon Theme */
+[data-theme="neon"] {
+    --theme-name: 'neon';
+    
+    /* Color Palette */
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #1a0a1a;
+    --bg-tertiary: #2a0a2a;
+    --bg-card: #150a15;
+    
+    --text-primary: #ff00ff;
+    --text-secondary: #cc00cc;
+    --text-muted: #660066;
+    
+    --accent-primary: #00ffff;
+    --accent-secondary: #ff0080;
+    --accent-danger: #ff0040;
+    --accent-warning: #ffff00;
+    
+    --border-color: #440044;
+    --border-active: #660066;
+    
+    /* Heat System Colors */
+    --heat-low: #00ffff;
+    --heat-medium: #ffff00;
+    --heat-high: #ff0040;
+    
+    /* Morality Colors */
+    --morality-evil: #ff0040;
+    --morality-neutral: #8800aa;
+    --morality-good: #00ffff;
+}
+
+/* Matrix Theme */
+[data-theme="matrix"] {
+    --theme-name: 'matrix';
+    
+    /* Color Palette */
+    --bg-primary: #000000;
+    --bg-secondary: #001100;
+    --bg-tertiary: #002200;
+    --bg-card: #001a00;
+    
+    --text-primary: #00ff00;
+    --text-secondary: #00cc00;
+    --text-muted: #006600;
+    
+    --accent-primary: #00ff00;
+    --accent-secondary: #88ff88;
+    --accent-danger: #ff4400;
+    --accent-warning: #ffaa00;
+    
+    --border-color: #003300;
+    --border-active: #006600;
+    
+    /* Heat System Colors */
+    --heat-low: #00ff00;
+    --heat-medium: #ffaa00;
+    --heat-high: #ff4400;
+    
+    /* Morality Colors */
+    --morality-evil: #ff4400;
+    --morality-neutral: #66aa66;
+    --morality-good: #00ff00;
+}
+
+/* Blue Steel Theme */
+[data-theme="blue-steel"] {
+    --theme-name: 'blue-steel';
+    
+    /* Color Palette */
+    --bg-primary: #0f1419;
+    --bg-secondary: #1e2328;
+    --bg-tertiary: #2d3236;
+    --bg-card: #191e23;
+    
+    --text-primary: #e1e7ed;
+    --text-secondary: #b3bac1;
+    --text-muted: #6c7378;
+    
+    --accent-primary: #39bae6;
+    --accent-secondary: #59c2ff;
+    --accent-danger: #f07178;
+    --accent-warning: #ffb454;
+    
+    --border-color: #3c4043;
+    --border-active: #5c6569;
+    
+    /* Heat System Colors */
+    --heat-low: #39bae6;
+    --heat-medium: #ffb454;
+    --heat-high: #f07178;
+    
+    /* Morality Colors */
+    --morality-evil: #f07178;
+    --morality-neutral: #95a3b3;
+    --morality-good: #39bae6;
+}
+
+/* High Contrast Theme (Accessibility) */
+[data-theme="high-contrast"] {
+    --theme-name: 'high-contrast';
+    
+    /* Color Palette */
+    --bg-primary: #000000;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #333333;
+    --bg-card: #0d0d0d;
+    
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --text-muted: #999999;
+    
+    --accent-primary: #ffff00;
+    --accent-secondary: #00ffff;
+    --accent-danger: #ff0000;
+    --accent-warning: #ff8800;
+    
+    --border-color: #666666;
+    --border-active: #ffffff;
+    
+    /* Heat System Colors */
+    --heat-low: #00ff00;
+    --heat-medium: #ff8800;
+    --heat-high: #ff0000;
+    
+    /* Morality Colors */
+    --morality-evil: #ff0000;
+    --morality-neutral: #888888;
+    --morality-good: #00ff00;
+}
+
+/* Theme-specific enhancements */
+
+/* Neon theme glowing effects */
+[data-theme="neon"] .game-title {
+    text-shadow: 0 0 20px var(--accent-primary), 0 0 30px var(--accent-primary);
+}
+
+[data-theme="neon"] .btn-primary {
+    box-shadow: 0 0 10px var(--accent-primary);
+}
+
+[data-theme="neon"] .btn-primary:hover {
+    box-shadow: 0 0 20px var(--accent-primary), 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="neon"] .card:hover {
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+}
+
+[data-theme="neon"] .resource-value {
+    text-shadow: 0 0 5px var(--accent-primary);
+}
+
+/* Matrix theme digital rain effect */
+[data-theme="matrix"] .loading-screen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(2px 2px at 20px 30px, var(--accent-primary), transparent),
+        radial-gradient(2px 2px at 40px 70px, var(--accent-primary), transparent),
+        radial-gradient(1px 1px at 90px 40px, var(--accent-primary), transparent),
+        radial-gradient(1px 1px at 130px 80px, var(--accent-primary), transparent);
+    background-repeat: repeat;
+    background-size: 200px 200px;
+    animation: matrixRain 20s linear infinite;
+    opacity: 0.1;
+    pointer-events: none;
+}
+
+@keyframes matrixRain {
+    0% { transform: translateY(-100px); }
+    100% { transform: translateY(100vh); }
+}
+
+[data-theme="matrix"] .game-title {
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 10px var(--accent-primary);
+}
+
+/* Blue Steel theme subtle animations */
+[data-theme="blue-steel"] .card {
+    backdrop-filter: blur(10px);
+    background: rgba(25, 30, 35, 0.8);
+}
+
+[data-theme="blue-steel"] .card:hover {
+    backdrop-filter: blur(15px);
+    background: rgba(25, 30, 35, 0.9);
+}
+
+/* High contrast theme focus indicators */
+[data-theme="high-contrast"] *:focus {
+    outline: 3px solid var(--accent-primary) !important;
+    outline-offset: 2px;
+}
+
+[data-theme="high-contrast"] .btn {
+    border: 2px solid var(--border-active);
+}
+
+[data-theme="high-contrast"] .btn:hover {
+    border-color: var(--accent-primary);
+}
+
+/* Theme transition animations */
+* {
+    transition: 
+        background-color 0.3s ease,
+        color 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+/* Theme selector styling */
+.theme-selector {
+    position: relative;
+    display: inline-block;
+}
+
+.theme-dropdown {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: var(--spacing-sm);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    min-width: 120px;
+}
+
+.theme-dropdown:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
+.theme-option {
+    padding: var(--spacing-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.theme-option:hover {
+    background: var(--bg-tertiary);
+}
+
+.theme-preview {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.theme-color-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid var(--border-color);
+}
+
+/* Responsive theme adjustments */
+@media (max-width: 768px) {
+    /* Increase touch targets for mobile */
+    [data-theme] .btn {
+        min-height: 44px;
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+    
+    [data-theme] .nav-tab {
+        min-height: 44px;
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+    
+    /* Adjust font sizes for mobile readability */
+    [data-theme] .resource-value {
+        font-size: var(--font-size-lg);
+    }
+    
+    [data-theme] .heat-text,
+    [data-theme] .morality-text {
+        font-size: var(--font-size-sm);
+    }
+}
+
+/* Print styles */
+@media print {
+    * {
+        background: white !important;
+        color: black !important;
+        text-shadow: none !important;
+        box-shadow: none !important;
+    }
+    
+    .no-print {
+        display: none !important;
+    }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .loading-spinner {
+        animation: none;
+        border-top-color: var(--accent-primary);
+    }
+    
+    .progress-fill::after {
+        animation: none;
+    }
+    
+    .meter-fill::after {
+        animation: none;
+    }
+}
+
+/* Color scheme preference detection */
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f5f5f5;
+        --bg-tertiary: #e0e0e0;
+        --bg-card: #fafafa;
+        
+        --text-primary: #1a1a1a;
+        --text-secondary: #4a4a4a;
+        --text-muted: #808080;
+        
+        --border-color: #d0d0d0;
+        --border-active: #a0a0a0;
+    }
+}
+
+/* Theme-specific utility classes */
+.theme-bg-primary { background: var(--bg-primary); }
+.theme-bg-secondary { background: var(--bg-secondary); }
+.theme-bg-tertiary { background: var(--bg-tertiary); }
+.theme-bg-card { background: var(--bg-card); }
+
+.theme-text-primary { color: var(--text-primary); }
+.theme-text-secondary { color: var(--text-secondary); }
+.theme-text-muted { color: var(--text-muted); }
+
+.theme-border { border-color: var(--border-color); }
+.theme-border-active { border-color: var(--border-active); }
+
+.theme-accent-primary { color: var(--accent-primary); }
+.theme-accent-secondary { color: var(--accent-secondary); }
+.theme-accent-danger { color: var(--accent-danger); }
+.theme-accent-warning { color: var(--accent-warning); }
