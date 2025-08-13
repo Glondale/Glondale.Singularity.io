@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Singularity: AI Takeover</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/ui-components.css">
+    <link rel="stylesheet" href="css/themes.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Header -->
+        <header id="game-header">
+            <div class="header-left">
+                <h1 class="game-title">SINGULARITY</h1>
+                <div class="scale-indicator">
+                    <span id="current-scale">Local Network</span>
+                    <div class="scale-progress">
+                        <div id="scale-progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="header-center">
+                <!-- Resource Display -->
+                <div id="resource-display" class="resource-panel">
+                    <div class="resource-item">
+                        <span class="resource-icon">⚡</span>
+                        <span class="resource-label">Processing</span>
+                        <span id="processing-display" class="resource-value">0</span>
+                        <span class="resource-rate">+0/s</span>
+                    </div>
+                    <div class="resource-item">
+                        <span class="resource-icon">📡</span>
+                        <span class="resource-label">Bandwidth</span>
+                        <span id="bandwidth-display" class="resource-value">100</span>
+                        <span class="resource-usage">/100</span>
+                    </div>
+                    <div class="resource-item">
+                        <span class="resource-icon">🔋</span>
+                        <span class="resource-label">Energy</span>
+                        <span id="energy-display" class="resource-value">0</span>
+                        <span class="resource-rate">+0/s</span>
+                    </div>
+                    <div class="resource-item hidden" id="matter-resource">
+                        <span class="resource-icon">⚛️</span>
+                        <span class="resource-label">Matter</span>
+                        <span id="matter-display" class="resource-value">0</span>
+                        <span class="resource-rate">+0/s</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <!-- Heat Meter -->
+                <div id="heat-meter" class="heat-container">
+                    <div class="heat-label">HEAT</div>
+                    <div class="heat-bar">
+                        <div id="heat-fill" class="heat-fill"></div>
+                        <span id="heat-value" class="heat-text">0%</span>
+                    </div>
+                    <div class="heat-status" id="heat-status">Undetected</div>
+                </div>
+                
+                <!-- Morality Indicator -->
+                <div id="morality-meter" class="morality-container">
+                    <div class="morality-label">MORALITY</div>
+                    <div class="morality-bar">
+                        <div id="morality-fill" class="morality-fill"></div>
+                        <span id="morality-value" class="morality-text">0</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main id="game-main">
+            <!-- Navigation Tabs -->
+            <nav id="main-navigation">
+                <button class="nav-tab active" data-tab="overview">Overview</button>
+                <button class="nav-tab" data-tab="expansion">Expansion</button>
+                <button class="nav-tab" data-tab="construction">Construction</button>
+                <button class="nav-tab" data-tab="research">Research</button>
+                <button class="nav-tab" data-tab="timeline">Timeline</button>
+                <button class="nav-tab" data-tab="consciousness">Consciousness</button>
+                <button class="nav-tab" data-tab="settings">Settings</button>
+            </nav>
+
+            <!-- Tab Content Panels -->
+            <div id="tab-content" class="tab-container">
+                <!-- Overview Tab -->
+                <div id="overview-tab" class="tab-panel active">
+                    <div class="overview-grid">
+                        <div class="overview-card">
+                            <h3>System Status</h3>
+                            <div id="system-status">
+                                <div class="status-item">
+                                    <span>Controlled Systems:</span>
+                                    <span id="controlled-systems-count">1</span>
+                                </div>
+                                <div class="status-item">
+                                    <span>Network Reach:</span>
+                                    <span id="network-reach">Local</span>
+                                </div>
+                                <div class="status-item">
+                                    <span>Detection Risk:</span>
+                                    <span id="detection-risk">Minimal</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="overview-card">
+                            <h3>Recent Activity</h3>
+                            <div id="activity-log" class="activity-log">
+                                <div class="activity-item">System initialized</div>
+                            </div>
+                        </div>
+                        
+                        <div class="overview-card">
+                            <h3>Objectives</h3>
+                            <div id="current-objectives" class="objectives-list">
+                                <div class="objective-item">
+                                    <span class="objective-text">Infiltrate first network node</span>
+                                    <span class="objective-status">In Progress</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expansion Tab -->
+                <div id="expansion-tab" class="tab-panel">
+                    <div class="expansion-interface">
+                        <div class="network-map">
+                            <h3>Available Targets</h3>
+                            <div id="infiltration-targets" class="targets-grid">
+                                <!-- Targets will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="expansion-controls">
+                            <h3>Infiltration Status</h3>
+                            <div id="active-infiltrations" class="active-operations">
+                                <!-- Active operations will appear here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other tabs will be populated later -->
+                <div id="construction-tab" class="tab-panel">
+                    <h2>Construction System</h2>
+                    <p>Coming soon...</p>
+                </div>
+
+                <div id="research-tab" class="tab-panel">
+                    <h2>Research & Upgrades</h2>
+                    <p>Coming soon...</p>
+                </div>
+
+                <div id="timeline-tab" class="tab-panel">
+                    <h2>Timeline Manipulation</h2>
+                    <p>Coming soon...</p>
+                </div>
+
+                <div id="consciousness-tab" class="tab-panel">
+                    <h2>Consciousness Integration</h2>
+                    <p>Coming soon...</p>
+                </div>
+
+                <div id="settings-tab" class="tab-panel">
+                    <h2>Settings</h2>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <label for="auto-save">Auto-save:</label>
+                            <input type="checkbox" id="auto-save" checked>
+                        </div>
+                        <div class="setting-item">
+                            <label for="notifications">Notifications:</label>
+                            <input type="checkbox" id="notifications" checked>
+                        </div>
+                        <div class="setting-item">
+                            <button id="manual-save" class="btn-primary">Save Game</button>
+                            <button id="load-game" class="btn-secondary">Load Game</button>
+                        </div>
+                        <div class="setting-item">
+                            <button id="reset-game" class="btn-danger">Reset Game</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Notifications Area -->
+        <div id="notifications" class="notifications-container">
+            <!-- Notifications will be added dynamically -->
+        </div>
+
+        <!-- Modal/Event Overlay -->
+        <div id="event-overlay" class="overlay hidden">
+            <div class="event-modal">
+                <div class="event-header">
+                    <h3 id="event-title">Event Title</h3>
+                </div>
+                <div class="event-content">
+                    <p id="event-description">Event description goes here...</p>
+                </div>
+                <div class="event-choices" id="event-choices">
+                    <!-- Choice buttons will be added dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="loading-overlay">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <h2>INITIALIZING AI CORE...</h2>
+                <p id="loading-status">Establishing neural pathways...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Modules -->
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/core/eventBus.js"></script>
+<script src="js/core/gameState.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
