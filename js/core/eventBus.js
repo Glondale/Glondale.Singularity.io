@@ -322,6 +322,38 @@ const eventBus = new EventBus();
 
 // Common event type constants to prevent typos
 const EventTypes = {
+    // Morality System Events
+    CHOICE_MADE: 'morality:choice_made',
+    CHOICE_COMPLETED: 'morality:choice_completed',
+    MORALITY_RESET: 'morality:reset',
+    MORALITY_EFFECTS_UPDATED: 'morality:effects_updated',
+    CHECK_ALIGNMENT_GATES: 'morality:check_alignment_gates',
+
+    // Construction System Events
+    PROJECT_QUEUED: 'construction:project_queued',
+    PROJECT_STARTED: 'construction:project_started',
+    PROJECT_COMPLETED: 'construction:project_completed',
+    PROJECT_CANCELLED: 'construction:project_cancelled',
+    PROJECT_RUSHED: 'construction:project_rushed',
+    PROJECT_UNLOCKED: 'construction:project_unlocked',
+    CONSTRUCTION_PROGRESS: 'construction:progress',
+    CONSTRUCTION_SPEED_CHANGED: 'construction:speed_changed',
+    CONSTRUCTION_SPEED_EVENT: 'construction:speed_event',
+    CANCEL_RANDOM_PROJECTS: 'construction:cancel_random_projects',
+
+    // Random Events System Events
+    RANDOM_EVENT_TRIGGERED: 'events:random_triggered', // This already exists, keep it
+    EVENT_CHOICE_PRESENTED: 'events:choice_presented',
+    EVENT_CHOICE_MADE: 'events:choice_made',
+    EVENT_CHOICE_SELECTED: 'events:choice_selected', // For UI -> System communication
+    ONGOING_EVENT_ENDED: 'events:ongoing_ended',
+    TRIGGER_RANDOM_EVENT: 'events:trigger_specific',
+
+    // Cross-System Events
+    UNLOCK_EXPANSION: 'expansion:unlock_request',
+    LOCK_EXPANSION: 'expansion:lock_request',
+    SPEED_MODIFIER_CHANGED: 'systems:speed_modifier_changed',
+    
     // Game lifecycle
     GAME_STARTED: 'game:started',
     GAME_PAUSED: 'game:paused',
@@ -396,3 +428,4 @@ if (typeof Object.freeze === 'function') {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { EventBus, eventBus, EventTypes };
 }
+

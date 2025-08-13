@@ -855,6 +855,17 @@ class ResourceSystem {
         };
     }
 
+    increaseStorageCapacity(resource, amount) {
+    if (!gameState.data.resourceCaps) {
+        gameState.data.resourceCaps = {};
+    }
+    if (!gameState.data.resourceCaps[resource]) {
+        gameState.data.resourceCaps[resource] = 10000; // Default cap
+    }
+    gameState.data.resourceCaps[resource] += amount;
+    gameState.saveData();
+}
+
     /**
      * Export system state for saving
      * @returns {object} Serializable state
@@ -911,3 +922,4 @@ const resourceSystem = new ResourceSystem();
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { ResourceSystem, resourceSystem };
 }
+

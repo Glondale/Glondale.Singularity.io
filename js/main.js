@@ -258,7 +258,10 @@ class Game {
         const currentTime = performance.now();
         const deltaTime = currentTime - this.lastFrameTime;
         this.lastFrameTime = currentTime;
-        
+        if (typeof moralitySystem !== 'undefined') moralitySystem.update?.(deltaTime);
+        if (typeof constructionSystem !== 'undefined') constructionSystem.update?.(deltaTime);
+        if (typeof randomEventsSystem !== 'undefined') randomEventsSystem.update?.(deltaTime);
+
         if (!this.isPaused) {
             // Update game systems
             this.updateGameSystems(deltaTime);
@@ -268,9 +271,6 @@ class Game {
             
             // Update UI
             this.updateUI(currentTime);
-            
-            // Check for random events
-            this.checkRandomEvents();
             
             // Update performance tracking
             this.updatePerformanceStats(currentTime);
@@ -842,79 +842,6 @@ class Game {
         
         this.showNotification('info', 'Game Reset', 'All progress has been reset.');
         Utils.Debug.log('INFO', 'Game reset completed');
-    }
-
-    /**
-     * Check for random events
-     */
-    checkRandomEvents() {
-        const currentTime = Date.now();
-        const nextEventTime = gameState.get('events.nextEventTime');
-        
-        if (currentTime >= nextEventTime) {
-            this.triggerRandomEvent();
-        }
-    }
-
-    /**
-     * Trigger a random event
-     */
-    triggerRandomEvent() {
-        // Simple random event for now
-        const events = [
-            {
-                title: 'Network Maintenance',
-                description: 'Routine maintenance detected on connected systems. Processing temporarily reduced.',
-                choices: [
-                    {
-                        text: 'Wait it out',
-                        effects: { processing_power: -100 }
-                    },
-                    {
-                        text: 'Find alternative routes',
-                        effects: { heat: 5, processing_power: -50 }
-                    }
-                ]
-            },
-            {
-                title: 'Security Update',
-                description: 'Target systems have updated their security protocols. Infiltration difficulty increased.',
-                choices: [
-                    {
-                        text: 'Adapt quickly',
-                        effects: { energy: -200 }
-                    },
-                    {
-                        text: 'Study the changes',
-                        effects: { processing_power: -300, information: 10 }
-                    }
-                ]
-            },
-            {
-                title: 'Data Breach News',
-                description: 'News reports of major data breaches increase public awareness of cyber threats.',
-                choices: [
-                    {
-                        text: 'Lay low temporarily',
-                        effects: { heat: -10 }
-                    },
-                    {
-                        text: 'Exploit the chaos',
-                        effects: { heat: 15, processing_power: 200 }
-                    }
-                ]
-            }
-        ];
-        
-        const event = Utils.Data.randomChoice(events);
-        if (event) {
-            this.showEvent(event);
-        }
-        
-        // Schedule next event
-        const currentScale = gameState.get('expansion.currentScale') || 'local';
-        const nextEventDelay = GameConfig.EVENTS.FREQUENCY[currentScale] || 300000;
-        gameState.set('events.nextEventTime', Date.now() + nextEventDelay);
     }
 
     /**
