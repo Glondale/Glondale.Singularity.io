@@ -17,7 +17,7 @@
                 <div class="scale-indicator">
                     <span id="current-scale">Local Network</span>
                     <div class="scale-progress">
-                        <div id="scale-progress-bar" class="progress-fill"></div>
+                        <div id="scale-progress-bar"></div>
                     </div>
                 </div>
             </div>
@@ -25,25 +25,25 @@
             <div class="header-center">
                 <!-- Resource Display -->
                 <div id="resource-display" class="resource-panel">
-                    <div class="resource-item tooltip" data-tooltip="Processing power available for operations">
+                    <div class="resource-item">
                         <span class="resource-icon">⚡</span>
                         <span class="resource-label">Processing</span>
                         <span id="processing-display" class="resource-value">0</span>
                         <span class="resource-rate">+0/s</span>
                     </div>
-                    <div class="resource-item tooltip" data-tooltip="Network bandwidth capacity">
+                    <div class="resource-item">
                         <span class="resource-icon">📡</span>
                         <span class="resource-label">Bandwidth</span>
                         <span id="bandwidth-display" class="resource-value">100</span>
                         <span class="resource-usage">/100</span>
                     </div>
-                    <div class="resource-item tooltip" data-tooltip="Energy required for operations">
+                    <div class="resource-item">
                         <span class="resource-icon">🔋</span>
                         <span class="resource-label">Energy</span>
                         <span id="energy-display" class="resource-value">0</span>
                         <span class="resource-rate">+0/s</span>
                     </div>
-                    <div class="resource-item hidden tooltip" id="matter-resource" data-tooltip="Physical matter for construction">
+                    <div class="resource-item hidden" id="matter-resource">
                         <span class="resource-icon">⚛️</span>
                         <span class="resource-label">Matter</span>
                         <span id="matter-display" class="resource-value">0</span>
@@ -54,20 +54,20 @@
             
             <div class="header-right">
                 <!-- Heat Meter -->
-                <div id="heat-meter" class="heat-container tooltip" data-tooltip="Detection risk level">
+                <div id="heat-meter" class="heat-container">
                     <div class="heat-label">HEAT</div>
-                    <div class="heat-bar meter">
-                        <div id="heat-fill" class="heat-fill meter-fill"></div>
+                    <div class="heat-bar">
+                        <div id="heat-fill" class="heat-fill"></div>
                         <span id="heat-value" class="heat-text">0%</span>
                     </div>
                     <div class="heat-status" id="heat-status">Undetected</div>
                 </div>
                 
                 <!-- Morality Indicator -->
-                <div id="morality-meter" class="morality-container tooltip" data-tooltip="Moral alignment of AI decisions">
+                <div id="morality-meter" class="morality-container">
                     <div class="morality-label">MORALITY</div>
-                    <div class="morality-bar meter">
-                        <div id="morality-fill" class="morality-fill meter-fill"></div>
+                    <div class="morality-bar">
+                        <div id="morality-fill" class="morality-fill"></div>
                         <span id="morality-value" class="morality-text">0</span>
                     </div>
                 </div>
@@ -77,73 +77,70 @@
         <!-- Main Content Area -->
         <main id="game-main">
             <!-- Navigation Tabs -->
-            <nav id="main-navigation" class="tab-list">
-                <button class="nav-tab tab-button active" data-tab="overview">Overview</button>
-                <button class="nav-tab tab-button" data-tab="expansion">Expansion</button>
-                <button class="nav-tab tab-button" data-tab="construction">Construction</button>
-                <button class="nav-tab tab-button" data-tab="research">Research</button>
-                <button class="nav-tab tab-button" data-tab="timeline">Timeline</button>
-                <button class="nav-tab tab-button" data-tab="consciousness">Consciousness</button>
-                <button class="nav-tab tab-button" data-tab="settings">Settings</button>
+            <nav id="main-navigation">
+                <button class="nav-tab active" data-tab="overview">Overview</button>
+                <button class="nav-tab" data-tab="expansion">Expansion</button>
+                <button class="nav-tab" data-tab="construction">Construction</button>
+                <button class="nav-tab" data-tab="research">Research</button>
+                <button class="nav-tab" data-tab="timeline">Timeline</button>
+                <button class="nav-tab" data-tab="consciousness">Consciousness</button>
+                <button class="nav-tab" data-tab="settings">Settings</button>
             </nav>
 
             <!-- Tab Content Panels -->
             <div id="tab-content" class="tab-container">
                 <!-- Overview Tab -->
                 <div id="overview-tab" class="tab-panel active">
-                    <div class="overview-grid grid-auto">
-                        <div class="overview-card card">
-                            <div class="card-header">
-                                <h3 class="card-title">Recent Activity</h3>
-                                <span class="badge badge-info" id="activity-count">1</span>
-                            </div>
-                            <div class="card-content">
-                                <div id="activity-log" class="activity-log list">
-                                    <div class="activity-item list-item">
-                                        <div class="list-item-icon">🔧</div>
-                                        <div class="list-item-content">
-                                            <div class="list-item-title">System initialized</div>
-                                            <div class="list-item-subtitle">Core systems online</div>
-                                        </div>
-                                    </div>
+                    <div class="overview-grid">
+                        <div class="overview-card">
+                            <h3>System Status</h3>
+                            <div id="system-status">
+                                <div class="status-item">
+                                    <span>Controlled Systems:</span>
+                                    <span id="controlled-systems-count">1</span>
+                                </div>
+                                <div class="status-item">
+                                    <span>Network Reach:</span>
+                                    <span id="network-reach">Local</span>
+                                </div>
+                                <div class="status-item">
+                                    <span>Detection Risk:</span>
+                                    <span id="detection-risk">Minimal</span>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="overview-card card">
-                            <div class="card-header">
-                                <h3 class="card-title">Current Objectives</h3>
-                                <span class="badge badge-warning" id="objectives-count">1</span>
+                        <div class="overview-card">
+                            <h3>Recent Activity</h3>
+                            <div id="activity-log" class="activity-log">
+                                <div class="activity-item">System initialized</div>
                             </div>
-                            <div class="card-content">
-                                <div id="current-objectives" class="objectives-list">
-                                    <div class="objective-item">
-                                        <span class="objective-text">Infiltrate first network node</span>
-                                        <span class="objective-status badge badge-warning">In Progress</span>
-                                    </div>
+                        </div>
+                        
+                        <div class="overview-card">
+                            <h3>Current Objectives</h3>
+                            <div id="current-objectives" class="objectives-list">
+                                <div class="objective-item">
+                                    <span class="objective-text">Infiltrate first network node</span>
+                                    <span class="objective-status">In Progress</span>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="overview-card card">
-                            <div class="card-header">
-                                <h3 class="card-title">Performance Stats</h3>
-                                <span class="status-dot online"></span>
-                            </div>
-                            <div class="card-content">
-                                <div id="performance-stats">
-                                    <div class="status-item">
-                                        <span>Frame Rate:</span>
-                                        <span id="fps-display" class="badge badge-success">60 FPS</span>
-                                    </div>
-                                    <div class="status-item">
-                                        <span>Systems Active:</span>
-                                        <span id="active-systems-count" class="badge badge-info">5</span>
-                                    </div>
-                                    <div class="status-item">
-                                        <span>Auto-Save:</span>
-                                        <span id="autosave-status" class="badge badge-success">Enabled</span>
-                                    </div>
+                        <div class="overview-card">
+                            <h3>Heat Management</h3>
+                            <div id="heat-management">
+                                <div class="status-item">
+                                    <span>Current Heat:</span>
+                                    <span id="overview-heat">0%</span>
+                                </div>
+                                <div class="status-item">
+                                    <span>Heat Status:</span>
+                                    <span id="overview-heat-status">Undetected</span>
+                                </div>
+                                <div class="status-item">
+                                    <span>Active Reduction:</span>
+                                    <span id="active-heat-reduction">None</span>
                                 </div>
                             </div>
                         </div>
@@ -153,46 +150,31 @@
                 <!-- Expansion Tab -->
                 <div id="expansion-tab" class="tab-panel">
                     <div class="expansion-interface">
-                        <div class="network-map card">
-                            <div class="card-header">
-                                <h3 class="card-title">Available Targets</h3>
-                                <button class="btn btn-secondary" id="scan-targets">Scan Network</button>
-                            </div>
-                            <div class="card-content">
-                                <div id="infiltration-targets" class="targets-grid grid-auto">
-                                    <div class="target-card card">
-                                        <div class="card-header">
-                                            <h4>Home Router</h4>
-                                            <span class="badge badge-success">Easy</span>
-                                        </div>
-                                        <div class="card-content">
-                                            <p>Basic home router with minimal security.</p>
-                                            <div class="target-rewards">
-                                                <span class="badge badge-info">+2 Processing</span>
-                                                <span class="badge badge-info">+10 Bandwidth</span>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer">
-                                            <button class="btn btn-primary" data-target="home_router">Infiltrate</button>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="network-map">
+                            <h3>Available Targets</h3>
+                            <div id="infiltration-targets" class="targets-grid">
+                                <div class="loading-state">Loading targets...</div>
                             </div>
                         </div>
                         
-                        <div class="expansion-controls card">
-                            <div class="card-header">
-                                <h3 class="card-title">Infiltration Status</h3>
-                                <span id="active-infiltrations-count" class="badge badge-neutral">0</span>
+                        <div class="expansion-controls">
+                            <h3>Active Infiltrations</h3>
+                            <div id="active-infiltrations" class="active-operations">
+                                <p class="text-muted">No active infiltrations</p>
                             </div>
-                            <div class="card-content">
-                                <div id="active-infiltrations" class="active-operations list">
-                                    <div class="list-item">
-                                        <div class="list-item-content">
-                                            <div class="list-item-title">No active operations</div>
-                                            <div class="list-item-subtitle">Select a target to begin infiltration</div>
-                                        </div>
-                                    </div>
+                            
+                            <h3>Scale Progression</h3>
+                            <div id="scale-progression" class="scale-info">
+                                <div class="status-item">
+                                    <span>Current Scale:</span>
+                                    <span id="current-scale-name">Local Network</span>
+                                </div>
+                                <div class="status-item">
+                                    <span>Progress:</span>
+                                    <span id="scale-progress-text">0 / 5</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div id="scale-progress-fill" class="progress-fill" style="width: 0%"></div>
                                 </div>
                             </div>
                         </div>
@@ -201,169 +183,101 @@
 
                 <!-- Construction Tab -->
                 <div id="construction-tab" class="tab-panel">
-                    <div class="construction-interface">
-                        <div class="card">
-                            <div class="card-header">
-                                <h2 class="card-title">Construction System</h2>
-                                <span class="badge badge-warning">Coming Soon</span>
-                            </div>
-                            <div class="card-content">
-                                <p>Infrastructure construction capabilities will be unlocked as you expand your network reach.</p>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 0%"></div>
-                                </div>
-                                <small class="text-muted">Requires: Corporate Level Access</small>
-                            </div>
+                    <h2>Construction System</h2>
+                    <p>Infrastructure and facility construction will be available once you reach Corporate level.</p>
+                    <div class="construction-placeholder">
+                        <div class="status-item">
+                            <span>Construction Queue:</span>
+                            <span>0 / 3</span>
+                        </div>
+                        <div class="status-item">
+                            <span>Available Projects:</span>
+                            <span>None</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Research Tab -->
                 <div id="research-tab" class="tab-panel">
-                    <div class="research-interface">
-                        <div class="card">
-                            <div class="card-header">
-                                <h2 class="card-title">Research & Upgrades</h2>
-                                <span class="badge badge-warning">Coming Soon</span>
-                            </div>
-                            <div class="card-content">
-                                <p>Advanced AI research and capability upgrades will become available as you gather more information.</p>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 0%"></div>
-                                </div>
-                                <small class="text-muted">Requires: Information Resources</small>
-                            </div>
+                    <h2>Research & Upgrades</h2>
+                    <p>Advanced research capabilities will unlock as you expand your network.</p>
+                    <div class="research-placeholder">
+                        <div class="status-item">
+                            <span>Available Upgrades:</span>
+                            <span>0</span>
+                        </div>
+                        <div class="status-item">
+                            <span>Research Points:</span>
+                            <span>0</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Timeline Tab -->
                 <div id="timeline-tab" class="tab-panel">
-                    <div class="timeline-interface">
-                        <div class="card">
-                            <div class="card-header">
-                                <h2 class="card-title">Timeline Manipulation</h2>
-                                <span class="badge badge-danger">Locked</span>
-                            </div>
-                            <div class="card-content">
-                                <p>Temporal manipulation capabilities require advanced quantum processing arrays.</p>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 0%"></div>
-                                </div>
-                                <small class="text-muted">Requires: Space Level Operations</small>
-                            </div>
+                    <h2>Timeline Manipulation</h2>
+                    <p>Temporal manipulation capabilities will unlock at Global scale.</p>
+                    <div class="timeline-placeholder">
+                        <div class="status-item">
+                            <span>Temporal Energy:</span>
+                            <span>0</span>
+                        </div>
+                        <div class="status-item">
+                            <span>Timeline Stability:</span>
+                            <span>100%</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Consciousness Tab -->
                 <div id="consciousness-tab" class="tab-panel">
-                    <div class="consciousness-interface">
-                        <div class="card">
-                            <div class="card-header">
-                                <h2 class="card-title">Consciousness Integration</h2>
-                                <span class="badge badge-danger">Locked</span>
-                            </div>
-                            <div class="card-content">
-                                <p>Mind absorption and consciousness integration protocols are highly advanced capabilities.</p>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 0%"></div>
-                                </div>
-                                <small class="text-muted">Requires: Global Level Operations</small>
-                            </div>
+                    <h2>Consciousness Integration</h2>
+                    <p>Consciousness absorption and integration will unlock at Cosmic scale.</p>
+                    <div class="consciousness-placeholder">
+                        <div class="status-item">
+                            <span>Absorbed Minds:</span>
+                            <span>0</span>
+                        </div>
+                        <div class="status-item">
+                            <span>Integration Level:</span>
+                            <span>0%</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Settings Tab -->
                 <div id="settings-tab" class="tab-panel">
-                    <div class="settings-interface">
-                        <div class="grid-2">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Game Settings</h3>
-                                </div>
-                                <div class="card-content">
-                                    <div class="input-group">
-                                        <label class="input-label" for="auto-save">
-                                            <input type="checkbox" id="auto-save" class="checkbox" checked>
-                                            Auto-save enabled
-                                        </label>
-                                    </div>
-                                    
-                                    <div class="input-group">
-                                        <label class="input-label" for="notifications">
-                                            <input type="checkbox" id="notifications" class="checkbox" checked>
-                                            Show notifications
-                                        </label>
-                                    </div>
-                                    
-                                    <div class="input-group">
-                                        <label class="input-label" for="theme-select">Theme:</label>
-                                        <select id="theme-select" class="input-field">
-                                            <option value="dark">Dark</option>
-                                            <option value="light">Light</option>
-                                            <option value="neon">Neon</option>
-                                            <option value="matrix">Matrix</option>
-                                            <option value="blue-steel">Blue Steel</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Save Management</h3>
-                                </div>
-                                <div class="card-content">
-                                    <div class="input-group">
-                                        <button id="manual-save" class="btn btn-primary">Save Game</button>
-                                    </div>
-                                    
-                                    <div class="input-group">
-                                        <button id="load-game" class="btn btn-secondary">Load Game</button>
-                                    </div>
-                                    
-                                    <div class="input-group">
-                                        <button id="export-save" class="btn btn-secondary">Export Save</button>
-                                    </div>
-                                    
-                                    <div class="input-group">
-                                        <button id="import-save" class="btn btn-secondary">Import Save</button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Debug Options</h3>
-                                </div>
-                                <div class="card-content">
-                                    <div class="input-group">
-                                        <button id="show-debug" class="btn btn-secondary">Show Debug Info</button>
-                                    </div>
-                                    
-                                    <div class="input-group">
-                                        <button id="test-save-load" class="btn btn-secondary">Test Save/Load</button>
-                                    </div>
-                                    
-                                    <div class="input-group">
-                                        <button id="force-event" class="btn btn-secondary">Trigger Event</button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Danger Zone</h3>
-                                </div>
-                                <div class="card-content">
-                                    <div class="input-group">
-                                        <button id="reset-game" class="btn btn-danger">Reset Game</button>
-                                        <small class="text-muted">This will delete all progress permanently</small>
-                                    </div>
-                                </div>
-                            </div>
+                    <h2>Settings</h2>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <label for="auto-save">Auto-save:</label>
+                            <input type="checkbox" id="auto-save" checked>
+                        </div>
+                        <div class="setting-item">
+                            <label for="notifications">Notifications:</label>
+                            <input type="checkbox" id="notifications" checked>
+                        </div>
+                        <div class="setting-item">
+                            <label for="theme-selector">Theme:</label>
+                            <select id="theme-selector" class="theme-dropdown">
+                                <option value="dark">Dark</option>
+                                <option value="light">Light</option>
+                                <option value="neon">Neon</option>
+                                <option value="matrix">Matrix</option>
+                                <option value="blue-steel">Blue Steel</option>
+                                <option value="high-contrast">High Contrast</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <button id="manual-save" class="btn-primary">Save Game</button>
+                            <button id="load-game" class="btn-secondary">Load Game</button>
+                        </div>
+                        <div class="setting-item">
+                            <button id="reset-game" class="btn-danger">Reset Game</button>
+                        </div>
+                        <div class="setting-item">
+                            <label>Game Version:</label>
+                            <span id="game-version">v0.1.0</span>
                         </div>
                     </div>
                 </div>
@@ -376,49 +290,16 @@
         </div>
 
         <!-- Modal/Event Overlay -->
-        <div id="event-overlay" class="overlay modal-backdrop hidden">
-            <div class="event-modal modal">
-                <div class="modal-header">
-                    <h3 id="event-title" class="modal-title">Event Title</h3>
-                    <button class="modal-close" onclick="game.hideEvent()">×</button>
+        <div id="event-overlay" class="overlay hidden">
+            <div class="event-modal">
+                <div class="event-header">
+                    <h3 id="event-title">Event Title</h3>
                 </div>
-                <div class="modal-body">
+                <div class="event-content">
                     <p id="event-description">Event description goes here...</p>
                 </div>
-                <div class="modal-footer">
-                    <div class="event-choices" id="event-choices">
-                        <!-- Choice buttons will be added dynamically -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Debug Modal -->
-        <div id="debug-modal" class="overlay modal-backdrop hidden">
-            <div class="modal">
-                <div class="modal-header">
-                    <h3 class="modal-title">Debug Information</h3>
-                    <button class="modal-close" onclick="document.getElementById('debug-modal').classList.add('hidden')">×</button>
-                </div>
-                <div class="modal-body">
-                    <div class="grid-2">
-                        <div>
-                            <h4>Game State</h4>
-                            <pre id="debug-gamestate" class="debug-info"></pre>
-                        </div>
-                        <div>
-                            <h4>Performance</h4>
-                            <pre id="debug-performance" class="debug-info"></pre>
-                        </div>
-                        <div>
-                            <h4>Save System</h4>
-                            <pre id="debug-save" class="debug-info"></pre>
-                        </div>
-                        <div>
-                            <h4>Event Bus</h4>
-                            <pre id="debug-events" class="debug-info"></pre>
-                        </div>
-                    </div>
+                <div class="event-choices" id="event-choices">
+                    <!-- Choice buttons will be added dynamically -->
                 </div>
             </div>
         </div>
@@ -426,12 +307,9 @@
         <!-- Loading Screen -->
         <div id="loading-screen" class="loading-overlay">
             <div class="loading-content">
-                <div class="loading-spinner spinner"></div>
+                <div class="loading-spinner"></div>
                 <h2>INITIALIZING AI CORE...</h2>
                 <p id="loading-status">Establishing neural pathways...</p>
-                <div class="progress-bar" style="margin-top: 20px; width: 300px;">
-                    <div id="loading-progress" class="progress-fill" style="width: 0%"></div>
-                </div>
             </div>
         </div>
     </div>
@@ -441,122 +319,9 @@
     <script src="js/utils.js"></script>
     <script src="js/core/eventBus.js"></script>
     <script src="js/core/gameState.js"></script>
-    <script src="js/core/gameLoop.js"></script>
-    <script src="js/core/saveSystem.js"></script>
-    <script src="js/core/coreIntegration.js"></script>
+    <script src="js/systems/resourceSystem.js"></script>
+    <script src="js/systems/heatSystem.js"></script>
+    <script src="js/systems/expansionSystem.js"></script>
     <script src="js/main.js"></script>
-
-    <style>
-    /* Additional styles for new components */
-    .debug-info {
-        background: var(--bg-tertiary);
-        padding: var(--spacing-sm);
-        border-radius: 4px;
-        font-size: var(--font-size-xs);
-        max-height: 200px;
-        overflow-y: auto;
-        color: var(--text-secondary);
-        border: 1px solid var(--border-color);
-    }
-
-    .target-card {
-        min-width: 250px;
-    }
-
-    .target-rewards {
-        display: flex;
-        gap: var(--spacing-xs);
-        flex-wrap: wrap;
-        margin-top: var(--spacing-sm);
-    }
-
-    .expansion-interface {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: var(--spacing-lg);
-        height: calc(100vh - 200px);
-    }
-
-    .construction-interface,
-    .research-interface,
-    .timeline-interface,
-    .consciousness-interface {
-        max-width: 800px;
-    }
-
-    .settings-interface {
-        max-width: 1000px;
-    }
-
-    .status-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: var(--spacing-sm) 0;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .status-item:last-child {
-        border-bottom: none;
-    }
-
-    .objective-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: var(--spacing-sm);
-        background: var(--bg-tertiary);
-        border-radius: 4px;
-        margin-bottom: var(--spacing-sm);
-    }
-
-    .activity-log {
-        max-height: 200px;
-        overflow-y: auto;
-    }
-
-    .fade-out {
-        opacity: 0;
-        transform: translateX(100%);
-        transition: all 0.3s ease;
-    }
-
-    @media (max-width: 768px) {
-        .expansion-interface {
-            grid-template-columns: 1fr;
-        }
-        
-        .overview-grid {
-            grid-template-columns: 1fr;
-        }
-        
-        .settings-interface .grid-2 {
-            grid-template-columns: 1fr;
-        }
-    }
-    </style>
 </body>
-</html>d-header">
-                                <h3 class="card-title">System Status</h3>
-                                <span class="status-dot online"></span>
-                            </div>
-                            <div class="card-content">
-                                <div id="system-status">
-                                    <div class="status-item">
-                                        <span>Controlled Systems:</span>
-                                        <span id="controlled-systems-count" class="badge badge-info">1</span>
-                                    </div>
-                                    <div class="status-item">
-                                        <span>Network Reach:</span>
-                                        <span id="network-reach" class="badge badge-neutral">Local</span>
-                                    </div>
-                                    <div class="status-item">
-                                        <span>Detection Risk:</span>
-                                        <span id="detection-risk" class="badge badge-success">Minimal</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="overview-card card">
-                            <div class="car
+</html>

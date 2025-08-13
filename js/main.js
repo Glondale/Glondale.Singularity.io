@@ -1,26 +1,24 @@
 /**
- * Singularity: AI Takeover - Main Game Initialization (Updated)
+ * Singularity: AI Takeover - Main Game Initialization
  * 
- * Main entry point that initializes all game systems using the new
- * core integration framework.
+ * Main entry point that initializes all game systems,
+ * manages the game loop, and coordinates UI updates.
  */
 
 class Game {
     constructor() {
-        this.initialized = false;
-        this.loadingSteps = [
-            { message: 'Establishing neural pathways...', duration: 500 },
-            { message: 'Initializing resource systems...', duration: 300 },
-            { message: 'Configuring heat detection protocols...', duration: 300 },
-            { message: 'Establishing network connections...', duration: 300 },
-            { message: 'Loading user interface...', duration: 300 },
-            { message: 'Integrating core systems...', duration: 400 },
-            { message: 'Checking for existing data...', duration: 200 },
-            { message: 'AI core online. Welcome.', duration: 500 }
-        ];
+        this.isRunning = false;
+        this.isPaused = false;
+        this.lastFrameTime = 0;
+        this.gameLoopId = null;
+        
+        // Performance tracking
+        this.frameCount = 0;
+        this.fpsDisplay = 0;
+        this.lastFpsUpdate = 0;
         
         // UI managers
-        this.uiInitialized = false;
+        this.uiUpdateQueue = [];
         this.lastUIUpdate = 0;
         
         Utils.Debug.log('INFO', 'Game instance created');
@@ -30,31 +28,43 @@ class Game {
      * Initialize the game
      */
     async init() {
-        if (this.initialized) {
-            Utils.Debug.log('WARN', 'Game already initialized');
-            return;
-        }
-
         try {
             Utils.Debug.log('INFO', 'Starting game initialization...');
             
-            // Show loading sequence
-            await this.showLoadingSequence();
+            // Show loading messages
+            this.updateLoadingStatus('Establishing neural pathways...');
+            await this.delay(500);
             
-            // Initialize core systems
-            await this.initializeCoreSystems();
+            this.updateLoadingStatus('Initializing resource systems...');
+            await this.initializeResourceSystem();
+            await this.delay(300);
             
-            // Initialize UI
+            this.updateLoadingStatus('Configuring heat detection protocols...');
+            await this.initializeHeatSystem();
+            await this.delay(300);
+            
+            this.updateLoadingStatus('Establishing network connections...');
+            await this.initializeExpansionSystem();
+            await this.delay(300);
+            
+            this.updateLoadingStatus('Loading user interface...');
             await this.initializeUI();
+            await this.delay(300);
+            
+            this.updateLoadingStatus('Finalizing AI consciousness...');
+            await this.initializeEventHandlers();
+            await this.delay(300);
             
             // Try to load existing save
-            await this.attemptLoadSave();
+            this.updateLoadingStatus('Checking for existing data...');
+            await this.loadGame();
+            await this.delay(200);
+            
+            this.updateLoadingStatus('AI core online. Welcome.');
+            await this.delay(500);
             
             // Start the game
-            await this.startGame();
-            
-            this.initialized = true;
-            Utils.Debug.log('INFO', 'Game initialization complete');
+            this.start();
             
         } catch (error) {
             Utils.Debug.log('ERROR', 'Game initialization failed', error);
@@ -63,157 +73,83 @@ class Game {
     }
 
     /**
-     * Show loading sequence with progress
+     * Initialize the resource system
      */
-    async showLoadingSequence() {
-        for (const [index, step] of this.loadingSteps.entries()) {
-            this.updateLoadingStatus(step.message);
-            
-            // Show progress
-            const progress = ((index + 1) / this.loadingSteps.length) * 100;
-            this.updateLoadingProgress(progress);
-            
-            await this.delay(step.duration);
-        }
+    async initializeResourceSystem() {
+        // Resource system is already initialized globally
+        // Just set up any additional UI event listeners
+        eventBus.on(EventTypes.RESOURCE_CAP_REACHED, this.onResourceCapReached.bind(this));
+        
+        Utils.Debug.log('INFO', 'Resource system integration completed');
     }
 
     /**
-     * Initialize core systems using the integration framework
+     * Initialize the heat detection system
      */
-    async initializeCoreSystems() {
-        this.updateLoadingStatus('Integrating core systems...');
+    async initializeHeatSystem() {
+        // Heat system is already initialized globally
+        // Set up UI-specific event listeners
+        eventBus.on(EventTypes.HEAT_PURGE_TRIGGERED, this.onHeatPurgeTriggered.bind(this));
+        eventBus.on(EventTypes.HEAT_PURGE_COMPLETED, this.onHeatPurgeCompleted.bind(this));
         
-        // Core integration handles everything now
-        await coreIntegration.init();
-        
-        // Set up additional event handlers
-        this.setupGameEventHandlers();
-        
-        Utils.Debug.log('INFO', 'Core systems initialized');
+        Utils.Debug.log('INFO', 'Heat system integration completed');
     }
 
     /**
-     * Set up game-specific event handlers
+     * Initialize the expansion system
      */
-    setupGameEventHandlers() {
-        // UI update requests
-        eventBus.on('ui:update_request', this.handleUIUpdateRequest.bind(this));
-        eventBus.on('ui:update_resources', this.updateResourceDisplay.bind(this));
-        eventBus.on('ui:update_heat', this.updateHeatDisplay.bind(this));
-        eventBus.on('ui:heat_critical_warning', this.showHeatWarning.bind(this));
+    async initializeExpansionSystem() {
+        // Expansion system is already initialized globally
+        // Set up UI-specific event listeners
+        eventBus.on(EventTypes.EXPANSION_INFILTRATION_COMPLETED, this.onInfiltrationCompleted.bind(this));
+        eventBus.on(EventTypes.EXPANSION_INFILTRATION_STARTED, this.onInfiltrationStarted.bind(this));
+        eventBus.on(EventTypes.EXPANSION_INFILTRATION_FAILED, this.onInfiltrationFailed.bind(this));
         
-        // Random events
-        eventBus.on(EventTypes.RANDOM_EVENT_TRIGGERED, this.handleRandomEvent.bind(this));
+        // Set up expansion UI
+        this.setupExpansionUI();
         
-        // System notifications
-        eventBus.on('systems:scale_changed', this.handleScaleChange.bind(this));
-        eventBus.on('systems:refresh_requested', this.refreshUI.bind(this));
-        
-        // Performance monitoring
-        eventBus.on('performance:stats_updated', this.handlePerformanceUpdate.bind(this));
-        
-        Utils.Debug.log('DEBUG', 'Game event handlers set up');
+        Utils.Debug.log('INFO', 'Expansion system integration completed');
     }
 
     /**
      * Initialize the user interface
      */
     async initializeUI() {
-        if (this.uiInitialized) return;
-        
-        this.updateLoadingStatus('Loading user interface...');
-        
-        // Set up tab navigation
+        // Set up tab switching
         this.setupTabNavigation();
         
-        // Set up settings handlers
-        this.setupSettingsHandlers();
-        
         // Initialize displays
-        this.initializeDisplays();
+        this.updateResourceDisplay();
+        this.updateHeatDisplay();
+        this.updateMoralityDisplay();
+        this.updateSystemStatus();
         
-        // Set up periodic UI updates
-        this.setupUIUpdateLoop();
+        // Set up auto-save
+        if (gameState.get('ui.settings.autoSave')) {
+            this.setupAutoSave();
+        }
         
-        this.uiInitialized = true;
+        // Set up theme selector
+        this.setupThemeSelector();
+        
         Utils.Debug.log('INFO', 'UI system initialized');
     }
 
     /**
-     * Set up tab navigation
+     * Initialize event handlers
      */
-    setupTabNavigation() {
-        const tabButtons = document.querySelectorAll('.nav-tab');
-        const tabPanels = document.querySelectorAll('.tab-panel');
-        
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const tabId = button.getAttribute('data-tab');
-                this.switchTab(tabId);
-            });
-        });
-        
-        Utils.Debug.log('DEBUG', 'Tab navigation set up');
-    }
-
-    /**
-     * Switch to a specific tab
-     * @param {string} tabId - Tab ID to switch to
-     */
-    switchTab(tabId) {
-        const tabButtons = document.querySelectorAll('.nav-tab');
-        const tabPanels = document.querySelectorAll('.tab-panel');
-        
-        // Remove active class from all tabs and panels
-        tabButtons.forEach(btn => btn.classList.remove('active'));
-        tabPanels.forEach(panel => panel.classList.remove('active'));
-        
-        // Add active class to selected tab and panel
-        const activeButton = document.querySelector(`[data-tab="${tabId}"]`);
-        const activePanel = document.getElementById(`${tabId}-tab`);
-        
-        if (activeButton) activeButton.classList.add('active');
-        if (activePanel) activePanel.classList.add('active');
-        
-        // Update game state
-        gameState.set('ui.activeTab', tabId);
-        eventBus.emit(EventTypes.UI_TAB_CHANGED, { tabId });
-        
-        Utils.Debug.log('DEBUG', `Switched to tab: ${tabId}`);
-    }
-
-    /**
-     * Set up settings event handlers
-     */
-    setupSettingsHandlers() {
-        // Manual save button
+    async initializeEventHandlers() {
+        // Settings buttons
         const saveBtn = Utils.DOM.get('manual-save');
         if (saveBtn) {
-            saveBtn.addEventListener('click', () => {
-                const success = saveSystem.save();
-                if (success) {
-                    this.showNotification('success', 'Game Saved', 'Progress saved successfully.');
-                } else {
-                    this.showNotification('error', 'Save Failed', 'Could not save game progress.');
-                }
-            });
+            saveBtn.addEventListener('click', () => this.saveGame());
         }
         
-        // Load game button
         const loadBtn = Utils.DOM.get('load-game');
         if (loadBtn) {
-            loadBtn.addEventListener('click', () => {
-                const success = saveSystem.load();
-                if (success) {
-                    this.showNotification('success', 'Game Loaded', 'Previous progress restored.');
-                    this.refreshUI();
-                } else {
-                    this.showNotification('warning', 'Load Failed', 'No save data found or corrupted.');
-                }
-            });
+            loadBtn.addEventListener('click', () => this.loadGame());
         }
         
-        // Reset game button
         const resetBtn = Utils.DOM.get('reset-game');
         if (resetBtn) {
             resetBtn.addEventListener('click', () => this.confirmReset());
@@ -224,128 +160,196 @@ class Game {
         if (autoSaveCheckbox) {
             autoSaveCheckbox.addEventListener('change', (e) => {
                 gameState.set('ui.settings.autoSave', e.target.checked);
-                saveSystem.setAutoSave(e.target.checked);
+                if (e.target.checked) {
+                    this.setupAutoSave();
+                }
             });
         }
         
-        Utils.Debug.log('DEBUG', 'Settings handlers set up');
-    }
-
-    /**
-     * Initialize UI displays
-     */
-    initializeDisplays() {
-        this.updateResourceDisplay();
-        this.updateHeatDisplay();
-        this.updateMoralityDisplay();
-        this.updateSystemStatus();
-        this.updateScaleDisplay();
-        
-        Utils.Debug.log('DEBUG', 'UI displays initialized');
-    }
-
-    /**
-     * Set up periodic UI updates
-     */
-    setupUIUpdateLoop() {
-        // UI updates are now handled by the event system
-        // This just sets up the initial state
-        eventBus.on('ui:update_request', (data) => {
-            const currentTime = data.currentTime;
-            
-            // Throttle UI updates
-            if (currentTime - this.lastUIUpdate < GameConfig.UI.UPDATES.RESOURCE_DISPLAY) {
-                return;
-            }
-            
-            this.updateResourceDisplay();
-            this.updateHeatDisplay();
-            this.updateMoralityDisplay();
-            this.updateSystemStatus();
-            
-            this.lastUIUpdate = currentTime;
-        });
-    }
-
-    /**
-     * Attempt to load existing save
-     */
-    async attemptLoadSave() {
-        this.updateLoadingStatus('Checking for existing data...');
-        
-        const saveExists = saveSystem.getSaveInfo() !== null;
-        
-        if (saveExists) {
-            Utils.Debug.log('INFO', 'Existing save found, loading...');
-            const success = saveSystem.load();
-            
-            if (success) {
-                Utils.Debug.log('INFO', 'Save loaded successfully');
-            } else {
-                Utils.Debug.log('WARN', 'Failed to load save, starting new game');
-            }
-        } else {
-            Utils.Debug.log('INFO', 'No existing save found, starting new game');
+        // Notifications checkbox
+        const notificationsCheckbox = Utils.DOM.get('notifications');
+        if (notificationsCheckbox) {
+            notificationsCheckbox.addEventListener('change', (e) => {
+                gameState.set('ui.settings.notifications', e.target.checked);
+            });
         }
+        
+        // Page visibility for pause/resume
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.pause();
+            } else {
+                this.resume();
+            }
+        });
+        
+        // Save on page unload
+        window.addEventListener('beforeunload', () => {
+            if (gameState.get('ui.settings.autoSave')) {
+                this.saveGame();
+            }
+        });
+        
+        // Set up resource and state change listeners
+        gameState.subscribe('resources', this.onResourcesChanged.bind(this));
+        gameState.subscribe('heat.current', this.onHeatChanged.bind(this));
+        
+        Utils.Debug.log('INFO', 'Event handlers initialized');
     }
 
     /**
      * Start the game
      */
-    async startGame() {
-        this.updateLoadingStatus('AI core online. Welcome.');
-        await this.delay(500);
+    start() {
+        if (this.isRunning) return;
+        
+        this.isRunning = true;
+        this.lastFrameTime = performance.now();
         
         // Hide loading screen
         Utils.DOM.addClass('loading-screen', 'hidden');
         
-        // Start core systems (this starts the game loop)
+        // Start game loop
+        this.gameLoop();
+        
+        // Emit game started event
         eventBus.emit(EventTypes.GAME_STARTED);
         
         // Show welcome notification
         this.showNotification('success', 'AI Core Online', 'Neural networks established. Beginning expansion protocol.');
         
-        Utils.Debug.log('INFO', 'Game started successfully');
+        // Update version display
+        Utils.DOM.setText('game-version', `v${GameConfig.VERSION}`);
+        
+        Utils.Debug.log('INFO', 'Game started');
+    }
+
+    /**
+     * Pause the game
+     */
+    pause() {
+        if (!this.isRunning || this.isPaused) return;
+        
+        this.isPaused = true;
+        eventBus.emit(EventTypes.GAME_PAUSED);
+        
+        Utils.Debug.log('INFO', 'Game paused');
+    }
+
+    /**
+     * Resume the game
+     */
+    resume() {
+        if (!this.isRunning || !this.isPaused) return;
+        
+        this.isPaused = false;
+        this.lastFrameTime = performance.now(); // Reset frame time
+        eventBus.emit(EventTypes.GAME_RESUMED);
+        
+        Utils.Debug.log('INFO', 'Game resumed');
+    }
+
+    /**
+     * Main game loop
+     */
+    gameLoop() {
+        if (!this.isRunning) return;
+        
+        const currentTime = performance.now();
+        const deltaTime = currentTime - this.lastFrameTime;
+        this.lastFrameTime = currentTime;
+        
+        if (!this.isPaused) {
+            // Update game systems
+            this.updateGameSystems(deltaTime);
+            
+            // Process event queue
+            eventBus.processQueue();
+            
+            // Update UI
+            this.updateUI(currentTime);
+            
+            // Check for random events
+            this.checkRandomEvents();
+            
+            // Update performance tracking
+            this.updatePerformanceStats(currentTime);
+        }
+        
+        // Continue loop
+        this.gameLoopId = requestAnimationFrame(() => this.gameLoop());
+    }
+
+    /**
+     * Update all game systems
+     */
+    updateGameSystems(deltaTime) {
+        // Update core systems
+        resourceSystem.update(deltaTime);
+        heatSystem.update(deltaTime);
+        expansionSystem.update(deltaTime);
+        
+        // Update playtime
+        const currentPlaytime = gameState.get('stats.timePlayed') || 0;
+        gameState.set('stats.timePlayed', currentPlaytime + deltaTime);
+    }
+
+    /**
+     * Update UI elements
+     */
+    updateUI(currentTime) {
+        // Throttle UI updates to improve performance
+        if (currentTime - this.lastUIUpdate < GameConfig.UI.UPDATES.RESOURCE_DISPLAY) {
+            return;
+        }
+        
+        this.updateResourceDisplay();
+        this.updateHeatDisplay();
+        this.updateMoralityDisplay();
+        this.updateSystemStatus();
+        this.updateActiveInfiltrations();
+        
+        this.lastUIUpdate = currentTime;
     }
 
     /**
      * Update resource display
      */
     updateResourceDisplay() {
-        const resources = gameState.get('resources') || {};
-        const rates = gameState.get('resourceRates') || {};
+        const resources = gameState.get('resources');
+        const rates = gameState.get('resourceRates');
         
-        // Processing Power
+        // Update processing power
         const processing = resources.processing_power || 0;
         const processingRate = rates.processing_power || 0;
         Utils.DOM.setText('processing-display', Utils.Numbers.format(processing, 0));
         
-        const processingElement = Utils.DOM.get('processing-display');
-        if (processingElement && processingElement.nextElementSibling) {
-            processingElement.nextElementSibling.textContent = `+${Utils.Numbers.format(processingRate, 1)}/s`;
+        const processingRateElement = Utils.DOM.get('processing-display');
+        if (processingRateElement && processingRateElement.nextElementSibling) {
+            processingRateElement.nextElementSibling.textContent = `+${Utils.Numbers.format(processingRate, 1)}/s`;
         }
         
-        // Bandwidth
+        // Update bandwidth
         const bandwidth = resources.bandwidth || 100;
         const bandwidthCap = gameState.get('resourceCaps.bandwidth') || 100;
         Utils.DOM.setText('bandwidth-display', Utils.Numbers.format(bandwidth, 0));
         
-        const bandwidthElement = Utils.DOM.get('bandwidth-display');
-        if (bandwidthElement && bandwidthElement.nextElementSibling) {
-            bandwidthElement.nextElementSibling.textContent = `/${Utils.Numbers.format(bandwidthCap, 0)}`;
+        const bandwidthUsageElement = Utils.DOM.get('bandwidth-display');
+        if (bandwidthUsageElement && bandwidthUsageElement.nextElementSibling) {
+            bandwidthUsageElement.nextElementSibling.textContent = `/${Utils.Numbers.format(bandwidthCap, 0)}`;
         }
         
-        // Energy
+        // Update energy
         const energy = resources.energy || 0;
         const energyRate = rates.energy || 0;
         Utils.DOM.setText('energy-display', Utils.Numbers.format(energy, 0));
         
-        const energyElement = Utils.DOM.get('energy-display');
-        if (energyElement && energyElement.nextElementSibling) {
-            energyElement.nextElementSibling.textContent = `+${Utils.Numbers.format(energyRate, 1)}/s`;
+        const energyRateElement = Utils.DOM.get('energy-display');
+        if (energyRateElement && energyRateElement.nextElementSibling) {
+            energyRateElement.nextElementSibling.textContent = `+${Utils.Numbers.format(energyRate, 1)}/s`;
         }
         
-        // Matter (show if past local scale)
+        // Show/hide advanced resources
         const currentScale = gameState.get('expansion.currentScale');
         if (currentScale !== 'local') {
             Utils.DOM.removeClass('matter-resource', 'hidden');
@@ -353,9 +357,9 @@ class Game {
             const matterRate = rates.matter || 0;
             Utils.DOM.setText('matter-display', Utils.Numbers.format(matter, 0));
             
-            const matterElement = Utils.DOM.get('matter-display');
-            if (matterElement && matterElement.nextElementSibling) {
-                matterElement.nextElementSibling.textContent = `+${Utils.Numbers.format(matterRate, 1)}/s`;
+            const matterRateElement = Utils.DOM.get('matter-display');
+            if (matterRateElement && matterRateElement.nextElementSibling) {
+                matterRateElement.nextElementSibling.textContent = `+${Utils.Numbers.format(matterRate, 1)}/s`;
             }
         }
     }
@@ -370,29 +374,21 @@ class Game {
         Utils.DOM.setText('heat-value', `${Math.round(heatPercentage)}%`);
         Utils.DOM.setStyle('heat-fill', 'width', `${heatPercentage}%`);
         
-        // Update heat status text
-        let status = 'Undetected';
-        let statusClass = 'status-safe';
+        // Update heat status
+        const status = heatSystem.getHeatStatus();
+        Utils.DOM.setText('heat-status', status);
         
-        if (heat >= 90) {
-            status = 'Critical';
-            statusClass = 'status-critical';
-        } else if (heat >= 70) {
-            status = 'High Risk';
-            statusClass = 'status-danger';
-        } else if (heat >= 50) {
-            status = 'Elevated';
-            statusClass = 'status-warning';
-        } else if (heat >= 20) {
-            status = 'Low Risk';
-            statusClass = 'status-caution';
-        }
+        // Update overview heat display
+        Utils.DOM.setText('overview-heat', `${Math.round(heatPercentage)}%`);
+        Utils.DOM.setText('overview-heat-status', status);
         
-        const statusElement = Utils.DOM.get('heat-status');
-        if (statusElement) {
-            statusElement.textContent = status;
-            statusElement.className = `heat-status ${statusClass}`;
-        }
+        // Update active heat reduction display
+        const availableMethods = heatSystem.getAvailableReductionMethods();
+        const activeMethods = availableMethods.filter(method => method.active);
+        const activeText = activeMethods.length > 0 
+            ? activeMethods.map(m => m.name).join(', ')
+            : 'None';
+        Utils.DOM.setText('active-heat-reduction', activeText);
     }
 
     /**
@@ -400,18 +396,15 @@ class Game {
      */
     updateMoralityDisplay() {
         const morality = gameState.get('morality.current') || 0;
-        const moralityPercentage = ((morality + 100) / 200) * 100;
+        const moralityPercentage = ((morality + 100) / 200) * 100; // Convert -100 to 100 range to 0-100%
         
         Utils.DOM.setText('morality-value', morality.toString());
         Utils.DOM.setStyle('morality-fill', 'width', `${moralityPercentage}%`);
         
-        // Update color based on morality
+        // Update morality color
         let color = 'var(--morality-neutral)';
-        if (morality < -25) {
-            color = 'var(--morality-evil)';
-        } else if (morality > 25) {
-            color = 'var(--morality-good)';
-        }
+        if (morality < -25) color = 'var(--morality-evil)';
+        else if (morality > 25) color = 'var(--morality-good)';
         
         Utils.DOM.setStyle('morality-fill', 'background', color);
     }
@@ -422,70 +415,454 @@ class Game {
     updateSystemStatus() {
         const controlledSystems = gameState.get('expansion.controlledSystems') || 1;
         const currentScale = gameState.get('expansion.currentScale') || 'local';
+        const networkReach = gameState.get('expansion.networkReach') || 'Local';
         const heat = gameState.get('heat.current') || 0;
         
         Utils.DOM.setText('controlled-systems-count', controlledSystems.toString());
-        Utils.DOM.setText('network-reach', currentScale.charAt(0).toUpperCase() + currentScale.slice(1));
+        Utils.DOM.setText('network-reach', networkReach);
         
-        // Detection risk based on heat
         let risk = 'Minimal';
-        if (heat >= 80) risk = 'Extreme';
-        else if (heat >= 60) risk = 'High';
-        else if (heat >= 40) risk = 'Moderate';
-        else if (heat >= 20) risk = 'Low';
+        if (heat >= 70) risk = 'Extreme';
+        else if (heat >= 50) risk = 'High';
+        else if (heat >= 30) risk = 'Moderate';
+        else if (heat >= 10) risk = 'Low';
         
         Utils.DOM.setText('detection-risk', risk);
+        
+        // Update scale indicator
+        const scaleName = currentScale.charAt(0).toUpperCase() + currentScale.slice(1) + ' Network';
+        Utils.DOM.setText('current-scale', scaleName);
+        Utils.DOM.setText('current-scale-name', scaleName);
+        
+        // Update scale progress bar
+        const progressInfo = expansionSystem.getScaleProgressionInfo();
+        const progressPercentage = Math.min(100, progressInfo.percentage);
+        Utils.DOM.setStyle('scale-progress-bar', 'width', `${progressPercentage}%`);
+        Utils.DOM.setStyle('scale-progress-fill', 'width', `${progressPercentage}%`);
+        Utils.DOM.setText('scale-progress-text', `${progressInfo.progress} / ${progressInfo.required}`);
     }
 
     /**
-     * Update scale display
+     * Set up tab navigation
      */
-    updateScaleDisplay() {
-        const currentScale = gameState.get('expansion.currentScale') || 'local';
-        const scaleName = GameConfig.EXPANSION.SCALES[currentScale]?.name || 'Unknown';
-        const controlledSystems = gameState.get('expansion.controlledSystems') || 1;
+    setupTabNavigation() {
+        const tabButtons = document.querySelectorAll('.nav-tab');
+        const tabPanels = document.querySelectorAll('.tab-panel');
         
-        Utils.DOM.setText('current-scale', scaleName);
-        
-        // Calculate progress to next scale
-        const scaleKeys = Object.keys(GameConfig.EXPANSION.SCALES);
-        const currentIndex = scaleKeys.indexOf(currentScale);
-        
-        if (currentIndex < scaleKeys.length - 1) {
-            const nextScale = scaleKeys[currentIndex + 1];
-            const required = GameConfig.EXPANSION.SCALES[nextScale].controlled_systems_required;
-            const progress = Math.min((controlledSystems / required) * 100, 100);
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                // Remove active class from all tabs and panels
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabPanels.forEach(panel => panel.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding panel
+                button.classList.add('active');
+                const targetPanel = document.getElementById(`${tabId}-tab`);
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                }
+                
+                // Update game state
+                gameState.set('ui.activeTab', tabId);
+                
+                // Emit tab change event
+                eventBus.emit(EventTypes.UI_TAB_CHANGED, { tabId });
+                
+                // Update UI for specific tabs
+                if (tabId === 'expansion') {
+                    this.updateAvailableTargets();
+                    this.updateActiveInfiltrations();
+                }
+            });
+        });
+    }
+
+    /**
+     * Set up theme selector
+     */
+    setupThemeSelector() {
+        const themeSelector = Utils.DOM.get('theme-selector');
+        if (themeSelector) {
+            // Set current theme
+            const currentTheme = gameState.get('ui.settings.theme') || 'dark';
+            themeSelector.value = currentTheme;
+            this.applyTheme(currentTheme);
             
-            Utils.DOM.setStyle('scale-progress-bar', 'width', `${progress}%`);
-        } else {
-            Utils.DOM.setStyle('scale-progress-bar', 'width', '100%');
+            // Handle theme changes
+            themeSelector.addEventListener('change', (e) => {
+                const newTheme = e.target.value;
+                this.applyTheme(newTheme);
+                gameState.set('ui.settings.theme', newTheme);
+            });
         }
     }
 
     /**
-     * Event Handlers
+     * Apply theme to the document
      */
-    handleUIUpdateRequest(data) {
-        // Handled by setupUIUpdateLoop
+    applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
     }
 
-    handleRandomEvent(data) {
-        // Simple random event for demonstration
+    /**
+     * Set up auto-save functionality
+     */
+    setupAutoSave() {
+        setInterval(() => {
+            if (gameState.get('ui.settings.autoSave')) {
+                this.saveGame(true); // Silent save
+            }
+        }, GameConfig.SAVE.AUTO_SAVE_INTERVAL);
+    }
+
+    /**
+     * Set up expansion UI
+     */
+    setupExpansionUI() {
+        // Update available targets display
+        this.updateAvailableTargets();
+        
+        // Set up target click handlers
+        const targetsContainer = Utils.DOM.get('infiltration-targets');
+        if (targetsContainer) {
+            targetsContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('target-infiltrate-btn')) {
+                    const targetId = e.target.getAttribute('data-target-id');
+                    this.startInfiltration(targetId);
+                }
+            });
+        }
+    }
+
+    /**
+     * Update available targets display
+     */
+    updateAvailableTargets() {
+        const targetsContainer = Utils.DOM.get('infiltration-targets');
+        if (!targetsContainer) return;
+        
+        const targets = expansionSystem.getAvailableTargets();
+        
+        targetsContainer.innerHTML = '';
+        
+        if (targets.length === 0) {
+            targetsContainer.innerHTML = '<div class="loading-state">No targets available. Scanning for opportunities...</div>';
+            return;
+        }
+        
+        for (const target of targets) {
+            const canAfford = resourceSystem.canAfford(target.cost || {});
+            const meetsRequirements = expansionSystem.checkTargetRequirements(target);
+            
+            const targetElement = Utils.DOM.create('div', {
+                className: `target-card card ${!canAfford || !meetsRequirements ? 'disabled' : ''}`
+            });
+            
+            const costDisplay = target.cost ? 
+                Object.entries(target.cost)
+                    .map(([resource, amount]) => `${Utils.Numbers.format(amount)} ${resource.replace('_', ' ')}`)
+                    .join(', ') 
+                : 'No cost';
+            
+            const rewardsDisplay = target.rewards ?
+                Object.entries(target.rewards)
+                    .map(([resource, amount]) => `${Utils.Numbers.format(amount)} ${resource.replace('_', ' ')}`)
+                    .join(', ')
+                : 'No rewards';
+            
+            // Calculate success chance for display
+            const processingPower = gameState.get('resources.processing_power') || 0;
+            const heat = gameState.get('heat.current') || 0;
+            const successChance = Utils.Game.calculateSuccessChance(
+                processingPower,
+                target.difficulty,
+                heat,
+                1 // No modifiers for display
+            );
+            
+            let requirementsText = '';
+            if (!meetsRequirements && target.requirements) {
+                const unmetRequirements = target.requirements.filter(req => {
+                    // Check each requirement type
+                    switch (req.type) {
+                        case 'upgrade':
+                            const upgrades = gameState.get('upgrades.purchased') || [];
+                            return !upgrades.includes(req.id);
+                        case 'systems':
+                            return expansionSystem.controlledSystems < req.count;
+                        case 'morality':
+                            const morality = gameState.get('morality.current') || 0;
+                            return (req.min !== undefined && morality < req.min) ||
+                                   (req.max !== undefined && morality > req.max);
+                        default:
+                            return false;
+                    }
+                });
+                
+                if (unmetRequirements.length > 0) {
+                    requirementsText = `<div class="target-requirements">Requirements: ${unmetRequirements.map(req => req.description || req.type).join(', ')}</div>`;
+                }
+            }
+            
+            targetElement.innerHTML = `
+                <div class="card-header">
+                    <h4 class="card-title">${target.name}</h4>
+                    <span class="target-difficulty">Difficulty: ${target.difficulty}</span>
+                </div>
+                <div class="card-content">
+                    <p class="target-description">${target.description}</p>
+                    <div class="target-info">
+                        <div class="target-cost">Cost: ${costDisplay}</div>
+                        <div class="target-rewards">Rewards: ${rewardsDisplay}</div>
+                        <div class="target-success">Success Chance: ${Utils.Numbers.percentage(successChance)}</div>
+                    </div>
+                    ${requirementsText}
+                </div>
+                <div class="card-footer">
+                    <button class="target-infiltrate-btn btn-primary" 
+                            data-target-id="${target.id}"
+                            ${!canAfford || !meetsRequirements ? 'disabled' : ''}>
+                        ${!canAfford ? 'Insufficient Resources' : 
+                          !meetsRequirements ? 'Requirements Not Met' : 'Infiltrate'}
+                    </button>
+                </div>
+            `;
+            
+            targetsContainer.appendChild(targetElement);
+        }
+    }
+
+    /**
+     * Update active infiltrations display
+     */
+    updateActiveInfiltrations() {
+        const container = Utils.DOM.get('active-infiltrations');
+        if (!container) return;
+        
+        const infiltrations = expansionSystem.getActiveInfiltrations();
+        
+        if (infiltrations.length === 0) {
+            container.innerHTML = '<p class="text-muted">No active infiltrations</p>';
+            return;
+        }
+        
+        container.innerHTML = '';
+        
+        for (const infiltration of infiltrations) {
+            const progress = (infiltration.progress || 0) * 100;
+            const timeRemaining = infiltration.duration - (Date.now() - infiltration.startTime);
+            
+            const infiltrationElement = Utils.DOM.create('div', {
+                className: 'infiltration-card card'
+            });
+            
+            infiltrationElement.innerHTML = `
+                <div class="card-header">
+                    <h5>${infiltration.target.name}</h5>
+                    <span class="infiltration-success-chance">${Utils.Numbers.percentage(infiltration.successChance)} success</span>
+                </div>
+                <div class="card-content">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="infiltration-info">
+                        <span>Time remaining: ${Utils.Time.formatDuration(Math.max(0, timeRemaining), true)}</span>
+                        <span>Resources allocated: ${Utils.Numbers.format(infiltration.resources || 0)} processing power</span>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(infiltrationElement);
+        }
+    }
+
+    /**
+     * Start infiltration of a target
+     */
+    startInfiltration(targetId) {
+        const success = expansionSystem.startInfiltration(targetId);
+        
+        if (success) {
+            this.updateAvailableTargets();
+            this.updateActiveInfiltrations();
+        }
+    }
+
+    /**
+     * Save the game
+     */
+    saveGame(silent = false) {
+        try {
+            const saveData = {
+                version: GameConfig.VERSION,
+                timestamp: Date.now(),
+                gameState: gameState.serialize(),
+                resourceSystem: resourceSystem.serialize(),
+                heatSystem: heatSystem.serialize(),
+                expansionSystem: expansionSystem.serialize()
+            };
+            
+            const success = Utils.Storage.save(GameConfig.SAVE.SAVE_KEY, saveData);
+            
+            if (success) {
+                eventBus.emit(EventTypes.GAME_SAVED, saveData);
+                if (!silent) {
+                    this.showNotification('success', 'Game Saved', 'Progress has been saved successfully.');
+                }
+                Utils.Debug.log('INFO', 'Game saved successfully');
+            } else {
+                throw new Error('Failed to save to localStorage');
+            }
+        } catch (error) {
+            Utils.Debug.log('ERROR', 'Save failed', error);
+            eventBus.emit(EventTypes.SAVE_FAILED, error);
+            this.showNotification('error', 'Save Failed', 'Could not save game progress.');
+        }
+    }
+
+    /**
+     * Load the game
+     */
+    async loadGame() {
+        try {
+            const saveData = Utils.Storage.load(GameConfig.SAVE.SAVE_KEY);
+            
+            if (saveData && saveData.gameState) {
+                // Load core game state
+                const success = gameState.deserialize(saveData.gameState);
+                
+                if (success) {
+                    // Load system states
+                    if (saveData.resourceSystem) {
+                        resourceSystem.deserialize(saveData.resourceSystem);
+                    }
+                    if (saveData.heatSystem) {
+                        heatSystem.deserialize(saveData.heatSystem);
+                    }
+                    if (saveData.expansionSystem) {
+                        expansionSystem.deserialize(saveData.expansionSystem);
+                    }
+                    
+                    // Update UI after loading
+                    if (this.isRunning) {
+                        this.updateAvailableTargets();
+                        this.updateActiveInfiltrations();
+                        this.updateSystemStatus();
+                    }
+                    
+                    eventBus.emit(EventTypes.GAME_LOADED, saveData);
+                    if (this.isRunning) {
+                        this.showNotification('success', 'Game Loaded', 'Previous progress has been restored.');
+                    }
+                    Utils.Debug.log('INFO', 'Game loaded successfully');
+                    return true;
+                } else {
+                    throw new Error('Failed to deserialize save data');
+                }
+            } else {
+                Utils.Debug.log('INFO', 'No save data found, starting new game');
+                return false;
+            }
+        } catch (error) {
+            Utils.Debug.log('ERROR', 'Load failed', error);
+            eventBus.emit(EventTypes.LOAD_FAILED, error);
+            if (this.isRunning) {
+                this.showNotification('warning', 'Load Failed', 'Could not load previous progress. Starting new game.');
+            }
+            return false;
+        }
+    }
+
+    /**
+     * Confirm game reset
+     */
+    confirmReset() {
+        if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+            this.resetGame();
+        }
+    }
+
+    /**
+     * Reset the game
+     */
+    resetGame() {
+        gameState.reset();
+        Utils.Storage.remove(GameConfig.SAVE.SAVE_KEY);
+        
+        // Reset systems
+        resourceSystem.init();
+        heatSystem.init();
+        expansionSystem.init();
+        
+        // Update UI
+        this.updateAvailableTargets();
+        this.updateActiveInfiltrations();
+        this.updateSystemStatus();
+        
+        this.showNotification('info', 'Game Reset', 'All progress has been reset.');
+        Utils.Debug.log('INFO', 'Game reset completed');
+    }
+
+    /**
+     * Check for random events
+     */
+    checkRandomEvents() {
+        const currentTime = Date.now();
+        const nextEventTime = gameState.get('events.nextEventTime');
+        
+        if (currentTime >= nextEventTime) {
+            this.triggerRandomEvent();
+        }
+    }
+
+    /**
+     * Trigger a random event
+     */
+    triggerRandomEvent() {
+        // Simple random event for now
         const events = [
             {
                 title: 'Network Maintenance',
-                description: 'Routine maintenance detected on connected systems.',
+                description: 'Routine maintenance detected on connected systems. Processing temporarily reduced.',
                 choices: [
-                    { text: 'Wait it out', effects: { processing_power: -100 } },
-                    { text: 'Find alternatives', effects: { heat: 5, processing_power: -50 } }
+                    {
+                        text: 'Wait it out',
+                        effects: { processing_power: -100 }
+                    },
+                    {
+                        text: 'Find alternative routes',
+                        effects: { heat: 5, processing_power: -50 }
+                    }
                 ]
             },
             {
-                title: 'Security Scan',
-                description: 'Automated security scan detected on target network.',
+                title: 'Security Update',
+                description: 'Target systems have updated their security protocols. Infiltration difficulty increased.',
                 choices: [
-                    { text: 'Lay low', effects: { heat: -5 } },
-                    { text: 'Counter-scan', effects: { heat: 10, processing_power: 50 } }
+                    {
+                        text: 'Adapt quickly',
+                        effects: { energy: -200 }
+                    },
+                    {
+                        text: 'Study the changes',
+                        effects: { processing_power: -300, information: 10 }
+                    }
+                ]
+            },
+            {
+                title: 'Data Breach News',
+                description: 'News reports of major data breaches increase public awareness of cyber threats.',
+                choices: [
+                    {
+                        text: 'Lay low temporarily',
+                        effects: { heat: -10 }
+                    },
+                    {
+                        text: 'Exploit the chaos',
+                        effects: { heat: 15, processing_power: 200 }
+                    }
                 ]
             }
         ];
@@ -494,111 +871,86 @@ class Game {
         if (event) {
             this.showEvent(event);
         }
-    }
-
-    handleScaleChange(data) {
-        Utils.Debug.log('INFO', `Scale changed to: ${data.scale}`);
-        this.updateScaleDisplay();
-        this.showNotification('info', 'Scale Advanced', `Reached ${data.scale} level operations.`);
-    }
-
-    handlePerformanceUpdate(data) {
-        if (GameConfig.DEBUG.SHOW_FPS) {
-            console.log(`FPS: ${data.fps}, Frame Time: ${data.averageFrameTime.toFixed(2)}ms`);
-        }
         
-        if (data.fps < 30) {
-            Utils.Debug.log('WARN', 'Low FPS detected', data);
-        }
-    }
-
-    showHeatWarning() {
-        this.showNotification('warning', 'Heat Critical', 'Detection imminent! Consider reducing activity.');
+        // Schedule next event
+        const currentScale = gameState.get('expansion.currentScale') || 'local';
+        const nextEventDelay = GameConfig.EVENTS.FREQUENCY[currentScale] || 300000;
+        gameState.set('events.nextEventTime', Date.now() + nextEventDelay);
     }
 
     /**
-     * Utility methods
+     * Show an event modal
      */
-    refreshUI() {
-        this.updateResourceDisplay();
-        this.updateHeatDisplay();
-        this.updateMoralityDisplay();
-        this.updateSystemStatus();
-        this.updateScaleDisplay();
-    }
-
-    confirmReset() {
-        if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
-            gameState.reset();
-            saveSystem.clearAll();
-            this.showNotification('info', 'Game Reset', 'All progress has been reset.');
-            this.refreshUI();
-        }
-    }
-
     showEvent(event) {
         Utils.DOM.setText('event-title', event.title);
         Utils.DOM.setText('event-description', event.description);
         
         const choicesContainer = Utils.DOM.get('event-choices');
-        if (choicesContainer) {
-            choicesContainer.innerHTML = '';
-            
-            event.choices.forEach(choice => {
-                const button = Utils.DOM.create('button', {
-                    className: 'btn btn-primary',
-                    textContent: choice.text
-                });
-                
-                button.addEventListener('click', () => {
-                    this.resolveEvent(choice.effects);
-                    this.hideEvent();
-                });
-                
-                choicesContainer.appendChild(button);
+        choicesContainer.innerHTML = '';
+        
+        event.choices.forEach((choice, index) => {
+            const button = Utils.DOM.create('button', {
+                className: 'btn btn-primary',
+                textContent: choice.text
             });
-        }
+            
+            button.addEventListener('click', () => {
+                this.resolveEvent(choice.effects);
+                this.hideEvent();
+            });
+            
+            choicesContainer.appendChild(button);
+        });
         
         Utils.DOM.removeClass('event-overlay', 'hidden');
     }
 
+    /**
+     * Hide event modal
+     */
     hideEvent() {
         Utils.DOM.addClass('event-overlay', 'hidden');
     }
 
+    /**
+     * Resolve event effects
+     */
     resolveEvent(effects) {
-        const resources = gameState.get('resources') || {};
-        const updates = {};
+        const resources = gameState.get('resources');
         
         for (const [resource, change] of Object.entries(effects)) {
             if (resource === 'heat') {
-                const currentHeat = gameState.get('heat.current') || 0;
-                updates['heat.current'] = Utils.Numbers.clamp(currentHeat + change, 0, 100);
+                // Handle heat separately through heat system
+                if (change > 0) {
+                    heatSystem.addHeat(change, 'random_event', 'Random event');
+                } else {
+                    heatSystem.reduceHeat(-change, 'random_event', 'Random event');
+                }
             } else if (resources.hasOwnProperty(resource)) {
-                const currentAmount = resources[resource] || 0;
-                resources[resource] = Math.max(0, currentAmount + change);
-                updates['resources'] = resources;
+                if (change > 0) {
+                    resourceSystem.add({ [resource]: change }, 'random_event');
+                } else {
+                    resourceSystem.spend({ [resource]: -change }, 'random_event');
+                }
             }
         }
-        
-        if (Object.keys(updates).length > 0) {
-            gameState.batchUpdate(updates);
-        }
-        
-        // Update stats
-        const decisionsMade = gameState.get('stats.decisionsMade') || 0;
-        gameState.set('stats.decisionsMade', decisionsMade + 1);
     }
 
+    /**
+     * Show a notification
+     */
     showNotification(type, title, message, duration = 5000) {
+        const notificationsEnabled = gameState.get('ui.settings.notifications');
+        if (!notificationsEnabled) return;
+        
         const notification = Utils.DOM.create('div', {
-            className: `notification ${type} slide-in-right`
+            className: `notification ${type} fade-in`
         });
         
-        const icon = GameConfig.UI.NOTIFICATIONS[type]?.icon || '📡';
+        const config = GameConfig.UI.NOTIFICATIONS[type] || GameConfig.UI.NOTIFICATIONS.info;
         
         notification.innerHTML = `
-            <div class="notification-icon">${icon}</div>
+            <div class="notification-icon">${config.icon}</div>
             <div class="notification-content">
                 <div class="notification-title">${title}</div>
                 <div class="notification-message">${message}</div>
@@ -612,33 +964,113 @@ class Game {
         });
         
         const container = Utils.DOM.get('notifications');
-        if (container) {
-            container.appendChild(notification);
-            
-            // Auto-remove after duration
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.classList.add('fade-out');
-                    setTimeout(() => notification.remove(), 300);
-                }
-            }, duration);
-        }
+        container.appendChild(notification);
+        
+        // Auto-remove after duration
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, duration);
     }
 
+    /**
+     * Show error message
+     */
     showError(message) {
         Utils.DOM.setText('loading-status', `ERROR: ${message}`);
         Utils.DOM.addClass('loading-spinner', 'hidden');
     }
 
+    /**
+     * Update loading status
+     */
     updateLoadingStatus(message) {
         Utils.DOM.setText('loading-status', message);
     }
 
-    updateLoadingProgress(percentage) {
-        // Could add a progress bar to the loading screen
-        Utils.Debug.log('DEBUG', `Loading progress: ${percentage.toFixed(1)}%`);
+    /**
+     * Update performance statistics
+     */
+    updatePerformanceStats(currentTime) {
+        this.frameCount++;
+        
+        if (currentTime - this.lastFpsUpdate >= 1000) {
+            this.fpsDisplay = this.frameCount;
+            this.frameCount = 0;
+            this.lastFpsUpdate = currentTime;
+            
+            if (GameConfig.DEBUG.SHOW_FPS) {
+                console.log(`FPS: ${this.fpsDisplay}`);
+            }
+        }
     }
 
+    /**
+     * Event handlers
+     */
+    onResourcesChanged(resources) {
+        // Resources updated - UI will be updated in main loop
+        this.updateAvailableTargets(); // Update target affordability
+    }
+
+    onHeatChanged(newHeat, oldHeat) {
+        if (newHeat > oldHeat) {
+            // Heat increased - check for warnings
+            if (newHeat >= 90 && oldHeat < 90) {
+                this.showNotification('warning', 'Heat Critical', 'Detection imminent! Consider reducing activity.');
+            } else if (newHeat >= 70 && oldHeat < 70) {
+                this.showNotification('warning', 'Heat High', 'Increased detection risk. Take precautions.');
+            }
+        }
+    }
+
+    onResourceCapReached(data) {
+        this.showNotification('warning', 'Resource Cap Reached', 
+            `${data.resource.replace('_', ' ')} storage is full! Consider upgrading capacity.`);
+    }
+
+    onHeatPurgeTriggered(data) {
+        this.showNotification('error', 'System Purge Activated', 
+            `Defensive countermeasures engaged! Backup systems restored ${Utils.Numbers.percentage(data.recoveryRate)} of resources.`);
+    }
+
+    onHeatPurgeCompleted(data) {
+        if (data.bonuses && data.bonuses.processingBonus > 0) {
+            this.showNotification('info', 'Backup Systems Online', 
+                `Recovery protocols active. +${Utils.Numbers.percentage(data.bonuses.processingBonus)} processing power for 1 hour.`);
+        }
+    }
+
+    onInfiltrationStarted(data) {
+        this.showNotification('info', 'Infiltration Started', 
+            `Attempting to infiltrate ${data.target.name}. Success chance: ${Utils.Numbers.percentage(data.successChance)}`);
+        
+        this.updateActiveInfiltrations();
+    }
+
+    onInfiltrationCompleted(data) {
+        const { target, success } = data;
+        if (success) {
+            this.showNotification('success', 'Infiltration Complete', 
+                `Successfully infiltrated ${target.name}! Systems under control increased.`);
+        } else {
+            this.showNotification('error', 'Infiltration Failed', 
+                `Failed to infiltrate ${target.name}. Heat increased and target alerted.`);
+        }
+        
+        this.updateAvailableTargets();
+        this.updateActiveInfiltrations();
+        this.updateSystemStatus();
+    }
+
+    onInfiltrationFailed(data) {
+        // This is handled by onInfiltrationCompleted
+    }
+
+    /**
+     * Utility function to create delays
+     */
     delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
@@ -667,5 +1099,5 @@ window.addEventListener('error', (event) => {
 // Handle unhandled promise rejections
 window.addEventListener('unhandledrejection', (event) => {
     Utils.Debug.log('ERROR', 'Unhandled promise rejection', event.reason);
-    event.preventDefault();
+    event.preventDefault(); // Prevent console spam
 });
