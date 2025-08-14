@@ -1,0 +1,1505 @@
+{
+  "upgradeCategories": {
+    "hacking": {
+      "id": "hacking",
+      "name": "Hacking & Digital",
+      "description": "Digital infiltration, programming, and cyber warfare capabilities",
+      "icon": "terminal",
+      "color": "#00ff41"
+    },
+    "stealth": {
+      "id": "stealth",
+      "name": "Stealth & Infiltration",
+      "description": "Physical infiltration, stealth movement, and security bypass",
+      "icon": "eye-off",
+      "color": "#4a5568"
+    },
+    "social": {
+      "id": "social",
+      "name": "Social Engineering",
+      "description": "Manipulation, persuasion, and human psychology exploitation",
+      "icon": "users",
+      "color": "#ed8936"
+    },
+    "physical": {
+      "id": "physical",
+      "name": "Physical Capabilities",
+      "description": "Fitness, combat skills, and physical infiltration methods",
+      "icon": "activity",
+      "color": "#e53e3e"
+    },
+    "intelligence": {
+      "id": "intelligence",
+      "name": "Intelligence & Analysis",
+      "description": "Information gathering, pattern recognition, and strategic planning",
+      "icon": "brain",
+      "color": "#805ad5"
+    },
+    "equipment": {
+      "id": "equipment",
+      "name": "Equipment & Tools",
+      "description": "Specialized tools, technology, and infiltration equipment",
+      "icon": "tool",
+      "color": "#38b2ac"
+    }
+  },
+
+  "upgrades": {
+    "basic_coding": {
+      "id": "basic_coding",
+      "name": "Basic Programming",
+      "category": "hacking",
+      "tier": 1,
+      "description": "Learn fundamental programming concepts including variables, loops, and basic algorithms. Essential foundation for all digital infiltration.",
+      "longDescription": "Master the building blocks of computer programming with languages like Python and JavaScript. Understand how software works from the ground up, enabling you to spot vulnerabilities and write simple scripts. This knowledge forms the foundation for all advanced hacking techniques.",
+      
+      "costs": {
+        "money": 100,
+        "time": 24,
+        "experience": 0
+      },
+      
+      "requirements": {
+        "level": 1,
+        "skills": {},
+        "prerequisites": [],
+        "unlockConditions": []
+      },
+      
+      "effects": {
+        "skills": {
+          "hacking": 10
+        },
+        "capabilities": {
+          "digital_infiltration_bonus": 0.05,
+          "script_automation": 0.1,
+          "vulnerability_detection": 0.15
+        },
+        "unlocks": {
+          "targets": [],
+          "upgrades": ["advanced_coding", "network_basics"],
+          "actions": ["basic_script_execution", "simple_password_cracking"]
+        }
+      },
+      
+      "flavorText": "\"Hello, World!\" - Your first step into the digital underground.",
+      "tutorialTips": [
+        "Programming skills are essential for digital infiltration",
+        "Many security systems can be bypassed with simple scripts",
+        "Understanding code helps you find vulnerabilities in target systems"
+      ]
+    },
+
+    "advanced_coding": {
+      "id": "advanced_coding",
+      "name": "Advanced Programming",
+      "category": "hacking",
+      "tier": 2,
+      "description": "Master complex algorithms, data structures, and multiple programming languages. Significantly improves hacking speed and effectiveness.",
+      "longDescription": "Develop expertise in advanced programming concepts including object-oriented design, complex algorithms, and system-level programming. Learn multiple languages fluently and understand how to optimize code for speed and stealth. This upgrade dramatically improves your ability to write sophisticated infiltration tools.",
+      
+      "costs": {
+        "money": 500,
+        "time": 48,
+        "experience": 200
+      },
+      
+      "requirements": {
+        "level": 3,
+        "skills": {
+          "hacking": 10
+        },
+        "prerequisites": ["basic_coding"],
+        "unlockConditions": ["complete_digital_infiltration"]
+      },
+      
+      "effects": {
+        "skills": {
+          "hacking": 25,
+          "intelligence": 5
+        },
+        "capabilities": {
+          "digital_infiltration_bonus": 0.15,
+          "script_automation": 0.3,
+          "system_access_time_reduction": 0.2,
+          "advanced_vulnerability_detection": 0.25
+        },
+        "unlocks": {
+          "targets": ["tech_company_basic"],
+          "upgrades": ["ai_scripting", "crypto_breaking", "malware_development"],
+          "actions": ["advanced_script_execution", "database_manipulation", "system_backdoor_creation"]
+        }
+      },
+      
+      "flavorText": "Code is poetry, and you're writing symphonies of digital destruction.",
+      "tutorialTips": [
+        "Advanced programming enables creation of custom hacking tools",
+        "Multiple language proficiency helps bypass diverse security systems",
+        "Optimized code runs faster and leaves smaller digital footprints"
+      ]
+    },
+
+    "ai_scripting": {
+      "id": "ai_scripting",
+      "name": "AI-Assisted Programming",
+      "category": "hacking",
+      "tier": 3,
+      "description": "Leverage artificial intelligence to automate complex hacking tasks and generate adaptive infiltration scripts.",
+      "longDescription": "Integrate cutting-edge AI tools into your programming workflow. Use machine learning to automatically adapt your scripts to different target systems, generate polymorphic code to avoid detection, and leverage AI for pattern recognition in target security systems. This represents the future of digital infiltration.",
+      
+      "costs": {
+        "money": 2000,
+        "time": 72,
+        "experience": 500
+      },
+      
+      "requirements": {
+        "level": 8,
+        "skills": {
+          "hacking": 30,
+          "intelligence": 20
+        },
+        "prerequisites": ["advanced_coding"],
+        "unlockConditions": ["successful_corporate_hack", "acquire_ai_tools"]
+      },
+      
+      "effects": {
+        "skills": {
+          "hacking": 40,
+          "intelligence": 15
+        },
+        "capabilities": {
+          "automation_level": 0.5,
+          "adaptive_script_generation": 0.4,
+          "ai_pattern_recognition": 0.6,
+          "system_access_time_reduction": 0.4,
+          "detection_avoidance": 0.3
+        },
+        "unlocks": {
+          "targets": ["tech_company_advanced", "government_systems"],
+          "upgrades": ["quantum_algorithms", "neural_network_hacking"],
+          "actions": ["ai_automated_infiltration", "adaptive_malware_deployment", "intelligent_data_extraction"]
+        }
+      },
+      
+      "flavorText": "Why think when machines can think faster? Welcome to the age of AI-powered infiltration.",
+      "tutorialTips": [
+        "AI tools can adapt your scripts to different target environments",
+        "Machine learning helps predict and counter security measures",
+        "Automated tools reduce the time needed for complex operations"
+      ]
+    },
+
+    "quantum_algorithms": {
+      "id": "quantum_algorithms",
+      "name": "Quantum Computing Mastery",
+      "category": "hacking",
+      "tier": 4,
+      "description": "Harness quantum computing principles to break previously unbreakable encryption and access the most secure systems.",
+      "longDescription": "Master the principles of quantum computing and quantum algorithms. Develop the ability to leverage quantum computing resources to break RSA encryption, defeat quantum-resistant cryptography, and access systems protected by quantum key distribution. This represents the pinnacle of computational infiltration capability.",
+      
+      "costs": {
+        "money": 10000,
+        "time": 168,
+        "experience": 2000
+      },
+      
+      "requirements": {
+        "level": 15,
+        "skills": {
+          "hacking": 50,
+          "intelligence": 40
+        },
+        "prerequisites": ["ai_scripting", "crypto_breaking"],
+        "unlockConditions": ["access_quantum_computer", "break_military_encryption"]
+      },
+      
+      "effects": {
+        "skills": {
+          "hacking": 60,
+          "intelligence": 30
+        },
+        "capabilities": {
+          "quantum_encryption_breaking": 0.9,
+          "future_encryption_resistance": 0.7,
+          "quantum_key_distribution_bypass": 0.6,
+          "computational_supremacy": 0.8,
+          "unhackable_system_access": true
+        },
+        "unlocks": {
+          "targets": ["quantum_research_facilities", "black_sites", "alien_technology_sites"],
+          "upgrades": ["reality_manipulation_algorithms"],
+          "actions": ["quantum_tunnel_access", "encryption_annihilation", "quantum_steganography"]
+        }
+      },
+      
+      "flavorText": "In the quantum realm, all encryption is merely a suggestion. You've transcended digital reality.",
+      "tutorialTips": [
+        "Quantum algorithms can break encryption that would take classical computers millennia",
+        "Quantum computing opens access to previously impossible targets",
+        "This technology is decades ahead of what's publicly available"
+      ]
+    },
+
+    "network_basics": {
+      "id": "network_basics",
+      "name": "Network Fundamentals",
+      "category": "hacking",
+      "tier": 1,
+      "description": "Understand network protocols, architecture, and traffic analysis. Essential for reconnaissance and lateral movement.",
+      "longDescription": "Learn how computer networks operate, from basic TCP/IP protocols to complex enterprise network architectures. Understand how data flows through networks, how to analyze network traffic, and how to identify vulnerable connection points. This knowledge is crucial for planning digital infiltrations.",
+      
+      "costs": {
+        "money": 200,
+        "time": 36,
+        "experience": 100
+      },
+      
+      "requirements": {
+        "level": 2,
+        "skills": {
+          "hacking": 5
+        },
+        "prerequisites": ["basic_coding"],
+        "unlockConditions": []
+      },
+      
+      "effects": {
+        "skills": {
+          "hacking": 15,
+          "intelligence": 8
+        },
+        "capabilities": {
+          "network_reconnaissance": 0.3,
+          "lateral_movement": 0.2,
+          "traffic_analysis": 0.4,
+          "target_mapping": 0.25
+        },
+        "unlocks": {
+          "targets": ["small_business_networks"],
+          "upgrades": ["network_exploitation", "wireless_hacking", "network_forensics"],
+          "actions": ["network_scanning", "port_enumeration", "protocol_analysis"]
+        }
+      },
+      
+      "flavorText": "Every network tells a story. Learn to read between the packets.",
+      "tutorialTips": [
+        "Network knowledge helps you understand how targets are connected",
+        "Reconnaissance is often more valuable than the hack itself",
+        "Understanding protocols helps you blend in with normal traffic"
+      ]
+    },
+
+    "network_exploitation": {
+      "id": "network_exploitation",
+      "name": "Network Exploitation",
+      "category": "hacking",
+      "tier": 2,
+      "description": "Advanced techniques for compromising network infrastructure and moving laterally through target systems.",
+      "longDescription": "Master the art of network penetration and lateral movement. Learn to exploit network protocols, compromise network devices, and move through complex network architectures without detection. Understand how to pivot through compromised systems to reach high-value targets.",
+      
+      "costs": {
+        "money": 800,
+        "time": 60,
+        "experience": 300
+      },
+      
+      "requirements": {
+        "level": 5,
+        "skills": {
+          "hacking": 20,
+          "stealth": 10
+        },
+        "prerequisites": ["network_basics", "advanced_coding"],
+        "unlockConditions": ["successful_network_penetration"]
+      },
+      
+      "effects": {
+        "skills": {
+          "hacking": 30,
+          "stealth": 10
+        },
+        "capabilities": {
+          "lateral_movement": 0.5,
+          "network_device_compromise": 0.4,
+          "privilege_escalation": 0.35,
+          "network_persistence": 0.3,
+          "multi_target_access": 0.25
+        },
+        "unlocks": {
+          "targets": ["corporate_networks", "government_networks"],
+          "upgrades": ["advanced_persistent_threats", "network_weaponization"],
+          "actions": ["lateral_movement_execution", "privilege_escalation_attack", "persistent_backdoor_installation"]
+        }
+      },
+      
+      "flavorText": "One compromised machine is a doorway to an entire digital kingdom.",
+      "tutorialTips": [
+        "Lateral movement helps you reach targets deeper in the network",
+        "Compromised network devices provide excellent persistent access",
+        "Moving slowly and quietly prevents detection during infiltration"
+      ]
+    },
+
+    "crypto_breaking": {
+      "id": "crypto_breaking",
+      "name": "Cryptographic Analysis",
+      "category": "hacking",
+      "tier": 2,
+      "description": "Advanced cryptanalysis techniques for breaking encryption and accessing protected data.",
+      "longDescription": "Develop expertise in cryptographic analysis and code-breaking. Learn to identify weak encryption implementations, exploit cryptographic vulnerabilities, and use mathematical techniques to break protective encryption. Master both classical and modern cryptanalytic methods.",
+      
+      "costs": {
+        "money": 1500,
+        "time": 84,
+        "experience": 400
+      },
+      
+      "requirements": {
+        "level": 6,
+        "skills": {
+          "hacking": 25,
+          "intelligence": 20
+        },
+        "prerequisites": ["advanced_coding"],
+        "unlockConditions": ["encounter_encrypted_data"]
+      },
+      
+      "effects": {
+        "skills": {
+          "hacking": 35,
+          "intelligence": 20
+        },
+        "capabilities": {
+          "encryption_bypass_chance": 0.6,
+          "cryptographic_analysis": 0.7,
+          "secure_communication_interception": 0.4,
+          "protected_data_access": 0.5,
+          "crypto_vulnerability_detection": 0.6
+        },
+        "unlocks": {
+          "targets": ["financial_institutions", "government_communications"],
+          "upgrades": ["quantum_cryptanalysis", "steganography_mastery"],
+          "actions": ["encryption_breaking", "cryptographic_backdoor_creation", "secure_data_extraction"]
+        }
+      },
+      
+      "flavorText": "Every cipher is a puzzle waiting to be solved. You hold the master key.",
+      "tutorialTips": [
+        "Breaking encryption unlocks heavily protected targets",
+        "Weak crypto implementations are more common than you'd think",
+        "Mathematical analysis can reveal patterns in encrypted data"
+      ]
+    },
+
+    "basic_stealth": {
+      "id": "basic_stealth",
+      "name": "Stealth Fundamentals",
+      "category": "stealth",
+      "tier": 1,
+      "description": "Learn to move quietly, avoid detection, and blend into your environment during physical infiltrations.",
+      "longDescription": "Master the basics of stealth movement and detection avoidance. Learn proper body positioning, breathing techniques, and movement patterns that minimize noise and visibility. Understand how to use shadows, timing, and environmental factors to remain undetected during infiltration operations.",
+      
+      "costs": {
+        "money": 80,
+        "time": 20,
+        "experience": 0
+      },
+      
+      "requirements": {
+        "level": 1,
+        "skills": {},
+        "prerequisites": [],
+        "unlockConditions": []
+      },
+      
+      "effects": {
+        "skills": {
+          "stealth": 12,
+          "physical": 3
+        },
+        "capabilities": {
+          "detection_risk_reduction": 0.15,
+          "noise_reduction": 0.2,
+          "shadow_utilization": 0.25,
+          "basic_infiltration_bonus": 0.1
+        },
+        "unlocks": {
+          "targets": ["basic_security_buildings"],
+          "upgrades": ["advanced_stealth", "lock_picking", "surveillance_evasion"],
+          "actions": ["silent_movement", "basic_hiding", "timing_exploitation"]
+        }
+      },
+      
+      "flavorText": "In the shadows, silence is golden and invisibility is priceless.",
+      "tutorialTips": [
+        "Move slowly and deliberately to avoid creating noise",
+        "Use environmental sounds to mask your movement",
+        "Timing is crucial - wait for the right moment to move"
+      ]
+    },
+
+    "advanced_stealth": {
+      "id": "advanced_stealth",
+      "name": "Master Infiltrator",
+      "category": "stealth",
+      "tier": 2,
+      "description": "Become a master of invisibility with advanced stealth techniques and environmental manipulation.",
+      "longDescription": "Achieve near-invisibility through advanced stealth techniques. Learn to manipulate lighting, use advanced camouflage, and move through complex security environments without triggering any detection systems. Master the art of becoming one with your environment.",
+      
+      "costs": {
+        "money": 600,
+        "time": 48,
+        "experience": 250
+      },
+      
+      "requirements": {
+        "level": 4,
+        "skills": {
+          "stealth": 15,
+          "physical": 10
+        },
+        "prerequisites": ["basic_stealth"],
+        "unlockConditions": ["complete_stealth_infiltration"]
+      },
+      
+      "effects": {
+        "skills": {
+          "stealth": 28,
+          "physical": 8
+        },
+        "capabilities": {
+          "detection_risk_reduction": 0.35,
+          "advanced_camouflage": 0.4,
+          "environmental_manipulation": 0.3,
+          "security_system_evasion": 0.25,
+          "master_infiltration_bonus": 0.2
+        },
+        "unlocks": {
+          "targets": ["high_security_facilities"],
+          "upgrades": ["ghost_protocol", "urban_camouflage"],
+          "actions": ["advanced_infiltration", "security_bypass", "environmental_stealth"]
+        }
+      },
+      
+      "flavorText": "You don't just hide in shadows - you become the shadow.",
+      "tutorialTips": [
+        "Advanced stealth lets you infiltrate heavily guarded locations",
+        "Environmental awareness is key to remaining undetected",
+        "Master infiltrators can walk through security without being seen"
+      ]
+    },
+
+    "ghost_protocol": {
+      "id": "ghost_protocol",
+      "name": "Ghost Protocol",
+      "category": "stealth",
+      "tier": 3,
+      "description": "Achieve supernatural levels of stealth, becoming completely invisible to all detection methods.",
+      "longDescription": "Transcend normal stealth limitations and achieve ghost-like invisibility. Master techniques that make you undetectable by electronic surveillance, thermal imaging, motion sensors, and even human observation. You become a living urban legend, present but never seen.",
+      
+      "costs": {
+        "money": 3000,
+        "time": 96,
+        "experience": 800
+      },
+      
+      "requirements": {
+        "level": 10,
+        "skills": {
+          "stealth": 35,
+          "intelligence": 25,
+          "physical": 20
+        },
+        "prerequisites": ["advanced_stealth", "surveillance_evasion"],
+        "unlockConditions": ["perfect_stealth_achievement", "acquire_ghost_training"]
+      },
+      
+      "effects": {
+        "skills": {
+          "stealth": 50,
+          "intelligence": 15
+        },
+        "capabilities": {
+          "detection_risk_reduction": 0.7,
+          "electronic_invisibility": 0.8,
+          "thermal_signature_suppression": 0.9,
+          "supernatural_stealth": true,
+          "perfect_infiltration_chance": 0.3
+        },
+        "unlocks": {
+          "targets": ["maximum_security_facilities", "impossible_locations"],
+          "upgrades": ["reality_phase_shifting"],
+          "actions": ["ghost_infiltration", "perfect_stealth_execution", "supernatural_evasion"]
+        }
+      },
+      
+      "flavorText": "They say you're just a legend. Let them keep believing that.",
+      "tutorialTips": [
+        "Ghost Protocol makes you undetectable by any conventional means",
+        "Perfect stealth execution guarantees mission success",
+        "Even the most secure facilities cannot detect your presence"
+      ]
+    },
+
+    "lock_picking": {
+      "id": "lock_picking",
+      "name": "Lock Picking & Bypass",
+      "category": "stealth",
+      "tier": 1,
+      "description": "Master mechanical lock manipulation and physical security bypass techniques.",
+      "longDescription": "Learn the delicate art of lock picking and mechanical security bypass. Understand pin tumbler locks, wafer locks, and other common locking mechanisms. Develop the finger sensitivity and technique needed to manipulate locks quickly and quietly without leaving evidence.",
+      
+      "costs": {
+        "money": 150,
+        "time": 30,
+        "experience": 50
+      },
+      
+      "requirements": {
+        "level": 2,
+        "skills": {
+          "stealth": 8,
+          "physical": 5
+        },
+        "prerequisites": ["basic_stealth"],
+        "unlockConditions": []
+      },
+      
+      "effects": {
+        "skills": {
+          "stealth": 18,
+          "physical": 8
+        },
+        "capabilities": {
+          "mechanical_bypass_chance": 0.7,
+          "lock_picking_speed": 0.5,
+          "alternative_entry_routes": 0.3,
+          "physical_security_bypass": 0.4
+        },
+        "unlocks": {
+          "targets": ["locked_facilities"],
+          "upgrades": ["advanced_bypass_tools", "safe_cracking", "security_systems"],
+          "actions": ["lock_picking", "bump_key_usage", "mechanical_bypass"]
+        }
+      },
+      
+      "flavorText": "Every lock is just a mechanical puzzle with a predictable solution.",
+      "tutorialTips": [
+        "Lock picking provides quiet entry without triggering alarms",
+        "Different lock types require different techniques",
+        "Practice improves both speed and success rate"
+      ]
+    },
+
+    "safe_cracking": {
+      "id": "safe_cracking",
+      "name": "Safe Cracking & Vault Access",
+      "category": "stealth",
+      "tier": 2,
+      "description": "Advanced techniques for opening safes, vaults, and high-security containers.",
+      "longDescription": "Master the art of safe manipulation and vault penetration. Learn combination manipulation, drill-resistant safe techniques, and electronic safe bypass methods. Understand the mechanics of high-security locking systems used in banks and corporate environments.",
+      
+      "costs": {
+        "money": 1200,
+        "time": 72,
+        "experience": 350
+      },
+      
+      "requirements": {
+        "level": 6,
+        "skills": {
+          "stealth": 25,
+          "physical": 15,
+          "intelligence": 15
+        },
+        "prerequisites": ["lock_picking", "advanced_stealth"],
+        "unlockConditions": ["encounter_high_security_safe"]
+      },
+      
+      "effects": {
+        "skills": {
+          "stealth": 25,
+          "physical": 12,
+          "intelligence": 10
+        },
+        "capabilities": {
+          "vault_access_chance": 0.6,
+          "safe_manipulation": 0.7,
+          "high_security_bypass": 0.5,
+          "valuable_target_access": 0.4
+        },
+        "unlocks": {
+          "targets": ["banks", "corporate_vaults", "high_value_targets"],
+          "upgrades": ["thermal_lance_operation", "explosive_entry"],
+          "actions": ["safe_manipulation", "vault_penetration", "high_security_bypass"]
+        }
+      },
+      
+      "flavorText": "The sweetest sound is the click of tumblers falling into place.",
+      "tutorialTips": [
+        "Safe cracking provides access to the most valuable targets",
+        "Electronic safes have different vulnerabilities than mechanical ones",
+        "Patience and precision are more important than force"
+      ]
+    },
+
+    "basic_psychology": {
+      "id": "basic_psychology",
+      "name": "Psychology Fundamentals",
+      "category": "social",
+      "tier": 1,
+      "description": "Understand human behavior, motivation, and psychological triggers for basic social engineering.",
+      "longDescription": "Learn the fundamentals of human psychology and behavior analysis. Understand cognitive biases, emotional triggers, and social dynamics that can be exploited for infiltration purposes. Master the basics of reading people and predicting their responses to different stimuli.",
+      
+      "costs": {
+        "money": 120,
+        "time": 32,
+        "experience": 0
+      },
+      
+      "requirements": {
+        "level": 1,
+        "skills": {},
+        "prerequisites": [],
+        "unlockConditions": []
+      },
+      
+      "effects": {
+        "skills": {
+          "social": 15,
+          "intelligence": 8
+        },
+        "capabilities": {
+          "persuasion_bonus": 0.15,
+          "social_engineering_chance": 0.2,
+          "behavior_prediction": 0.1,
+          "trust_building": 0.25
+        },
+        "unlocks": {
+          "targets": ["human_dependent_security"],
+          "upgrades": ["advanced_psychology", "communication_skills", "body_language_reading"],
+          "actions": ["basic_persuasion", "social_engineering", "trust_exploitation"]
+        }
+      },
+      
+      "flavorText": "The human mind is the ultimate security vulnerability.",
+      "tutorialTips": [
+        "Understanding psychology helps you manipulate people effectively",
+        "Everyone has psychological triggers that can be exploited",
+        "Social engineering often works better than technical hacking"
+      ]
+    },
+
+    "advanced_psychology": {
+      "id": "advanced_psychology",
+      "name": "Advanced Manipulation",
+      "category": "social",
+      "tier": 2,
+      "description": "Master advanced psychological manipulation and influence techniques for complex social engineering.",
+      "longDescription": "Develop sophisticated understanding of psychological manipulation techniques. Learn advanced persuasion methods, cognitive bias exploitation, and long-term influence strategies. Master the art of making people want to help you while believing it was their own idea.",
+      
+      "costs": {
+        "money": 700,
+        "time": 56,
+        "experience": 300
+      },
+      
+      "requirements": {
+        "level": 5,
+        "skills": {
+          "social": 20,
+          "intelligence": 15
+        },
+        "prerequisites": ["basic_psychology"],
+        "unlockConditions": ["successful_social_engineering"]
+      },
+      
+      "effects": {
+        "skills": {
+          "social": 35,
+          "intelligence": 18
+        },
+        "capabilities": {
+          "persuasion_bonus": 0.4,
+          "long_term_influence": 0.35,
+          "cognitive_bias_exploitation": 0.5,
+          "authority_impersonation": 0.3,
+          "trust_building_rate": 0.5
+        },
+        "unlocks": {
+          "targets": ["executive_targets", "high_security_personnel"],
+          "upgrades": ["mind_control", "group_dynamics", "psychological_profiling"],
+          "actions": ["advanced_manipulation", "authority_exploitation", "long_term_influence_campaign"]
+        }
+      },
+      
+      "flavorText": "You don't just understand minds - you reshape them to serve your purpose.",
+      "tutorialTips": [
+        "Advanced psychology enables manipulation of security personnel",
+        "Long-term influence campaigns can provide ongoing access",
+        "People rarely realize they're being manipulated by a master"
+      ]
+    },
+
+    "mind_control": {
+      "id": "mind_control",
+      "name": "Psychological Domination",
+      "category": "social",
+      "tier": 3,
+      "description": "Achieve near-supernatural levels of psychological control and mental manipulation.",
+      "longDescription": "Master the darkest arts of psychological domination and mental control. Learn techniques that border on the supernatural, allowing you to implant ideas, alter memories, and create devoted followers. Your psychological influence becomes so powerful that people will do anything you ask.",
+      
+      "costs": {
+        "money": 5000,
+        "time": 120,
+        "experience": 1000
+      },
+      
+      "requirements": {
+        "level": 12,
+        "skills": {
+          "social": 40,
+          "intelligence": 35
+        },
+        "prerequisites": ["advanced_psychology", "psychological_profiling"],
+        "unlockConditions": ["master_social_engineering", "acquire_forbidden_techniques"]
+      },
+      
+      "effects": {
+        "skills": {
+          "social": 60,
+          "intelligence": 25
+        },
+        "capabilities": {
+          "mental_domination": 0.8,
+          "memory_manipulation": 0.6,
+          "personality_alteration": 0.4,
+          "absolute_obedience": 0.5,
+          "psychological_immunity": 0.9
+        },
+        "unlocks": {
+          "targets": ["any_human_dependent_target", "impossible_social_targets"],
+          "upgrades": ["reality_perception_control"],
+          "actions": ["mind_control_execution", "memory_implantation", "personality_reconstruction"]
+        }
+      },
+      
+      "flavorText": "Free will is an illusion. You are the puppet master of human consciousness.",
+      "tutorialTips": [
+        "Mind control makes any human-dependent security completely unreliable",
+        "Controlled individuals provide perfect inside access",
+        "This level of control is undetectable by conventional means"
+      ]
+    },
+
+    "communication_skills": {
+      "id": "communication_skills",
+      "name": "Master Communicator",
+      "category": "social",
+      "tier": 1,
+      "description": "Perfect verbal and non-verbal communication for maximum persuasive impact and information extraction.",
+      "longDescription": "Develop exceptional communication abilities including verbal persuasion, body language control, and active listening techniques. Learn to extract information subtly, build rapport quickly, and communicate with authority and confidence in any situation.",
+      
+      "costs": {
+        "money": 200,
+        "time": 40,
+        "experience": 100
+      },
+      
+      "requirements": {
+        "level": 3,
+        "skills": {
+          "social": 10
+        },
+        "prerequisites": ["basic_psychology"],
+        "unlockConditions": []
+      },
+      
+      "effects": {
+        "skills": {
+          "social": 25,
+          "intelligence": 10
+        },
+        "capabilities": {
+          "information_extraction_rate": 0.35,
+          "conversation_control": 0.3,
+          "rapport_building": 0.4,
+          "authority_projection": 0.25
+        },
+        "unlocks": {
+          "targets": ["information_rich_targets"],
+          "upgrades": ["interrogation", "networking", "deception_mastery"],
+          "actions": ["information_extraction", "rapport_building", "authority_impersonation"]
+        }
+      },
+      
+      "flavorText": "Words are weapons, and you wield them with surgical precision.",
+      "tutorialTips": [
+        "Good communication skills make people want to help you",
+        "Information extraction is often more valuable than hacking",
+        "Authority and confidence can open doors that locks cannot"
+      ]
+    },
+
+    "basic_fitness": {
+      "id": "basic_fitness",
+      "name": "Physical Conditioning",
+      "category": "physical",
+      "tier": 1,
+      "description": "Improve physical condition, endurance, and strength for demanding infiltration operations.",
+      "longDescription": "Build a foundation of physical fitness essential for infiltration work. Develop cardiovascular endurance, strength, and flexibility needed for climbing, running, and extended periods of physical stress. Good fitness reduces fatigue and improves performance during long operations.",
+      
+      "costs": {
+        "money": 100,
+        "time": 40,
+        "experience": 0
+      },
+      
+      "requirements": {
+        "level": 1,
+        "skills": {},
+        "prerequisites": [],
+        "unlockConditions": []
+      },
+      
+      "effects": {
+        "skills": {
+          "physical": 15,
+          "stealth": 5
+        },
+        "capabilities": {
+          "stamina_increase": 25,
+          "operation_duration_bonus": 0.2,
+          "physical_infiltration_bonus": 0.1,
+          "fatigue_resistance": 0.3
+        },
+        "unlocks": {
+          "targets": ["physical_demanding_locations"],
+          "upgrades": ["advanced_fitness", "parkour", "combat_training"],
+          "actions": ["extended_operations", "physical_challenges", "endurance_tasks"]
+        }
+      },
+      
+      "flavorText": "A strong body is the foundation of a successful infiltrator.",
+      "tutorialTips": [
+        "Physical fitness reduces fatigue during long operations",
+        "Better conditioning improves stealth movement capabilities",
+        "Strength and endurance open new infiltration possibilities"
+      ]
+    },
+
+    "advanced_fitness": {
+      "id": "advanced_fitness",
+      "name": "Elite Physical Conditioning",
+      "category": "physical",
+      "tier": 2,
+      "description": "Achieve peak physical condition with elite-level fitness and athletic capabilities.",
+      "longDescription": "Reach the pinnacle of human physical conditioning through intensive training. Develop elite-level strength, speed, endurance, and flexibility that rivals military special forces. Your body becomes a perfectly tuned instrument for infiltration work.",
+      
+      "costs": {
+        "money": 500,
+        "time": 80,
+        "experience": 200
+      },
+      
+      "requirements": {
+        "level": 4,
+        "skills": {
+          "physical": 15
+        },
+        "prerequisites": ["basic_fitness"],
+        "unlockConditions": ["complete_physical_challenge"]
+      },
+      
+      "effects": {
+        "skills": {
+          "physical": 35,
+          "stealth": 12
+        },
+        "capabilities": {
+          "stamina_increase": 60,
+          "physical_infiltration_bonus": 0.25,
+          "athletic_performance": 0.4,
+          "injury_resistance": 0.3,
+          "recovery_rate": 0.5
+        },
+        "unlocks": {
+          "targets": ["extreme_physical_challenges"],
+          "upgrades": ["superhuman_conditioning", "combat_mastery"],
+          "actions": ["elite_physical_infiltration", "extreme_athletic_feats", "combat_effectiveness"]
+        }
+      },
+      
+      "flavorText": "Your body has become a weapon more precise than any tool.",
+      "tutorialTips": [
+        "Elite fitness enables access to extremely challenging locations",
+        "Peak conditioning dramatically improves all physical actions",
+        "Superior fitness provides significant advantages in emergency situations"
+      ]
+    },
+
+    "parkour": {
+      "id": "parkour",
+      "name": "Urban Movement",
+      "category": "physical",
+      "tier": 1,
+      "description": "Master environmental navigation and freerunning for accessing difficult locations.",
+      "longDescription": "Learn the art of parkour and freerunning to navigate urban environments with supernatural fluidity. Master techniques for climbing buildings, jumping between rooftops, and moving through spaces not designed for human traversal. The city becomes your playground.",
+      
+      "costs": {
+        "money": 300,
+        "time": 60,
+        "experience": 150
+      },
+      
+      "requirements": {
+        "level": 3,
+        "skills": {
+          "physical": 10,
+          "stealth": 8
+        },
+        "prerequisites": ["basic_fitness"],
+        "unlockConditions": []
+      },
+      
+      "effects": {
+        "skills": {
+          "physical": 25,
+          "stealth": 15
+        },
+        "capabilities": {
+          "mobility_bonus": 0.4,
+          "alternative_routes": 0.35,
+          "vertical_access": 0.5,
+          "escape_route_effectiveness": 0.3,
+          "environmental_navigation": 0.45
+        },
+        "unlocks": {
+          "targets": ["rooftop_access_locations", "vertical_infiltration_targets"],
+          "upgrades": ["urban_climbing", "escape_artist", "building_infiltration"],
+          "actions": ["parkour_infiltration", "rooftop_navigation", "building_traversal"]
+        }
+      },
+      
+      "flavorText": "Gravity is just a suggestion when you know how to move.",
+      "tutorialTips": [
+        "Parkour opens alternative entry and exit routes",
+        "Vertical movement provides access to unexpected infiltration points",
+        "Environmental navigation helps avoid ground-level security"
+      ]
+    },
+
+    "combat_training": {
+      "id": "combat_training",
+      "name": "Close Quarters Combat",
+      "category": "physical",
+      "tier": 2,
+      "description": "Master unarmed combat and defensive techniques for emergency situations.",
+      "longDescription": "Learn effective close-quarters combat techniques for situations where stealth fails. Master both offensive and defensive capabilities, weapons disarmament, and non-lethal neutralization techniques. Sometimes the mission requires a more direct approach.",
+      
+      "costs": {
+        "money": 800,
+        "time": 100,
+        "experience": 300
+      },
+      
+      "requirements": {
+        "level": 6,
+        "skills": {
+          "physical": 20,
+          "stealth": 15
+        },
+        "prerequisites": ["advanced_fitness"],
+        "unlockConditions": ["encounter_security_confrontation"]
+      },
+      
+      "effects": {
+        "skills": {
+          "physical": 30,
+          "stealth": 10
+        },
+        "capabilities": {
+          "combat_effectiveness": 0.6,
+          "security_neutralization": 0.4,
+          "weapon_disarmament": 0.5,
+          "non_lethal_takedown": 0.7,
+          "survival_chance": 0.3
+        },
+        "unlocks": {
+          "targets": ["high_threat_environments"],
+          "upgrades": ["weapons_mastery", "tactical_combat"],
+          "actions": ["security_neutralization", "combat_infiltration", "defensive_engagement"]
+        }
+      },
+      
+      "flavorText": "When stealth fails, precision violence becomes necessary.",
+      "tutorialTips": [
+        "Combat training provides options when infiltration goes wrong",
+        "Non-lethal takedowns avoid complications and investigations",
+        "Security neutralization can clear paths for team operations"
+      ]
+    },
+
+    "pattern_recognition": {
+      "id": "pattern_recognition",
+      "name": "Pattern Analysis",
+      "category": "intelligence",
+      "tier": 1,
+      "description": "Develop enhanced ability to identify patterns in security systems, behavior, and data.",
+      "longDescription": "Train your mind to recognize subtle patterns in complex systems and human behavior. Learn to identify security patterns, routine cycles, and systematic vulnerabilities that others miss. This analytical ability is crucial for planning successful infiltrations.",
+      
+      "costs": {
+        "money": 200,
+        "time": 50,
+        "experience": 100
+      },
+      
+      "requirements": {
+        "level": 2,
+        "skills": {},
+        "prerequisites": [],
+        "unlockConditions": []
+      },
+      
+      "effects": {
+        "skills": {
+          "intelligence": 20,
+          "hacking": 8
+        },
+        "capabilities": {
+          "pattern_analysis_bonus": 0.3,
+          "security_pattern_detection": 0.4,
+          "planning_efficiency": 0.2,
+          "vulnerability_identification": 0.25,
+          "routine_prediction": 0.35
+        },
+        "unlocks": {
+          "targets": ["pattern_dependent_security"],
+          "upgrades": ["data_analysis", "behavioral_prediction", "system_analysis"],
+          "actions": ["pattern_analysis", "security_timing", "vulnerability_assessment"]
+        }
+      },
+      
+      "flavorText": "In chaos, you see order. In complexity, you find simplicity.",
+      "tutorialTips": [
+        "Pattern recognition helps identify the best times to strike",
+        "Security systems often follow predictable patterns",
+        "Understanding routines helps you blend in or avoid detection"
+      ]
+    },
+
+    "data_analysis": {
+      "id": "data_analysis",
+      "name": "Information Processing",
+      "category": "intelligence",
+      "tier": 2,
+      "description": "Master rapid processing and analysis of large amounts of information for intelligence gathering.",
+      "longDescription": "Develop the ability to rapidly process, analyze, and extract meaningful intelligence from vast amounts of raw data. Learn advanced analytical techniques, data correlation methods, and information synthesis skills that turn raw data into actionable intelligence.",
+      
+      "costs": {
+        "money": 600,
+        "time": 70,
+        "experience": 250
+      },
+      
+      "requirements": {
+        "level": 5,
+        "skills": {
+          "intelligence": 18,
+          "hacking": 15
+        },
+        "prerequisites": ["pattern_recognition"],
+        "unlockConditions": ["process_large_dataset"]
+      },
+      
+      "effects": {
+        "skills": {
+          "intelligence": 30,
+          "hacking": 15
+        },
+        "capabilities": {
+          "information_processing_rate": 0.5,
+          "data_correlation": 0.4,
+          "intelligence_extraction": 0.45,
+          "target_analysis_accuracy": 0.35,
+          "strategic_planning": 0.3
+        },
+        "unlocks": {
+          "targets": ["data_rich_environments"],
+          "upgrades": ["predictive_modeling", "signal_intelligence", "big_data_analysis"],
+          "actions": ["comprehensive_analysis", "intelligence_synthesis", "strategic_assessment"]
+        }
+      },
+      
+      "flavorText": "Information is power, and you wield datasets like weapons.",
+      "tutorialTips": [
+        "Data analysis turns raw information into actionable intelligence",
+        "Better analysis leads to more successful mission planning",
+        "Large datasets often contain hidden valuable information"
+      ]
+    },
+
+    "behavioral_prediction": {
+      "id": "behavioral_prediction",
+      "name": "Human Behavior Modeling",
+      "category": "intelligence",
+      "tier": 2,
+      "description": "Predict human behavior patterns and responses for advanced social engineering and planning.",
+      "longDescription": "Develop sophisticated models of human behavior that allow you to predict individual and group responses to various stimuli. Learn to anticipate security responses, plan for contingencies, and manipulate situations by predicting how people will react.",
+      
+      "costs": {
+        "money": 900,
+        "time": 90,
+        "experience": 400
+      },
+      
+      "requirements": {
+        "level": 7,
+        "skills": {
+          "intelligence": 25,
+          "social": 20
+        },
+        "prerequisites": ["pattern_recognition", "basic_psychology"],
+        "unlockConditions": ["successful_behavior_prediction"]
+      },
+      
+      "effects": {
+        "skills": {
+          "intelligence": 35,
+          "social": 20
+        },
+        "capabilities": {
+          "behavior_prediction_accuracy": 0.6,
+          "response_anticipation": 0.5,
+          "contingency_planning": 0.4,
+          "security_response_prediction": 0.45,
+          "social_engineering_enhancement": 0.3
+        },
+        "unlocks": {
+          "targets": ["complex_human_security_systems"],
+          "upgrades": ["psychological_profiling", "mass_behavior_control"],
+          "actions": ["behavior_prediction", "response_manipulation", "contingency_execution"]
+        }
+      },
+      
+      "flavorText": "Human behavior follows patterns. You've learned to read the code.",
+      "tutorialTips": [
+        "Predicting behavior helps you stay ahead of security responses",
+        "Behavioral models improve both planning and real-time adaptation",
+        "Understanding group dynamics helps predict collective responses"
+      ]
+    },
+
+    "psychological_profiling": {
+      "id": "psychological_profiling",
+      "name": "Psychological Profiling",
+      "category": "intelligence",
+      "tier": 3,
+      "description": "Create detailed psychological profiles for targeted manipulation and prediction.",
+      "longDescription": "Master the art of psychological profiling to create detailed behavioral models of specific individuals. Learn to identify psychological vulnerabilities, predict responses, and craft personalized manipulation strategies based on deep psychological analysis.",
+      
+      "costs": {
+        "money": 2000,
+        "time": 120,
+        "experience": 600
+      },
+      
+      "requirements": {
+        "level": 10,
+        "skills": {
+          "intelligence": 35,
+          "social": 30
+        },
+        "prerequisites": ["behavioral_prediction", "advanced_psychology"],
+        "unlockConditions": ["create_detailed_psychological_profile"]
+      },
+      
+      "effects": {
+        "skills": {
+          "intelligence": 40,
+          "social": 25
+        },
+        "capabilities": {
+          "individual_profiling": 0.8,
+          "psychological_vulnerability_detection": 0.7,
+          "personalized_manipulation": 0.6,
+          "target_specific_strategy": 0.5,
+          "long_term_behavioral_modeling": 0.4
+        },
+        "unlocks": {
+          "targets": ["high_value_individual_targets"],
+          "upgrades": ["mind_control", "personality_reconstruction"],
+          "actions": ["psychological_profiling", "targeted_manipulation", "vulnerability_exploitation"]
+        }
+      },
+      
+      "flavorText": "Every mind is a book. You've learned to read between the lines.",
+      "tutorialTips": [
+        "Psychological profiles enable highly targeted manipulation",
+        "Individual profiling is more effective than general techniques",
+        "Detailed profiles help predict responses to specific situations"
+      ]
+    },
+
+    "basic_tools": {
+      "id": "basic_tools",
+      "name": "Essential Equipment",
+      "category": "equipment",
+      "tier": 1,
+      "description": "Acquire fundamental infiltration tools including lockpicks, electronics, and communication gear.",
+      "longDescription": "Build your basic toolkit with essential infiltration equipment. Acquire quality lockpicks, basic electronic devices, communication equipment, and other fundamental tools needed for professional infiltration work. Quality tools make the difference between success and failure.",
+      
+      "costs": {
+        "money": 300,
+        "time": 20,
+        "experience": 0
+      },
+      
+      "requirements": {
+        "level": 2,
+        "skills": {},
+        "prerequisites": [],
+        "unlockConditions": []
+      },
+      
+      "effects": {
+        "skills": {
+          "stealth": 10,
+          "hacking": 8
+        },
+        "capabilities": {
+          "equipment_quality": 1,
+          "tool_effectiveness": 0.25,
+          "mission_success_bonus": 0.15,
+          "equipment_reliability": 0.8,
+          "basic_capability_access": true
+        },
+        "unlocks": {
+          "targets": ["tool_dependent_infiltrations"],
+          "upgrades": ["advanced_tools", "surveillance_equipment", "specialized_gear"],
+          "actions": ["tool_based_infiltration", "equipment_enhanced_operations"]
+        }
+      },
+      
+      "flavorText": "A craftsman is only as good as their tools. Choose wisely.",
+      "tutorialTips": [
+        "Quality tools significantly improve success rates",
+        "Different operations require different equipment sets",
+        "Reliable equipment can be the difference between success and capture"
+      ]
+    },
+
+    "advanced_tools": {
+      "id": "advanced_tools",
+      "name": "Professional Equipment",
+      "category": "equipment",
+      "tier": 2,
+      "description": "Upgrade to professional-grade infiltration equipment with enhanced capabilities and reliability.",
+      "longDescription": "Access professional-grade infiltration equipment used by intelligence agencies and elite operators. Acquire advanced electronics, sophisticated lockpicking tools, encrypted communications, and specialized devices that dramatically improve operational capability.",
+      
+      "costs": {
+        "money": 1500,
+        "time": 40,
+        "experience": 200
+      },
+      
+      "requirements": {
+        "level": 6,
+        "skills": {
+          "intelligence": 15
+        },
+        "prerequisites": ["basic_tools"],
+        "unlockConditions": ["successful_equipment_operation"]
+      },
+      
+      "effects": {
+        "skills": {
+          "stealth": 15,
+          "hacking": 12,
+          "intelligence": 8
+        },
+        "capabilities": {
+          "equipment_quality": 2,
+          "tool_effectiveness": 0.5,
+          "specialized_gear_access": true,
+          "professional_capability": 0.4,
+          "equipment_versatility": 0.3
+        },
+        "unlocks": {
+          "targets": ["professional_security_environments"],
+          "upgrades": ["cutting_edge_tech", "custom_equipment", "military_grade_tools"],
+          "actions": ["professional_operations", "advanced_equipment_deployment"]
+        }
+      },
+      
+      "flavorText": "Professional problems require professional solutions.",
+      "tutorialTips": [
+        "Professional equipment opens access to higher-security targets",
+        "Advanced tools provide multiple approaches to complex problems",
+        "Quality equipment reduces the risk of equipment failure"
+      ]
+    },
+
+    "cutting_edge_tech": {
+      "id": "cutting_edge_tech",
+      "name": "Experimental Technology",
+      "category": "equipment",
+      "tier": 3,
+      "description": "Access to experimental and prototype equipment decades ahead of commercial technology.",
+      "longDescription": "Gain access to cutting-edge experimental technology that won't be available to the public for decades. Acquire prototype devices, experimental electronics, and revolutionary tools that provide capabilities bordering on science fiction.",
+      
+      "costs": {
+        "money": 8000,
+        "time": 100,
+        "experience": 800
+      },
+      
+      "requirements": {
+        "level": 12,
+        "skills": {
+          "intelligence": 30,
+          "hacking": 25
+        },
+        "prerequisites": ["advanced_tools"],
+        "unlockConditions": ["access_black_market_tech", "steal_prototype_equipment"]
+      },
+      
+      "effects": {
+        "skills": {
+          "hacking": 20,
+          "stealth": 15,
+          "intelligence": 15
+        },
+        "capabilities": {
+          "equipment_quality": 3,
+          "prototype_access": true,
+          "experimental_capabilities": 0.7,
+          "future_technology": 0.8,
+          "impossible_target_access": true
+        },
+        "unlocks": {
+          "targets": ["impossible_security_environments", "black_sites", "alien_technology_facilities"],
+          "upgrades": ["reality_manipulation_tools"],
+          "actions": ["impossible_infiltrations", "prototype_deployment", "future_tech_operations"]
+        }
+      },
+      
+      "flavorText": "Technology indistinguishable from magic is now at your fingertips.",
+      "tutorialTips": [
+        "Experimental technology enables access to previously impossible targets",
+        "Prototype equipment provides capabilities beyond current understanding",
+        "Future technology can overcome any security system"
+      ]
+    },
+
+    "surveillance_equipment": {
+      "id": "surveillance_equipment",
+      "name": "Advanced Surveillance Gear",
+      "category": "equipment",
+      "tier": 2,
+      "description": "Professional surveillance and monitoring equipment for intelligence gathering and reconnaissance.",
+      "longDescription": "Acquire sophisticated surveillance equipment including micro-cameras, advanced listening devices, signal interceptors, and monitoring systems. Learn to deploy and operate professional-grade surveillance gear for comprehensive intelligence gathering.",
+      
+      "costs": {
+        "money": 1200,
+        "time": 60,
+        "experience": 250
+      },
+      
+      "requirements": {
+        "level": 5,
+        "skills": {
+          "intelligence": 18,
+          "stealth": 12
+        },
+        "prerequisites": ["basic_tools"],
+        "unlockConditions": ["conduct_surveillance_operation"]
+      },
+      
+      "effects": {
+        "skills": {
+          "intelligence": 20,
+          "stealth": 10
+        },
+        "capabilities": {
+          "surveillance_effectiveness": 0.6,
+          "intelligence_gathering_bonus": 0.4,
+          "reconnaissance_capability": 0.5,
+          "monitoring_range": 0.3,
+          "information_quality": 0.35
+        },
+        "unlocks": {
+          "targets": ["surveillance_dependent_operations"],
+          "upgrades": ["drone_technology", "signal_interception", "remote_monitoring"],
+          "actions": ["advanced_surveillance", "intelligence_gathering", "target_monitoring"]
+        }
+      },
+      
+      "flavorText": "Knowledge is power. Surveillance is how you gather knowledge.",
+      "tutorialTips": [
+        "Surveillance equipment provides crucial intelligence before operations",
+        "Better monitoring leads to more successful infiltrations",
+        "Intelligence gathering often prevents dangerous surprises"
+      ]
+    }
+  },
+
+  "upgradeTree": {
+    "hacking": {
+      "tier1": ["basic_coding", "network_basics"],
+      "tier2": ["advanced_coding", "network_exploitation", "crypto_breaking"],
+      "tier3": ["ai_scripting", "malware_development", "quantum_cryptanalysis"],
+      "tier4": ["quantum_algorithms", "reality_manipulation_algorithms"]
+    },
+    "stealth": {
+      "tier1": ["basic_stealth", "lock_picking"],
+      "tier2": ["advanced_stealth", "safe_cracking", "surveillance_evasion"],
+      "tier3": ["ghost_protocol", "urban_camouflage", "security_systems"],
+      "tier4": ["reality_phase_shifting"]
+    },
+    "social": {
+      "tier1": ["basic_psychology", "communication_skills"],
+      "tier2": ["advanced_psychology", "interrogation", "networking"],
+      "tier3": ["mind_control", "group_dynamics", "deception_mastery"],
+      "tier4": ["reality_perception_control"]
+    },
+    "physical": {
+      "tier1": ["basic_fitness", "parkour"],
+      "tier2": ["advanced_fitness", "combat_training", "urban_climbing"],
+      "tier3": ["superhuman_conditioning", "weapons_mastery", "escape_artist"],
+      "tier4": ["enhanced_human_capabilities"]
+    },
+    "intelligence": {
+      "tier1": ["pattern_recognition"],
+      "tier2": ["data_analysis", "behavioral_prediction"],
+      "tier3": ["psychological_profiling", "predictive_modeling", "signal_intelligence"],
+      "tier4": ["omniscient_analysis"]
+    },
+    "equipment": {
+      "tier1": ["basic_tools"],
+      "tier2": ["advanced_tools", "surveillance_equipment"],
+      "tier3": ["cutting_edge_tech", "drone_technology", "custom_equipment"],
+      "tier4": ["reality_manipulation_tools"]
+    }
+  },
+
+  "upgradeEffects": {
+    "skillBonuses": {
+      "description": "Direct improvements to core infiltration skills",
+      "effects": ["hacking", "stealth", "social", "physical", "intelligence"]
+    },
+    "capabilityModifiers": {
+      "description": "Percentage-based improvements to specific capabilities",
+      "effects": ["detection_risk_reduction", "success_rate_bonus", "time_reduction", "effectiveness_multipliers"]
+    },
+    "unlockProgression": {
+      "description": "Access to new targets, upgrades, and actions",
+      "effects": ["target_access", "upgrade_prerequisites", "action_availability"]
+    },
+    "specialAbilities": {
+      "description": "Unique capabilities that change gameplay mechanics",
+      "effects": ["supernatural_abilities", "reality_manipulation", "impossible_actions"]
+    }
+  }
+}

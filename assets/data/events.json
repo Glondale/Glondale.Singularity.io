@@ -1,0 +1,817 @@
+{
+  "random_events": {
+    "security_breach_news": {
+      "id": "security_breach_news",
+      "title": "Major Security Breach in the News",
+      "description": "A high-profile cyber attack has made headlines, causing organizations worldwide to reassess their security measures.",
+      "triggerConditions": {
+        "probability": 0.15,
+        "cooldown": 72,
+        "requirements": {
+          "reputation": 25
+        }
+      },
+      "choices": [
+        {
+          "id": "lay_low",
+          "text": "Keep a low profile until the heat dies down",
+          "outcomes": {
+            "immediate": {
+              "reputation": -5,
+              "heat": -20
+            },
+            "delayed": {
+              "hours": 48,
+              "effects": {
+                "heat": -10,
+                "message": "The security scare has passed. You're safer now."
+              }
+            }
+          }
+        },
+        {
+          "id": "exploit_chaos",
+          "text": "Take advantage of the chaos to strike while security is distracted",
+          "requirements": {
+            "hackingSkill": 20
+          },
+          "outcomes": {
+            "success": {
+              "probability": 0.6,
+              "effects": {
+                "money": 2000,
+                "experience": 150,
+                "reputation": 10,
+                "heat": 15,
+                "message": "You successfully capitalize on the confusion, accessing several vulnerable systems."
+              }
+            },
+            "failure": {
+              "probability": 0.4,
+              "effects": {
+                "heat": 35,
+                "reputation": -10,
+                "message": "Your opportunistic attack backfires. You're now on multiple watchlists."
+              }
+            }
+          }
+        },
+        {
+          "id": "study_methods",
+          "text": "Study the attack methods to improve your own techniques",
+          "outcomes": {
+            "immediate": {
+              "experience": 200,
+              "intelligence": 2,
+              "message": "You learn valuable techniques from analyzing the breach."
+            }
+          }
+        }
+      ]
+    },
+
+    "insider_contact": {
+      "id": "insider_contact",
+      "title": "Insider Contact Offer",
+      "description": "A disgruntled employee from a major corporation reaches out, offering inside information in exchange for your services.",
+      "triggerConditions": {
+        "probability": 0.12,
+        "cooldown": 96,
+        "requirements": {
+          "reputation": 40,
+          "socialSkill": 15
+        }
+      },
+      "choices": [
+        {
+          "id": "accept_partnership",
+          "text": "Accept their offer and form a partnership",
+          "outcomes": {
+            "immediate": {
+              "contacts": 1,
+              "heat": 10,
+              "message": "You gain a valuable inside contact but increase your exposure risk."
+            },
+            "unlocks": ["insider_mission_corporate_espionage"]
+          }
+        },
+        {
+          "id": "decline_politely",
+          "text": "Politely decline and maintain your independence",
+          "outcomes": {
+            "immediate": {
+              "reputation": 5,
+              "message": "Your professional discretion earns respect in the underground community."
+            }
+          }
+        },
+        {
+          "id": "extract_info",
+          "text": "Extract information without committing to partnership",
+          "requirements": {
+            "socialSkill": 25
+          },
+          "outcomes": {
+            "success": {
+              "probability": 0.7,
+              "effects": {
+                "information": ["corporate_vulnerabilities"],
+                "experience": 100,
+                "message": "You cleverly extract valuable intel without making commitments."
+              }
+            },
+            "failure": {
+              "probability": 0.3,
+              "effects": {
+                "reputation": -15,
+                "message": "Your manipulation attempt backfires. Word spreads about your untrustworthiness."
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "law_enforcement_pressure": {
+      "id": "law_enforcement_pressure",
+      "title": "Increased Law Enforcement Activity",
+      "description": "Police and federal agents have increased their cyber crime task force activities. The streets feel more dangerous.",
+      "triggerConditions": {
+        "probability": 0.20,
+        "cooldown": 48,
+        "requirements": {
+          "heat": 30
+        }
+      },
+      "choices": [
+        {
+          "id": "change_location",
+          "text": "Relocate to a different city temporarily",
+          "costs": {
+            "money": 1500
+          },
+          "outcomes": {
+            "immediate": {
+              "heat": -25,
+              "operationalEfficiency": -0.2,
+              "message": "You successfully evade the heat but lose local connections."
+            },
+            "delayed": {
+              "hours": 168,
+              "effects": {
+                "operationalEfficiency": 0.2,
+                "message": "You've established new operations in your temporary location."
+              }
+            }
+          }
+        },
+        {
+          "id": "upgrade_security",
+          "text": "Invest in better operational security",
+          "costs": {
+            "money": 2000
+          },
+          "outcomes": {
+            "immediate": {
+              "heat": -15,
+              "digitalFootprint": -0.3,
+              "message": "Enhanced security measures reduce your detectability."
+            }
+          }
+        },
+        {
+          "id": "lay_low_extended",
+          "text": "Suspend all operations for an extended period",
+          "outcomes": {
+            "immediate": {
+              "heat": -20,
+              "operationalEfficiency": -0.5,
+              "message": "You go completely dark, becoming nearly invisible to authorities."
+            },
+            "delayed": {
+              "hours": 120,
+              "effects": {
+                "heat": -20,
+                "operationalEfficiency": 0.5,
+                "message": "The extended break has significantly reduced law enforcement interest."
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "technology_breakthrough": {
+      "id": "technology_breakthrough",
+      "title": "Technology Breakthrough",
+      "description": "A new technological advancement has been announced that could revolutionize infiltration techniques.",
+      "triggerConditions": {
+        "probability": 0.08,
+        "cooldown": 120,
+        "requirements": {
+          "hackingSkill": 30
+        }
+      },
+      "choices": [
+        {
+          "id": "acquire_technology",
+          "text": "Acquire the new technology through black market channels",
+          "costs": {
+            "money": 5000
+          },
+          "requirements": {
+            "contacts": 2
+          },
+          "outcomes": {
+            "immediate": {
+              "hackingSkill": 10,
+              "equipmentQuality": 1,
+              "heat": 15,
+              "message": "You successfully acquire cutting-edge technology, enhancing your capabilities."
+            }
+          }
+        },
+        {
+          "id": "develop_countermeasures",
+          "text": "Focus on developing countermeasures against this technology",
+          "costs": {
+            "money": 2000
+          },
+          "outcomes": {
+            "immediate": {
+              "intelligenceSkill": 8,
+              "defensiveCapabilities": 0.25,
+              "message": "You develop effective countermeasures, making you harder to catch."
+            }
+          }
+        },
+        {
+          "id": "steal_blueprints",
+          "text": "Attempt to steal the technology blueprints directly",
+          "requirements": {
+            "stealthSkill": 35,
+            "hackingSkill": 40
+          },
+          "outcomes": {
+            "success": {
+              "probability": 0.4,
+              "effects": {
+                "money": 10000,
+                "experience": 500,
+                "reputation": 25,
+                "heat": 40,
+                "information": ["advanced_tech_blueprints"],
+                "message": "Incredible success! You steal the blueprints and can sell them for massive profit."
+              }
+            },
+            "failure": {
+              "probability": 0.6,
+              "effects": {
+                "heat": 60,
+                "reputation": -20,
+                "message": "The heist fails catastrophically. You're now a high-priority target."
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "rival_infiltrator": {
+      "id": "rival_infiltrator",
+      "title": "Rival Infiltrator Encounter",
+      "description": "You've discovered another infiltrator working the same target you had planned to hit. They haven't noticed you yet.",
+      "triggerConditions": {
+        "probability": 0.10,
+        "cooldown": 72,
+        "requirements": {
+          "reputation": 20
+        }
+      },
+      "choices": [
+        {
+          "id": "collaborate",
+          "text": "Approach them and propose collaboration",
+          "requirements": {
+            "socialSkill": 20
+          },
+          "outcomes": {
+            "success": {
+              "probability": 0.6,
+              "effects": {
+                "contacts": 1,
+                "experience": 150,
+                "message": "You successfully form an alliance with a skilled peer."
+              },
+              "unlocks": ["collaborative_mission"]
+            },
+            "failure": {
+              "probability": 0.4,
+              "effects": {
+                "heat": 20,
+                "reputation": -10,
+                "message": "They reject your offer and report your presence to increase security."
+              }
+            }
+          }
+        },
+        {
+          "id": "sabotage_rival",
+          "text": "Sabotage their operation to eliminate competition",
+          "requirements": {
+            "stealthSkill": 25
+          },
+          "outcomes": {
+            "success": {
+              "probability": 0.7,
+              "effects": {
+                "reputation": 15,
+                "experience": 200,
+                "rivalEliminated": true,
+                "message": "You successfully sabotage their operation, establishing dominance."
+              }
+            },
+            "failure": {
+              "probability": 0.3,
+              "effects": {
+                "heat": 30,
+                "reputation": -25,
+                "message": "Your sabotage attempt backfires, creating a dangerous enemy."
+              }
+            }
+          }
+        },
+        {
+          "id": "avoid_confrontation",
+          "text": "Withdraw and find a different target",
+          "outcomes": {
+            "immediate": {
+              "operationalEfficiency": -0.1,
+              "message": "You avoid conflict but lose time finding alternative opportunities."
+            }
+          }
+        }
+      ]
+    }
+  },
+
+  "mission_events": {
+    "security_guard_encounter": {
+      "id": "security_guard_encounter",
+      "title": "Unexpected Security Guard",
+      "description": "While infiltrating the facility, you encounter a security guard making an unscheduled patrol.",
+      "triggerConditions": {
+        "missionType": ["physical", "hybrid"],
+        "probability": 0.3
+      },
+      "choices": [
+        {
+          "id": "hide_and_wait",
+          "text": "Hide and wait for them to pass",
+          "requirements": {
+            "stealthSkill": 15
+          },
+          "outcomes": {
+            "success": {
+              "probability": 0.8,
+              "effects": {
+                "timeDelay": 10,
+                "message": "You successfully hide until the guard passes."
+              }
+            },
+            "failure": {
+              "probability": 0.2,
+              "effects": {
+                "detectionRisk": 0.4,
+                "message": "The guard almost spots you and becomes suspicious."
+              }
+            }
+          }
+        },
+        {
+          "id": "social_manipulation",
+          "text": "Approach and convince them you belong here",
+          "requirements": {
+            "socialSkill": 20
+          },
+          "outcomes": {
+            "success": {
+              "probability": 0.7,
+              "effects": {
+                "accessBonus": 0.2,
+                "message": "The guard believes your cover story and even helps you."
+              }
+            },
+            "failure": {
+              "probability": 0.3,
+              "effects": {
+                "detectionRisk": 0.6,
+                "alarmRisk": 0.3,
+                "message": "The guard becomes suspicious and calls for backup."
+              }
+            }
+          }
+        },
+        {
+          "id": "create_distraction",
+          "text": "Create a distraction to lure them away",
+          "requirements": {
+            "intelligenceSkill": 10
+          },
+          "outcomes": {
+            "success": {
+              "probability": 0.85,
+              "effects": {
+                "timeDelay": 5,
+                "accessBonus": 0.15,
+                "message": "Your distraction works perfectly, clearing your path."
+              }
+            },
+            "failure": {
+              "probability": 0.15,
+              "effects": {
+                "detectionRisk": 0.3,
+                "message": "The distraction fails and draws unwanted attention."
+              }
+            }
+          }
+        },
+        {
+          "id": "neutralize_guard",
+          "text": "Neutralize the guard non-lethally",
+          "requirements": {
+            "physicalSkill": 25
+          },
+          "outcomes": {
+            "success": {
+              "probability": 0.6,
+              "effects": {
+                "timeDelay": 15,
+                "evidence": 0.3,
+                "message": "You successfully neutralize the guard without permanent harm."
+              }
+            },
+            "failure": {
+              "probability": 0.4,
+              "effects": {
+                "detectionRisk": 0.8,
+                "alarmRisk": 0.6,
+                "evidence": 0.5,
+                "message": "The struggle alerts other security personnel."
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "system_firewall": {
+      "id": "system_firewall",
+      "title": "Advanced Firewall Detected",
+      "description": "You encounter an unexpectedly sophisticated firewall protecting the target system.",
+      "triggerConditions": {
+        "missionType": ["digital", "hybrid"],
+        "probability": 0.25
+      },
+      "choices": [
+        {
+          "id": "brute_force_attack",
+          "text": "Attempt to brute force through the firewall",
+          "requirements": {
+            "hackingSkill": 30
+          },
+          "outcomes": {
+            "success": {
+              "probability": 0.5,
+              "effects": {
+                "timeDelay": 20,
+                "digitalFootprint": 0.4,
+                "message": "You break through but leave significant traces."
+              }
+            },
+            "failure": {
+              "probability": 0.5,
+              "effects": {
+                "detectionRisk": 0.7,
+                "digitalFootprint": 0.6,
+                "message": "The brute force attempt triggers security alerts."
+              }
+            }
+          }
+        },
+        {
+          "id": "social_engineer_access",
+          "text": "Social engineer an employee for access credentials",
+          "requirements": {
+            "socialSkill": 25
+          },
+          "outcomes": {
+            "success": {
+              "probability": 0.75,
+              "effects": {
+                "timeDelay": 30,
+                "accessBonus": 0.3,
+                "message": "You successfully obtain legitimate credentials."
+              }
+            },
+            "failure": {
+              "probability": 0.25,
+              "effects": {
+                "detectionRisk": 0.4,
+                "message": "The employee becomes suspicious and reports the interaction."
+              }
+            }
+          }
+        },
+        {
+          "id": "find_backdoor",
+          "text": "Search for hidden backdoors or vulnerabilities",
+          "requirements": {
+            "intelligenceSkill": 20,
+            "hackingSkill": 25
+          },
+          "outcomes": {
+            "success": {
+              "probability": 0.6,
+              "effects": {
+                "timeDelay": 40,
+                "digitalFootprint": 0.1,
+                "message": "You discover a hidden vulnerability that provides clean access."
+              }
+            },
+            "failure": {
+              "probability": 0.4,
+              "effects": {
+                "timeDelay": 60,
+                "message": "Extensive searching yields no results, wasting precious time."
+              }
+            }
+          }
+        },
+        {
+          "id": "abort_digital_approach",
+          "text": "Abort digital infiltration and switch to physical approach",
+          "outcomes": {
+            "immediate": {
+              "approachChange": "physical",
+              "timeDelay": 45,
+              "message": "You abandon the digital approach and prepare for physical infiltration."
+            }
+          }
+        }
+      ]
+    },
+
+    "valuable_intelligence": {
+      "id": "valuable_intelligence",
+      "title": "Unexpected Intelligence Discovery",
+      "description": "While searching through the target's systems, you discover information far more valuable than your original objective.",
+      "triggerConditions": {
+        "probability": 0.15,
+        "requirements": {
+          "intelligenceSkill": 15
+        }
+      },
+      "choices": [
+        {
+          "id": "extract_bonus_intel",
+          "text": "Extract the additional intelligence despite increased risk",
+          "outcomes": {
+            "success": {
+              "probability": 0.7,
+              "effects": {
+                "money": 3000,
+                "experience": 250,
+                "reputation": 20,
+                "timeDelay": 30,
+                "detectionRisk": 0.3,
+                "information": ["bonus_intelligence"],
+                "message": "You successfully extract highly valuable bonus intelligence."
+              }
+            },
+            "failure": {
+              "probability": 0.3,
+              "effects": {
+                "detectionRisk": 0.6,
+                "timeDelay": 45,
+                "message": "Your greed triggers additional security measures."
+              }
+            }
+          }
+        },
+        {
+          "id": "stick_to_plan",
+          "text": "Stick to your original objective to minimize risk",
+          "outcomes": {
+            "immediate": {
+              "experience": 50,
+              "message": "You maintain discipline and complete your original mission cleanly."
+            }
+          }
+        },
+        {
+          "id": "mark_for_later",
+          "text": "Mark the location for a future operation",
+          "requirements": {
+            "intelligenceSkill": 20
+          },
+          "outcomes": {
+            "immediate": {
+              "futureOpportunities": 1,
+              "experience": 100,
+              "message": "You carefully note the intelligence location for a future heist."
+            }
+          }
+        }
+      ]
+    }
+  },
+
+  "consequence_events": {
+    "investigation_launched": {
+      "id": "investigation_launched",
+      "title": "Criminal Investigation Launched",
+      "description": "Your recent activities have triggered a formal criminal investigation. Law enforcement is actively searching for you.",
+      "triggerConditions": {
+        "heat": 60,
+        "probability": 0.8
+      },
+      "effects": {
+        "immediate": {
+          "heat": 20,
+          "operationalEfficiency": -0.3,
+          "targetAccessRestriction": 0.4
+        },
+        "duration": 168,
+        "message": "A formal investigation makes all operations significantly more dangerous."
+      },
+      "choices": [
+        {
+          "id": "hire_lawyer",
+          "text": "Hire a criminal defense lawyer preemptively",
+          "costs": {
+            "money": 5000
+          },
+          "outcomes": {
+            "immediate": {
+              "heat": -10,
+              "legalProtection": 0.3,
+              "message": "Legal representation provides some protection against investigation."
+            }
+          }
+        },
+        {
+          "id": "destroy_evidence",
+          "text": "Destroy all potentially incriminating evidence",
+          "outcomes": {
+            "immediate": {
+              "heat": -15,
+              "equipment": -0.5,
+              "contacts": -1,
+              "message": "You eliminate evidence but lose valuable resources."
+            }
+          }
+        },
+        {
+          "id": "flee_jurisdiction",
+          "text": "Flee to a non-extradition country",
+          "costs": {
+            "money": 10000
+          },
+          "outcomes": {
+            "immediate": {
+              "heat": -40,
+              "operationalEfficiency": -0.7,
+              "internationalStatus": "fugitive",
+              "message": "You escape immediate danger but become an international fugitive."
+            }
+          }
+        }
+      ]
+    },
+
+    "asset_seizure": {
+      "id": "asset_seizure",
+      "title": "Asset Seizure",
+      "description": "Authorities have frozen your known financial accounts and seized suspected criminal proceeds.",
+      "triggerConditions": {
+        "heat": 50,
+        "money": 10000,
+        "probability": 0.6
+      },
+      "effects": {
+        "immediate": {
+          "money": -0.4,
+          "heat": -5,
+          "operationalEfficiency": -0.2
+        },
+        "message": "Law enforcement seizes a significant portion of your liquid assets."
+      },
+      "choices": [
+        {
+          "id": "legal_challenge",
+          "text": "Challenge the seizure through legal channels",
+          "costs": {
+            "money": 3000
+          },
+          "requirements": {
+            "legalProtection": 0.2
+          },
+          "outcomes": {
+            "success": {
+              "probability": 0.4,
+              "effects": {
+                "money": 5000,
+                "heat": 10,
+                "message": "You successfully recover some assets through legal action."
+              }
+            },
+            "failure": {
+              "probability": 0.6,
+              "effects": {
+                "heat": 15,
+                "message": "The legal challenge fails and draws more attention."
+              }
+            }
+          }
+        },
+        {
+          "id": "accept_loss",
+          "text": "Accept the loss and rebuild from scratch",
+          "outcomes": {
+            "immediate": {
+              "heat": -10,
+              "experience": 100,
+              "message": "You accept the setback and focus on rebuilding operations."
+            }
+          }
+        }
+      ]
+    }
+  },
+
+  "narrative_events": {
+    "mysterious_benefactor": {
+      "id": "mysterious_benefactor",
+      "title": "Mysterious Benefactor",
+      "description": "An anonymous contact offers you a lucrative job through encrypted channels. The offer seems too good to be true.",
+      "triggerConditions": {
+        "probability": 0.05,
+        "cooldown": 240,
+        "requirements": {
+          "reputation": 60
+        }
+      },
+      "choices": [
+        {
+          "id": "accept_mysterious_job",
+          "text": "Accept the job despite the mysterious nature",
+          "outcomes": {
+            "immediate": {
+              "money": 15000,
+              "experience": 300,
+              "heat": 25,
+              "mysteriousContact": true,
+              "message": "You complete the job successfully but wonder about your employer's true identity."
+            },
+            "unlocks": ["shadow_organization_questline"]
+          }
+        },
+        {
+          "id": "investigate_benefactor",
+          "text": "Investigate the benefactor's identity before deciding",
+          "requirements": {
+            "intelligenceSkill": 30
+          },
+          "outcomes": {
+            "success": {
+              "probability": 0.3,
+              "effects": {
+                "information": ["shadow_organization_intel"],
+                "experience": 200,
+                "message": "Your investigation reveals disturbing connections to a powerful shadow organization."
+              }
+            },
+            "failure": {
+              "probability": 0.7,
+              "effects": {
+                "heat": 15,
+                "message": "Your investigation triggers countermeasures, revealing nothing."
+              }
+            }
+          }
+        },
+        {
+          "id": "decline_offer",
+          "text": "Decline the suspicious offer",
+          "outcomes": {
+            "immediate": {
+              "reputation": 10,
+              "message": "Your caution earns respect among peers who know the risks of mysterious benefactors."
+            }
+          }
+        }
+      ]
+    }
+  }
+}

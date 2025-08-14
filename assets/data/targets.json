@@ -1,0 +1,1489 @@
+{
+  "targets": {
+    "local_business": {
+      "id": "local_business",
+      "name": "Riverside Marketing Agency",
+      "type": "corporate",
+      "securityLevel": 1,
+      "location": {
+        "city": "Downtown",
+        "district": "Commercial Quarter",
+        "address": "542 River Street, Suite 12",
+        "coordinates": { "lat": 40.7589, "lng": -73.9851 }
+      },
+      "description": "A small marketing agency with 15 employees. Basic security measures include simple door locks and a single desktop computer with client data. Perfect training ground for new infiltrators.",
+      "background": "Founded in 2019 by Sarah Chen, this agency handles local restaurant and retail marketing. They recently landed a contract with the city's tourism board, making their client database potentially valuable.",
+      
+      "security": {
+        "physical": {
+          "level": "basic",
+          "measures": ["standard_locks", "basic_alarm_system"],
+          "guards": 0,
+          "cameras": 2,
+          "sensors": ["door_sensors"],
+          "weaknesses": ["rear_entrance", "office_windows"],
+          "schedule": "alarm_active_after_hours"
+        },
+        "digital": {
+          "level": "minimal",
+          "measures": ["basic_firewall", "consumer_antivirus"],
+          "network": "small_business_router",
+          "encryption": "none",
+          "backups": "local_only",
+          "weaknesses": ["default_passwords", "unpatched_systems", "open_wifi"]
+        },
+        "personnel": {
+          "level": "untrained",
+          "background_checks": false,
+          "security_awareness": "low",
+          "access_controls": "minimal"
+        }
+      },
+
+      "requirements": {
+        "minimumSkills": {
+          "hacking": 0,
+          "stealth": 0,
+          "social": 0,
+          "physical": 0,
+          "intelligence": 0
+        },
+        "requiredUpgrades": [],
+        "timeWindow": "any",
+        "operationDuration": { "min": 15, "max": 45 }
+      },
+
+      "infiltrationMethods": [
+        {
+          "method": "digital",
+          "name": "Network Infiltration",
+          "difficulty": 0.2,
+          "description": "Hack into their unsecured WiFi network and access company files",
+          "timeRequired": 20,
+          "detectionRisk": 0.05,
+          "requirements": { "hacking": 5 },
+          "approach": "Remote access through vulnerable router and weak passwords"
+        },
+        {
+          "method": "physical",
+          "name": "After-Hours Break-in",
+          "difficulty": 0.3,
+          "description": "Enter through the rear service door after business hours",
+          "timeRequired": 30,
+          "detectionRisk": 0.15,
+          "requirements": { "stealth": 5 },
+          "approach": "Pick the simple lock and disable basic alarm system"
+        },
+        {
+          "method": "social",
+          "name": "Delivery Impersonation",
+          "difficulty": 0.1,
+          "description": "Pose as a delivery person to gain entry during business hours",
+          "timeRequired": 15,
+          "detectionRisk": 0.08,
+          "requirements": { "social": 3 },
+          "approach": "Simple disguise and confident demeanor to walk right in"
+        }
+      ],
+
+      "rewards": {
+        "primary": {
+          "money": { "min": 300, "max": 700 },
+          "experience": 100,
+          "reputation": 8
+        },
+        "information": {
+          "client_database": {
+            "value": 200,
+            "description": "Contact information for local businesses",
+            "usefulness": "Future social engineering targets"
+          },
+          "marketing_strategies": {
+            "value": 150,
+            "description": "Campaign data and competitor analysis",
+            "usefulness": "Sellable to competitors"
+          },
+          "financial_records": {
+            "value": 100,
+            "description": "Basic accounting and payroll information",
+            "usefulness": "Identity theft opportunities"
+          }
+        },
+        "bonuses": {
+          "clean_exit": { "money": 100, "reputation": 2 },
+          "zero_detection": { "experience": 50, "reputation": 3 },
+          "comprehensive_data": { "money": 200, "information": ["employee_personal_data"] }
+        }
+      },
+
+      "risks": {
+        "detection": {
+          "probability": 0.1,
+          "consequences": {
+            "immediate": "Local police response",
+            "investigation": "Simple police report",
+            "heat_increase": 5,
+            "evidence_trail": "minimal"
+          }
+        },
+        "failure": {
+          "probability": 0.05,
+          "consequences": {
+            "capture": "Unlikely - simple escape routes",
+            "exposure": "Low-profile local news",
+            "reputation_loss": 5
+          }
+        },
+        "complications": [
+          {
+            "event": "employee_working_late",
+            "probability": 0.15,
+            "description": "Sarah Chen often works late on client proposals"
+          },
+          {
+            "event": "security_upgrade",
+            "probability": 0.1,
+            "description": "Recent break-ins in area prompted security improvements"
+          }
+        ]
+      }
+    },
+
+    "university_lab": {
+      "id": "university_lab",
+      "name": "Westfield University Biomedical Research Lab",
+      "type": "academic",
+      "securityLevel": 1,
+      "location": {
+        "city": "University District",
+        "district": "Academic Campus",
+        "address": "Science Building, Room 401",
+        "coordinates": { "lat": 40.7505, "lng": -73.9934 }
+      },
+      "description": "A cutting-edge biomedical research facility studying gene therapy treatments. Contains valuable research data and pharmaceutical company connections.",
+      "background": "Led by Dr. Marcus Webb, this lab has received $2.3M in NIH grants and maintains partnerships with three major pharmaceutical companies. Recent breakthroughs in cancer treatment make their data extremely valuable.",
+
+      "security": {
+        "physical": {
+          "level": "basic_academic",
+          "measures": ["keycard_access", "basic_surveillance", "security_patrol"],
+          "guards": 1,
+          "cameras": 8,
+          "sensors": ["motion_detectors", "door_alarms"],
+          "weaknesses": ["student_tailgating", "emergency_exits", "ventilation_access"],
+          "schedule": "reduced_security_weekends"
+        },
+        "digital": {
+          "level": "standard_academic",
+          "measures": ["university_firewall", "research_network_isolation"],
+          "network": "segmented_research_network",
+          "encryption": "standard",
+          "backups": "cloud_and_local",
+          "weaknesses": ["shared_computers", "guest_network", "outdated_lab_systems"]
+        },
+        "personnel": {
+          "level": "research_focused",
+          "background_checks": true,
+          "security_awareness": "moderate",
+          "access_controls": "role_based"
+        }
+      },
+
+      "requirements": {
+        "minimumSkills": {
+          "hacking": 8,
+          "stealth": 10,
+          "social": 5,
+          "physical": 5,
+          "intelligence": 10
+        },
+        "requiredUpgrades": ["basic_coding"],
+        "timeWindow": "weekends_preferred",
+        "operationDuration": { "min": 45, "max": 120 }
+      },
+
+      "infiltrationMethods": [
+        {
+          "method": "digital",
+          "name": "University Network Penetration",
+          "difficulty": 0.35,
+          "description": "Breach the university's research network through student portal vulnerabilities",
+          "timeRequired": 60,
+          "detectionRisk": 0.2,
+          "requirements": { "hacking": 15, "intelligence": 8 },
+          "approach": "Exploit weak student authentication to access research segments"
+        },
+        {
+          "method": "physical",
+          "name": "Laboratory Infiltration",
+          "difficulty": 0.4,
+          "description": "Enter the lab through ventilation system or emergency exits",
+          "timeRequired": 90,
+          "detectionRisk": 0.25,
+          "requirements": { "stealth": 15, "physical": 10 },
+          "approach": "Navigate building security and bypass lab-specific measures"
+        },
+        {
+          "method": "social",
+          "name": "Graduate Student Impersonation",
+          "difficulty": 0.25,
+          "description": "Pose as a visiting graduate student or research collaborator",
+          "timeRequired": 45,
+          "detectionRisk": 0.15,
+          "requirements": { "social": 12, "intelligence": 15 },
+          "approach": "Create convincing academic credentials and research background"
+        },
+        {
+          "method": "hybrid",
+          "name": "Conference Infiltration",
+          "difficulty": 0.3,
+          "description": "Attend lab's open research presentation then gain extended access",
+          "timeRequired": 75,
+          "detectionRisk": 0.18,
+          "requirements": { "social": 10, "hacking": 10 },
+          "approach": "Legitimate attendance followed by unauthorized system access"
+        }
+      ],
+
+      "rewards": {
+        "primary": {
+          "money": { "min": 600, "max": 1200 },
+          "experience": 200,
+          "reputation": 15
+        },
+        "information": {
+          "research_data": {
+            "value": 5000,
+            "description": "Unpublished gene therapy research results",
+            "usefulness": "Sellable to pharmaceutical competitors"
+          },
+          "grant_applications": {
+            "value": 800,
+            "description": "Future research directions and funding sources",
+            "usefulness": "Insider information for competing applications"
+          },
+          "pharmaceutical_contacts": {
+            "value": 1200,
+            "description": "Industry collaboration agreements and contact lists",
+            "usefulness": "Corporate espionage opportunities"
+          },
+          "patient_data": {
+            "value": 3000,
+            "description": "Anonymized clinical trial data",
+            "usefulness": "Medical identity theft or rival research"
+          }
+        },
+        "bonuses": {
+          "research_integrity": { "money": 500, "reputation": 5 },
+          "comprehensive_breach": { "experience": 100, "information": ["lab_security_protocols"] },
+          "zero_academic_impact": { "reputation": 8, "academic_standing": "maintained" }
+        }
+      },
+
+      "risks": {
+        "detection": {
+          "probability": 0.2,
+          "consequences": {
+            "immediate": "Campus security response",
+            "investigation": "University IT department review",
+            "heat_increase": 8,
+            "evidence_trail": "digital_logs"
+          }
+        },
+        "failure": {
+          "probability": 0.15,
+          "consequences": {
+            "capture": "Campus security detention",
+            "exposure": "Academic misconduct charges",
+            "reputation_loss": 10
+          }
+        },
+        "complications": [
+          {
+            "event": "late_night_researcher",
+            "probability": 0.25,
+            "description": "PhD students often work through the night on experiments"
+          },
+          {
+            "event": "security_audit",
+            "probability": 0.1,
+            "description": "Quarterly security reviews may expose intrusion methods"
+          },
+          {
+            "event": "research_publication_deadline",
+            "probability": 0.2,
+            "description": "Increased activity during publication preparation"
+          }
+        ]
+      }
+    },
+
+    "corporate_office": {
+      "id": "corporate_office",
+      "name": "Sterling & Associates Financial Advisory",
+      "type": "corporate",
+      "securityLevel": 2,
+      "location": {
+        "city": "Financial District",
+        "district": "Corporate Center",
+        "address": "1247 Wall Street, 23rd Floor",
+        "coordinates": { "lat": 40.7074, "lng": -74.0113 }
+      },
+      "description": "Mid-tier financial advisory firm managing $500M in client assets. Handles high-net-worth individuals and small institutional clients.",
+      "background": "Founded by Robert Sterling in 2008, the firm survived the financial crisis and has grown steadily. They recently secured contracts with several tech startups and maintain detailed financial profiles of Silicon Valley executives.",
+
+      "security": {
+        "physical": {
+          "level": "corporate_standard",
+          "measures": ["keycard_access", "biometric_scanner", "security_desk", "elevator_controls"],
+          "guards": 3,
+          "cameras": 24,
+          "sensors": ["motion_detectors", "glass_break_sensors", "pressure_plates"],
+          "weaknesses": ["shared_elevator_access", "cleaning_crew_hours", "fire_escape_routes"],
+          "schedule": "24_7_building_security"
+        },
+        "digital": {
+          "level": "financial_grade",
+          "measures": ["corporate_firewall", "intrusion_detection", "encrypted_communications"],
+          "network": "segmented_vlan_architecture",
+          "encryption": "aes_256",
+          "backups": "offsite_encrypted",
+          "weaknesses": ["employee_endpoint_security", "third_party_integrations", "mobile_device_policies"]
+        },
+        "personnel": {
+          "level": "financial_trained",
+          "background_checks": true,
+          "security_awareness": "high",
+          "access_controls": "strict_need_to_know"
+        }
+      },
+
+      "requirements": {
+        "minimumSkills": {
+          "hacking": 20,
+          "stealth": 15,
+          "social": 15,
+          "physical": 10,
+          "intelligence": 15
+        },
+        "requiredUpgrades": ["advanced_coding", "basic_stealth", "basic_psychology"],
+        "timeWindow": "business_hours_or_weekends",
+        "operationDuration": { "min": 90, "max": 180 }
+      },
+
+      "infiltrationMethods": [
+        {
+          "method": "digital",
+          "name": "Financial Network Breach",
+          "difficulty": 0.55,
+          "description": "Penetrate the firm's financial systems through third-party vendor vulnerabilities",
+          "timeRequired": 120,
+          "detectionRisk": 0.3,
+          "requirements": { "hacking": 25, "intelligence": 20 },
+          "approach": "Target less-secure vendor connections to access main financial database"
+        },
+        {
+          "method": "physical",
+          "name": "Executive Floor Infiltration",
+          "difficulty": 0.6,
+          "description": "Access the 23rd floor through building's shared infrastructure",
+          "timeRequired": 150,
+          "detectionRisk": 0.35,
+          "requirements": { "stealth": 20, "physical": 15 },
+          "approach": "Bypass elevator controls and floor-specific security measures"
+        },
+        {
+          "method": "social",
+          "name": "Client Impersonation",
+          "difficulty": 0.4,
+          "description": "Pose as a high-net-worth potential client seeking advisory services",
+          "timeRequired": 90,
+          "detectionRisk": 0.2,
+          "requirements": { "social": 20, "intelligence": 15 },
+          "approach": "Schedule legitimate meeting then exploit access for data extraction"
+        },
+        {
+          "method": "hybrid",
+          "name": "Maintenance Worker Social Engineering",
+          "difficulty": 0.45,
+          "description": "Pose as IT support to gain physical access and plant digital tools",
+          "timeRequired": 110,
+          "detectionRisk": 0.25,
+          "requirements": { "social": 15, "hacking": 20, "stealth": 10 },
+          "approach": "Social engineer entry then deploy persistent network access tools"
+        }
+      ],
+
+      "rewards": {
+        "primary": {
+          "money": { "min": 2000, "max": 4000 },
+          "experience": 350,
+          "reputation": 28
+        },
+        "information": {
+          "client_portfolios": {
+            "value": 8000,
+            "description": "Detailed financial profiles of 200+ high-net-worth clients",
+            "usefulness": "Identity theft, insider trading, targeted scams"
+          },
+          "investment_strategies": {
+            "value": 3500,
+            "description": "Proprietary trading algorithms and market analysis",
+            "usefulness": "Sellable to competitor firms or hedge funds"
+          },
+          "merger_intelligence": {
+            "value": 12000,
+            "description": "Advance knowledge of upcoming mergers and acquisitions",
+            "usefulness": "Extremely valuable for stock market manipulation"
+          },
+          "regulatory_communications": {
+            "value": 2500,
+            "description": "SEC filings and compliance documentation",
+            "usefulness": "Regulatory arbitrage opportunities"
+          }
+        },
+        "bonuses": {
+          "market_moving_intel": { "money": 8000, "reputation": 15 },
+          "clean_financial_extraction": { "experience": 200, "reputation": 10 },
+          "ongoing_access_maintained": { "information": ["real_time_trading_data"], "reputation": 20 }
+        }
+      },
+
+      "risks": {
+        "detection": {
+          "probability": 0.3,
+          "consequences": {
+            "immediate": "Corporate security and FINRA notification",
+            "investigation": "SEC financial crimes investigation",
+            "heat_increase": 15,
+            "evidence_trail": "financial_audit_logs"
+          }
+        },
+        "failure": {
+          "probability": 0.2,
+          "consequences": {
+            "capture": "Corporate security detention, police involvement",
+            "exposure": "Financial industry blacklisting",
+            "reputation_loss": 25
+          }
+        },
+        "complications": [
+          {
+            "event": "regulatory_audit",
+            "probability": 0.15,
+            "description": "Quarterly SEC compliance reviews create additional security scrutiny"
+          },
+          {
+            "event": "client_emergency_meeting",
+            "probability": 0.2,
+            "description": "Market volatility triggers after-hours client consultations"
+          },
+          {
+            "event": "system_upgrade",
+            "probability": 0.12,
+            "description": "Financial software updates may reveal unauthorized access"
+          }
+        ]
+      }
+    },
+
+    "police_station": {
+      "id": "police_station",
+      "name": "Metropolitan Police Department - Central Precinct",
+      "type": "government",
+      "securityLevel": 2,
+      "location": {
+        "city": "Civic Center",
+        "district": "Government Quarter",
+        "address": "850 Municipal Drive",
+        "coordinates": { "lat": 40.7282, "lng": -73.9942 }
+      },
+      "description": "Primary police facility serving downtown area. Houses criminal records, evidence storage, and active investigation data for major crimes unit.",
+      "background": "Built in 1987 and renovated in 2018, this facility serves as headquarters for the city's major crimes task force. Recent high-profile cases include organized crime investigations and cybercrime task force operations.",
+
+      "security": {
+        "physical": {
+          "level": "law_enforcement",
+          "measures": ["armed_guards", "metal_detectors", "bulletproof_glass", "secure_evidence_vault"],
+          "guards": 8,
+          "cameras": 45,
+          "sensors": ["motion_detectors", "pressure_sensors", "acoustic_monitoring"],
+          "weaknesses": ["public_access_areas", "prisoner_transport_timing", "shift_changes"],
+          "schedule": "constant_armed_presence"
+        },
+        "digital": {
+          "level": "law_enforcement_grade",
+          "measures": ["government_firewall", "encrypted_databases", "access_logging"],
+          "network": "law_enforcement_isolated_network",
+          "encryption": "government_standard",
+          "backups": "secure_offsite_government",
+          "weaknesses": ["legacy_systems", "inter_agency_connections", "officer_mobile_devices"]
+        },
+        "personnel": {
+          "level": "law_enforcement_trained",
+          "background_checks": "extensive_federal",
+          "security_awareness": "very_high",
+          "access_controls": "clearance_based"
+        }
+      },
+
+      "requirements": {
+        "minimumSkills": {
+          "hacking": 25,
+          "stealth": 20,
+          "social": 15,
+          "physical": 15,
+          "intelligence": 20
+        },
+        "requiredUpgrades": ["network_basics", "advanced_stealth", "communication_skills"],
+        "timeWindow": "careful_timing_required",
+        "operationDuration": { "min": 120, "max": 240 }
+      },
+
+      "infiltrationMethods": [
+        {
+          "method": "digital",
+          "name": "Law Enforcement Database Breach",
+          "difficulty": 0.65,
+          "description": "Hack into NCIC and local criminal databases through network vulnerabilities",
+          "timeRequired": 180,
+          "detectionRisk": 0.4,
+          "requirements": { "hacking": 30, "intelligence": 25 },
+          "approach": "Exploit inter-agency communication protocols and legacy system weaknesses"
+        },
+        {
+          "method": "physical",
+          "name": "Evidence Room Infiltration",
+          "difficulty": 0.7,
+          "description": "Physical access to evidence storage and records department",
+          "timeRequired": 200,
+          "detectionRisk": 0.45,
+          "requirements": { "stealth": 25, "physical": 20 },
+          "approach": "Navigate armed security, surveillance, and access controls"
+        },
+        {
+          "method": "social",
+          "name": "Federal Agent Impersonation",
+          "difficulty": 0.5,
+          "description": "Pose as federal agent conducting inter-agency cooperation visit",
+          "timeRequired": 120,
+          "detectionRisk": 0.3,
+          "requirements": { "social": 25, "intelligence": 20 },
+          "approach": "Create convincing federal credentials and case justification"
+        },
+        {
+          "method": "hybrid",
+          "name": "Prisoner Transfer Exploitation",
+          "difficulty": 0.55,
+          "description": "Exploit security vulnerabilities during prisoner transport operations",
+          "timeRequired": 160,
+          "detectionRisk": 0.35,
+          "requirements": { "social": 20, "stealth": 20, "intelligence": 15 },
+          "approach": "Time infiltration with transport chaos and pose as authorized personnel"
+        }
+      ],
+
+      "rewards": {
+        "primary": {
+          "money": { "min": 1500, "max": 2500 },
+          "experience": 450,
+          "reputation": 40
+        },
+        "information": {
+          "criminal_records": {
+            "value": 4000,
+            "description": "Complete criminal database including sealed records",
+            "usefulness": "Blackmail material, identity verification bypass"
+          },
+          "active_investigations": {
+            "value": 8000,
+            "description": "Ongoing case files and surveillance targets",
+            "usefulness": "Warn criminal contacts, interfere with investigations"
+          },
+          "witness_protection_data": {
+            "value": 15000,
+            "description": "Protected witness locations and new identities",
+            "usefulness": "Extremely valuable to organized crime"
+          },
+          "undercover_operations": {
+            "value": 12000,
+            "description": "Active undercover officer identities and operations",
+            "usefulness": "Life-threatening intelligence for criminal organizations"
+          },
+          "evidence_inventory": {
+            "value": 6000,
+            "description": "Detailed evidence catalogues and storage locations",
+            "usefulness": "Evidence tampering, case sabotage"
+          }
+        },
+        "bonuses": {
+          "law_enforcement_infiltration": { "reputation": 25, "criminal_contacts": 3 },
+          "evidence_manipulation": { "money": 5000, "heat": -10 },
+          "ongoing_police_access": { "information": ["real_time_investigation_updates"], "reputation": 30 }
+        }
+      },
+
+      "risks": {
+        "detection": {
+          "probability": 0.4,
+          "consequences": {
+            "immediate": "Armed police response, immediate lockdown",
+            "investigation": "FBI cybercrime and domestic terrorism task force",
+            "heat_increase": 25,
+            "evidence_trail": "federal_investigation_priority"
+          }
+        },
+        "failure": {
+          "probability": 0.3,
+          "consequences": {
+            "capture": "Armed arrest, federal charges",
+            "exposure": "National law enforcement alert",
+            "reputation_loss": 40
+          }
+        },
+        "complications": [
+          {
+            "event": "active_crime_response",
+            "probability": 0.3,
+            "description": "Emergency responses create unpredictable security changes"
+          },
+          {
+            "event": "federal_task_force_visit",
+            "probability": 0.15,
+            "description": "FBI or DEA coordination increases security temporarily"
+          },
+          {
+            "event": "officer_shift_change",
+            "probability": 0.25,
+            "description": "Security protocols change during shift transitions"
+          },
+          {
+            "event": "internal_investigation",
+            "probability": 0.1,
+            "description": "Corruption investigations create additional surveillance"
+          }
+        ]
+      }
+    },
+
+    "tech_company": {
+      "id": "tech_company",
+      "name": "QuantumSoft Technologies",
+      "type": "corporate",
+      "securityLevel": 3,
+      "location": {
+        "city": "Silicon Valley",
+        "district": "Tech Campus",
+        "address": "1 Innovation Way, Building C",
+        "coordinates": { "lat": 37.4419, "lng": -122.1430 }
+      },
+      "description": "Leading AI and quantum computing research company with government contracts. Developing next-generation encryption and surveillance technologies.",
+      "background": "Founded by former NSA cryptographers in 2015, QuantumSoft has rapidly become a key player in national security technology. Their quantum encryption algorithms are being evaluated for government adoption, and they maintain active contracts with Department of Defense.",
+
+      "security": {
+        "physical": {
+          "level": "high_tech_corporate",
+          "measures": ["biometric_access", "mantrap_entrances", "armed_security", "faraday_cage_labs"],
+          "guards": 12,
+          "cameras": 180,
+          "sensors": ["advanced_motion_detection", "thermal_imaging", "facial_recognition", "electromagnetic_monitoring"],
+          "weaknesses": ["employee_badge_cloning", "visitor_escort_protocols", "emergency_evacuation_routes"],
+          "schedule": "24_7_high_security"
+        },
+        "digital": {
+          "level": "military_grade",
+          "measures": ["quantum_encryption", "ai_threat_detection", "network_segmentation", "honeypot_systems"],
+          "network": "zero_trust_architecture",
+          "encryption": "post_quantum_cryptography",
+          "backups": "quantum_secured_offsite",
+          "weaknesses": ["supply_chain_vulnerabilities", "insider_threat_gaps", "legacy_development_systems"]
+        },
+        "personnel": {
+          "level": "security_clearance_required",
+          "background_checks": "top_secret_clearance",
+          "security_awareness": "expert_level",
+          "access_controls": "compartmentalized_need_to_know"
+        }
+      },
+
+      "requirements": {
+        "minimumSkills": {
+          "hacking": 40,
+          "stealth": 30,
+          "social": 25,
+          "physical": 20,
+          "intelligence": 35
+        },
+        "requiredUpgrades": ["ai_scripting", "advanced_stealth", "advanced_psychology", "advanced_tools"],
+        "timeWindow": "extended_operation_required",
+        "operationDuration": { "min": 240, "max": 480 }
+      },
+
+      "infiltrationMethods": [
+        {
+          "method": "digital",
+          "name": "Quantum Network Penetration",
+          "difficulty": 0.8,
+          "description": "Attempt to breach quantum-encrypted systems through algorithmic vulnerabilities",
+          "timeRequired": 360,
+          "detectionRisk": 0.5,
+          "requirements": { "hacking": 50, "intelligence": 40 },
+          "approach": "Exploit theoretical weaknesses in quantum key distribution protocols"
+        },
+        {
+          "method": "physical",
+          "name": "Secure Facility Infiltration",
+          "difficulty": 0.75,
+          "description": "Navigate biometric security and advanced surveillance systems",
+          "timeRequired": 300,
+          "detectionRisk": 0.45,
+          "requirements": { "stealth": 35, "physical": 25, "intelligence": 30 },
+          "approach": "Sophisticated multi-stage infiltration avoiding detection systems"
+        },
+        {
+          "method": "social",
+          "name": "Executive Targeting",
+          "difficulty": 0.6,
+          "description": "Target high-level executives with security clearances for access",
+          "timeRequired": 240,
+          "detectionRisk": 0.3,
+          "requirements": { "social": 35, "intelligence": 30 },
+          "approach": "Long-term social engineering of C-level executives"
+        },
+        {
+          "method": "hybrid",
+          "name": "Supply Chain Infiltration",
+          "difficulty": 0.7,
+          "description": "Compromise hardware supply chain to gain persistent access",
+          "timeRequired": 400,
+          "detectionRisk": 0.4,
+          "requirements": { "hacking": 40, "social": 25, "intelligence": 35 },
+          "approach": "Multi-month operation targeting vendor relationships"
+        }
+      ],
+
+      "rewards": {
+        "primary": {
+          "money": { "min": 6000, "max": 12000 },
+          "experience": 800,
+          "reputation": 60
+        },
+        "information": {
+          "quantum_algorithms": {
+            "value": 50000,
+            "description": "Next-generation quantum encryption and decryption algorithms",
+            "usefulness": "Revolutionary cryptographic capabilities"
+          },
+          "government_contracts": {
+            "value": 25000,
+            "description": "Classified government project specifications and timelines",
+            "usefulness": "National security intelligence, foreign government interest"
+          },
+          "ai_surveillance_tech": {
+            "value": 35000,
+            "description": "Advanced AI surveillance and prediction algorithms",
+            "usefulness": "Massive privacy violation capabilities"
+          },
+          "competitor_intelligence": {
+            "value": 15000,
+            "description": "Detailed analysis of competing technology companies",
+            "usefulness": "Corporate espionage and market manipulation"
+          },
+          "source_code_repository": {
+            "value": 40000,
+            "description": "Complete source code for proprietary software platforms",
+            "usefulness": "Reverse engineering, vulnerability discovery"
+          }
+        },
+        "bonuses": {
+          "quantum_breakthrough": { "money": 25000, "reputation": 40 },
+          "government_backdoor_discovery": { "reputation": 50, "information": ["nsa_backdoor_protocols"] },
+          "zero_digital_footprint": { "experience": 400, "reputation": 25 }
+        }
+      },
+
+      "risks": {
+        "detection": {
+          "probability": 0.5,
+          "consequences": {
+            "immediate": "Corporate counter-intelligence and FBI notification",
+            "investigation": "Joint FBI-NSA cybersecurity investigation",
+            "heat_increase": 35,
+            "evidence_trail": "advanced_forensic_analysis"
+          }
+        },
+        "failure": {
+          "probability": 0.35,
+          "consequences": {
+            "capture": "Corporate security with federal backup",
+            "exposure": "National security threat classification",
+            "reputation_loss": 50
+          }
+        },
+        "complications": [
+          {
+            "event": "ai_threat_detection",
+            "probability": 0.4,
+            "description": "Advanced AI systems detect unusual patterns and behaviors"
+          },
+          {
+            "event": "security_clearance_review",
+            "probability": 0.2,
+            "description": "Periodic federal security audits increase scrutiny"
+          },
+          {
+            "event": "quantum_encryption_update",
+            "probability": 0.15,
+            "description": "Rolling encryption updates may lock out unauthorized access"
+          },
+          {
+            "event": "insider_threat_protocols",
+            "probability": 0.25,
+            "description": "Enhanced monitoring for insider threats affects all access"
+          }
+        ]
+      }
+    },
+
+    "federal_building": {
+      "id": "federal_building",
+      "name": "Federal Bureau of Investigation - Field Office",
+      "type": "government",
+      "securityLevel": 3,
+      "location": {
+        "city": "Government District",
+        "district": "Federal Plaza",
+        "address": "26 Federal Plaza, Floor 15-23",
+        "coordinates": { "lat": 40.7127, "lng": -74.0059 }
+      },
+      "description": "Regional FBI field office coordinating cybercrime, terrorism, and organized crime investigations. Houses classified case files and inter-agency intelligence.",
+      "background": "Established in 1982, this field office serves as the primary coordination hub for federal law enforcement in the region. Recent focus areas include domestic terrorism, international cybercrime rings, and corporate espionage cases.",
+
+      "security": {
+        "physical": {
+          "level": "federal_maximum",
+          "measures": ["armed_federal_agents", "explosive_detection", "x-ray_screening", "secure_communication_rooms"],
+          "guards": 25,
+          "cameras": 200,
+          "sensors": ["chemical_detection", "radiation_monitoring", "advanced_motion_tracking", "acoustic_surveillance"],
+          "weaknesses": ["inter-agency_visitor_protocols", "emergency_evacuation_procedures", "maintenance_access_windows"],
+          "schedule": "continuous_federal_security"
+        },
+        "digital": {
+          "level": "classified_government",
+          "measures": ["classified_network_isolation", "multi_factor_authentication", "continuous_monitoring"],
+          "network": "siprnet_connection",
+          "encryption": "nsa_approved_algorithms",
+          "backups": "classified_government_facilities",
+          "weaknesses": ["air_gapped_system_bridges", "human_factor_vulnerabilities", "legacy_case_management_systems"]
+        },
+        "personnel": {
+          "level": "federal_agent_trained",
+          "background_checks": "top_secret_sci_clearance",
+          "security_awareness": "counterintelligence_trained",
+          "access_controls": "compartmentalized_classified"
+        }
+      },
+
+      "requirements": {
+        "minimumSkills": {
+          "hacking": 35,
+          "stealth": 40,
+          "social": 30,
+          "physical": 25,
+          "intelligence": 40
+        },
+        "requiredUpgrades": ["crypto_breaking", "ghost_protocol", "mind_control", "behavioral_prediction"],
+        "timeWindow": "extremely_limited_opportunities",
+        "operationDuration": { "min": 300, "max": 600 }
+      },
+
+      "infiltrationMethods": [
+        {
+          "method": "digital",
+          "name": "Classified Network Breach",
+          "difficulty": 0.85,
+          "description": "Attempt to penetrate classified government networks and databases",
+          "timeRequired": 480,
+          "detectionRisk": 0.6,
+          "requirements": { "hacking": 45, "intelligence": 45 },
+          "approach": "Multi-vector attack on air-gapped systems and secure communications"
+        },
+        {
+          "method": "physical",
+          "name": "Federal Facility Infiltration",
+          "difficulty": 0.8,
+          "description": "Physical penetration of heavily secured federal building",
+          "timeRequired": 420,
+          "detectionRisk": 0.55,
+          "requirements": { "stealth": 45, "physical": 30, "intelligence": 35 },
+          "approach": "Sophisticated infiltration evading federal security measures"
+        },
+        {
+          "method": "social",
+          "name": "Deep Cover Federal Agent",
+          "difficulty": 0.7,
+          "description": "Long-term impersonation of federal agent or contractor",
+          "timeRequired": 360,
+          "detectionRisk": 0.4,
+          "requirements": { "social": 40, "intelligence": 40 },
+          "approach": "Extended social engineering with created federal credentials"
+        },
+        {
+          "method": "hybrid",
+          "name": "Inter-Agency Coordination Exploit",
+          "difficulty": 0.75,
+          "description": "Exploit coordination protocols between federal agencies",
+          "timeRequired": 400,
+          "detectionRisk": 0.5,
+          "requirements": { "social": 35, "hacking": 35, "intelligence": 40 },
+          "approach": "Pose as coordinating agency while maintaining digital access"
+        }
+      ],
+
+      "rewards": {
+        "primary": {
+          "money": { "min": 4000, "max": 8000 },
+          "experience": 1000,
+          "reputation": 80
+        },
+        "information": {
+          "classified_case_files": {
+            "value": 75000,
+            "description": "Active federal investigations including organized crime and terrorism",
+            "usefulness": "Extremely valuable to criminal organizations and foreign governments"
+          },
+          "surveillance_programs": {
+            "value": 100000,
+            "description": "Domestic surveillance operations and target lists",
+            "usefulness": "Revolutionary intelligence for avoiding federal attention"
+          },
+          "inter_agency_communications": {
+            "value": 60000,
+            "description": "Coordination between FBI, CIA, NSA, and other agencies",
+            "usefulness": "Understanding of federal law enforcement strategies"
+          },
+          "witness_protection_program": {
+            "value": 150000,
+            "description": "Complete WITSEC database with locations and identities",
+            "usefulness": "Life-threatening intelligence worth fortunes to organized crime"
+          },
+          "counter_intelligence_operations": {
+            "value": 80000,
+            "description": "Active operations against foreign intelligence services",
+            "usefulness": "National security secrets valuable to foreign governments"
+          }
+        },
+        "bonuses": {
+          "federal_penetration_achievement": { "reputation": 50, "criminal_network_access": true },
+          "ongoing_federal_access": { "information": ["real_time_federal_intelligence"], "reputation": 60 },
+          "counter_surveillance_intel": { "heat": -20, "federal_immunity": 0.3 }
+        }
+      },
+
+      "risks": {
+        "detection": {
+          "probability": 0.6,
+          "consequences": {
+            "immediate": "Federal armed response, building lockdown",
+            "investigation": "National security investigation, all agencies involved",
+            "heat_increase": 50,
+            "evidence_trail": "federal_manhunt_priority"
+          }
+        },
+        "failure": {
+          "probability": 0.4,
+          "consequences": {
+            "capture": "Federal arrest, terrorism charges",
+            "exposure": "National security threat, international notification",
+            "reputation_loss": 75
+          }
+        },
+        "complications": [
+          {
+            "event": "terrorism_alert_level_change",
+            "probability": 0.3,
+            "description": "Heightened security due to national threat levels"
+          },
+          {
+            "event": "inter_agency_task_force",
+            "probability": 0.2,
+            "description": "Joint operations create unpredictable security patterns"
+          },
+          {
+            "event": "classified_briefing_schedule",
+            "probability": 0.25,
+            "description": "High-level briefings increase security and personnel presence"
+          },
+          {
+            "event": "counter_intelligence_sweep",
+            "probability": 0.15,
+            "description": "Periodic security sweeps detect unauthorized access attempts"
+          }
+        ]
+      }
+    },
+
+    "defense_contractor": {
+      "id": "defense_contractor",
+      "name": "Blackwater Defense Systems",
+      "type": "military",
+      "securityLevel": 4,
+      "location": {
+        "city": "Secure Industrial Zone",
+        "district": "Defense Corridor",
+        "address": "Classified Location - Industrial Complex 7",
+        "coordinates": { "lat": 38.9072, "lng": -77.0369 }
+      },
+      "description": "Top-secret defense contractor developing next-generation weapons systems and military technology. Highest security clearance required.",
+      "background": "Founded by former Pentagon officials, Blackwater holds billions in defense contracts for classified weapons development. Current projects include autonomous weapons systems, advanced missile defense, and experimental military technologies.",
+
+      "security": {
+        "physical": {
+          "level": "military_maximum",
+          "measures": ["armed_military_security", "vehicle_barriers", "perimeter_sensors", "restricted_airspace"],
+          "guards": 50,
+          "cameras": 500,
+          "sensors": ["seismic_detection", "infrared_monitoring", "electromagnetic_scanning", "biometric_verification"],
+          "weaknesses": ["supply_convoy_timing", "shift_rotation_patterns", "emergency_protocol_vulnerabilities"],
+          "schedule": "military_grade_24_7"
+        },
+        "digital": {
+          "level": "top_secret_compartmented",
+          "measures": ["air_gapped_networks", "quantum_encryption", "continuous_monitoring", "hardened_systems"],
+          "network": "classified_isolated_systems",
+          "encryption": "military_quantum_grade",
+          "backups": "underground_bunker_facilities",
+          "weaknesses": ["human_interface_points", "legacy_system_integration", "supply_chain_firmware"]
+        },
+        "personnel": {
+          "level": "top_secret_cleared_military",
+          "background_checks": "top_secret_sci_polygraph",
+          "security_awareness": "military_counterintelligence",
+          "access_controls": "need_to_know_compartmented"
+        }
+      },
+
+      "requirements": {
+        "minimumSkills": {
+          "hacking": 50,
+          "stealth": 45,
+          "social": 40,
+          "physical": 35,
+          "intelligence": 50
+        },
+        "requiredUpgrades": ["quantum_algorithms", "ghost_protocol", "psychological_profiling", "cutting_edge_tech"],
+        "timeWindow": "mission_impossible_difficulty",
+        "operationDuration": { "min": 480, "max": 720 }
+      },
+
+      "infiltrationMethods": [
+        {
+          "method": "digital",
+          "name": "Air-Gapped System Breach",
+          "difficulty": 0.9,
+          "description": "Penetrate completely isolated military computer systems",
+          "timeRequired": 600,
+          "detectionRisk": 0.7,
+          "requirements": { "hacking": 60, "intelligence": 55 },
+          "approach": "Physical access to isolated systems through hardware manipulation"
+        },
+        {
+          "method": "physical",
+          "name": "Military Facility Infiltration",
+          "difficulty": 0.85,
+          "description": "Bypass military-grade security and armed personnel",
+          "timeRequired": 540,
+          "detectionRisk": 0.65,
+          "requirements": { "stealth": 50, "physical": 40, "intelligence": 45 },
+          "approach": "Elite-level infiltration through multiple security layers"
+        },
+        {
+          "method": "hybrid",
+          "name": "Long-Term Personnel Infiltration",
+          "difficulty": 0.8,
+          "description": "Deep cover operation as cleared defense contractor employee",
+          "timeRequired": 480,
+          "detectionRisk": 0.5,
+          "requirements": { "social": 45, "intelligence": 50, "hacking": 40 },
+          "approach": "Multi-month operation building legitimate cover identity"
+        }
+      ],
+
+      "rewards": {
+        "primary": {
+          "money": { "min": 12000, "max": 20000 },
+          "experience": 1500,
+          "reputation": 120
+        },
+        "information": {
+          "weapons_specifications": {
+            "value": 200000,
+            "description": "Next-generation weapons system blueprints and specifications",
+            "usefulness": "Revolutionary military technology, foreign government interest"
+          },
+          "classified_military_contracts": {
+            "value": 150000,
+            "description": "Defense Department contracts and strategic military planning",
+            "usefulness": "National defense intelligence, strategic military capabilities"
+          },
+          "experimental_technology": {
+            "value": 300000,
+            "description": "Prototype weapons and defensive systems in development",
+            "usefulness": "Cutting-edge military technology decades ahead of public knowledge"
+          },
+          "military_personnel_data": {
+            "value": 100000,
+            "description": "Classified military personnel records and security clearances",
+            "usefulness": "Military intelligence operations, personnel targeting"
+          }
+        },
+        "bonuses": {
+          "military_technology_breakthrough": { "money": 100000, "reputation": 80 },
+          "ongoing_military_access": { "information": ["real_time_military_intelligence"], "reputation": 100 },
+          "weapons_system_sabotage": { "money": 50000, "international_incident_risk": true }
+        }
+      },
+
+      "risks": {
+        "detection": {
+          "probability": 0.7,
+          "consequences": {
+            "immediate": "Military response, facility lockdown, armed pursuit",
+            "investigation": "Department of Defense investigation, national security priority",
+            "heat_increase": 75,
+            "evidence_trail": "military_intelligence_manhunt"
+          }
+        },
+        "failure": {
+          "probability": 0.5,
+          "consequences": {
+            "capture": "Military detention, treason charges",
+            "exposure": "National security emergency, international incident",
+            "reputation_loss": 100
+          }
+        },
+        "complications": [
+          {
+            "event": "military_exercise",
+            "probability": 0.4,
+            "description": "Training exercises create unpredictable security changes"
+          },
+          {
+            "event": "weapons_test_schedule",
+            "probability": 0.3,
+            "description": "Live weapons testing increases facility security dramatically"
+          },
+          {
+            "event": "counter_intelligence_operation",
+            "probability": 0.2,
+            "description": "Active counter-intel operations detect infiltration attempts"
+          },
+          {
+            "event": "security_clearance_investigation",
+            "probability": 0.25,
+            "description": "Periodic clearance reviews increase personnel scrutiny"
+          }
+        ]
+      }
+    },
+
+    "central_bank": {
+      "id": "central_bank",
+      "name": "Federal Reserve Bank of New York",
+      "type": "financial",
+      "securityLevel": 4,
+      "location": {
+        "city": "Financial District",
+        "district": "Federal Reserve Plaza",
+        "address": "33 Liberty Street",
+        "coordinates": { "lat": 40.7088, "lng": -74.0103 }
+      },
+      "description": "Primary Federal Reserve Bank housing the world's largest gold repository and controlling national monetary policy. Ultimate financial target.",
+      "background": "The fortress-like Federal Reserve Bank of New York stores gold reserves for dozens of countries and manages US monetary policy implementation. Recent focus on digital currency development and cybersecurity makes their systems incredibly valuable.",
+
+      "security": {
+        "physical": {
+          "level": "fortress_maximum",
+          "measures": ["vault_time_locks", "armed_federal_guards", "blast_resistant_construction", "underground_bunker_levels"],
+          "guards": 100,
+          "cameras": 1000,
+          "sensors": ["seismic_monitoring", "pressure_sensors", "thermal_imaging", "chemical_detection"],
+          "weaknesses": ["construction_access_points", "utility_tunnel_connections", "visitor_protocols"],
+          "schedule": "impenetrable_fortress_security"
+        },
+        "digital": {
+          "level": "central_banking_maximum",
+          "measures": ["quantum_encryption_grid", "ai_intrusion_detection", "financial_isolation_protocols"],
+          "network": "federal_reserve_secure_network",
+          "encryption": "banking_quantum_grade",
+          "backups": "geographically_distributed_bunkers",
+          "weaknesses": ["international_swift_connections", "legacy_mainframe_interfaces", "regulatory_reporting_systems"]
+        },
+        "personnel": {
+          "level": "federal_banking_elite",
+          "background_checks": "extensive_financial_investigation",
+          "security_awareness": "central_banking_trained",
+          "access_controls": "multi_person_authorization_required"
+        }
+      },
+
+      "requirements": {
+        "minimumSkills": {
+          "hacking": 55,
+          "stealth": 50,
+          "social": 45,
+          "physical": 40,
+          "intelligence": 55
+        },
+        "requiredUpgrades": ["quantum_algorithms", "ghost_protocol", "psychological_profiling", "cutting_edge_tech"],
+        "timeWindow": "legendary_difficulty",
+        "operationDuration": { "min": 600, "max": 960 }
+      },
+
+      "infiltrationMethods": [
+        {
+          "method": "digital",
+          "name": "Federal Reserve Network Penetration",
+          "difficulty": 0.95,
+          "description": "Breach the most secure financial networks in the world",
+          "timeRequired": 720,
+          "detectionRisk": 0.8,
+          "requirements": { "hacking": 65, "intelligence": 60 },
+          "approach": "Quantum-level attack on central banking infrastructure"
+        },
+        {
+          "method": "physical",
+          "name": "Gold Vault Infiltration",
+          "difficulty": 0.9,
+          "description": "Penetrate the world's most secure underground vault system",
+          "timeRequired": 660,
+          "detectionRisk": 0.75,
+          "requirements": { "stealth": 55, "physical": 45, "intelligence": 50 },
+          "approach": "Multi-stage infiltration through fortress-level security"
+        },
+        {
+          "method": "hybrid",
+          "name": "Federal Reserve Governor Social Engineering",
+          "difficulty": 0.85,
+          "description": "Target Federal Reserve Board members for system access",
+          "timeRequired": 600,
+          "detectionRisk": 0.6,
+          "requirements": { "social": 50, "intelligence": 55, "hacking": 45 },
+          "approach": "Long-term operation targeting highest levels of financial power"
+        }
+      ],
+
+      "rewards": {
+        "primary": {
+          "money": { "min": 20000, "max": 35000 },
+          "experience": 2500,
+          "reputation": 200
+        },
+        "information": {
+          "monetary_policy_decisions": {
+            "value": 500000,
+            "description": "Advance knowledge of Federal Reserve policy decisions",
+            "usefulness": "Unprecedented market manipulation capabilities"
+          },
+          "international_gold_reserves": {
+            "value": 300000,
+            "description": "Complete inventory and ownership records of global gold reserves",
+            "usefulness": "International financial intelligence and manipulation"
+          },
+          "central_bank_communications": {
+            "value": 400000,
+            "description": "Confidential communications between world central banks",
+            "usefulness": "Global economic intelligence and currency manipulation"
+          },
+          "digital_currency_development": {
+            "value": 600000,
+            "description": "Federal Reserve digital currency implementation plans",
+            "usefulness": "Revolutionary financial technology and policy intelligence"
+          }
+        },
+        "bonuses": {
+          "financial_system_access": { "money": 200000, "reputation": 100 },
+          "global_economic_intelligence": { "reputation": 150, "international_criminal_network_access": true },
+          "federal_reserve_ongoing_access": { "information": ["real_time_monetary_policy"], "reputation": 200 }
+        }
+      },
+
+      "risks": {
+        "detection": {
+          "probability": 0.8,
+          "consequences": {
+            "immediate": "Federal armed response, immediate facility lockdown",
+            "investigation": "Treasury Department, FBI, Secret Service joint investigation",
+            "heat_increase": 100,
+            "evidence_trail": "international_manhunt_priority"
+          }
+        },
+        "failure": {
+          "probability": 0.6,
+          "consequences": {
+            "capture": "Federal detention, economic terrorism charges",
+            "exposure": "International financial emergency, global manhunt",
+            "reputation_loss": 150
+          }
+        },
+        "complications": [
+          {
+            "event": "federal_reserve_meeting",
+            "probability": 0.5,
+            "description": "Policy meetings bring maximum security and attention"
+          },
+          {
+            "event": "international_crisis",
+            "probability": 0.3,
+            "description": "Global financial crises increase security to maximum levels"
+          },
+          {
+            "event": "vault_audit",
+            "probability": 0.4,
+            "description": "Regular gold audits create intensive security periods"
+          }
+        ]
+      }
+    },
+
+    "black_site": {
+      "id": "black_site",
+      "name": "Site-7 Research Facility",
+      "type": "government",
+      "securityLevel": 5,
+      "location": {
+        "city": "Unknown",
+        "district": "Classified",
+        "address": "Location Denied",
+        "coordinates": { "lat": 0.0000, "lng": 0.0000 }
+      },
+      "description": "Ultra-classified government research facility. Official existence denied. Extreme measures authorized for protection.",
+      "background": "This facility officially does not exist. Intelligence suggests it houses the most classified government research projects including alien technology, advanced mind control experiments, and technologies decades beyond public knowledge.",
+
+      "security": {
+        "physical": {
+          "level": "beyond_classification",
+          "measures": ["lethal_automated_defenses", "underground_bunker_complex", "electromagnetic_isolation"],
+          "guards": 200,
+          "cameras": 2000,
+          "sensors": ["classified_detection_systems", "unknown_technology"],
+          "weaknesses": ["existence_officially_denied"],
+          "schedule": "kill_on_sight_authorization"
+        },
+        "digital": {
+          "level": "alien_technology_grade",
+          "measures": ["unknown_encryption_methods", "ai_beyond_current_technology"],
+          "network": "completely_isolated_unknown_technology",
+          "encryption": "beyond_current_understanding",
+          "backups": "classified_locations_worldwide",
+          "weaknesses": ["human_oversight_required", "technology_not_fully_understood"]
+        },
+        "personnel": {
+          "level": "above_top_secret_unknown",
+          "background_checks": "lifetime_psychological_monitoring",
+          "security_awareness": "mind_control_conditioning",
+          "access_controls": "genetic_verification_required"
+        }
+      },
+
+      "requirements": {
+        "minimumSkills": {
+          "hacking": 70,
+          "stealth": 65,
+          "social": 60,
+          "physical": 55,
+          "intelligence": 70
+        },
+        "requiredUpgrades": ["quantum_algorithms", "ghost_protocol", "psychological_profiling", "cutting_edge_tech"],
+        "timeWindow": "nearly_impossible",
+        "operationDuration": { "min": 720, "max": 1440 }
+      },
+
+      "infiltrationMethods": [
+        {
+          "method": "hybrid",
+          "name": "Multi-Phase Deep Cover Operation",
+          "difficulty": 0.95,
+          "description": "Years-long infiltration using multiple cover identities and approaches",
+          "timeRequired": 960,
+          "detectionRisk": 0.9,
+          "requirements": { "hacking": 70, "stealth": 65, "social": 60, "intelligence": 70 },
+          "approach": "Legendary difficulty operation requiring perfection in all aspects"
+        }
+      ],
+
+      "rewards": {
+        "primary": {
+          "money": { "min": 50000, "max": 100000 },
+          "experience": 10000,
+          "reputation": 500
+        },
+        "information": {
+          "alien_technology": {
+            "value": 10000000,
+            "description": "Recovered alien technology and reverse-engineering projects",
+            "usefulness": "Technology centuries ahead of current human capabilities"
+          },
+          "mind_control_programs": {
+            "value": 5000000,
+            "description": "Advanced psychological manipulation and mind control research",
+            "usefulness": "Ultimate social engineering and control capabilities"
+          },
+          "black_project_database": {
+            "value": 8000000,
+            "description": "Complete catalog of all classified government black projects",
+            "usefulness": "Every government secret and conspiracy theory confirmed"
+          },
+          "shadow_government_structure": {
+            "value": 15000000,
+            "description": "True power structure controlling world governments",
+            "usefulness": "Ultimate conspiracy knowledge - who really runs the world"
+          }
+        },
+        "bonuses": {
+          "world_changing_discovery": { "reputation": 1000, "legendary_status": true },
+          "alien_technology_access": { "capabilities_beyond_human_understanding": true },
+          "shadow_government_contact": { "ultimate_power_behind_scenes": true }
+        }
+      },
+
+      "risks": {
+        "detection": {
+          "probability": 0.95,
+          "consequences": {
+            "immediate": "Immediate elimination authorized, no questions asked",
+            "investigation": "Complete identity erasure, family targeting authorized",
+            "heat_increase": 1000,
+            "evidence_trail": "complete_memory_hole_protocol"
+          }
+        },
+        "failure": {
+          "probability": 0.9,
+          "consequences": {
+            "capture": "Fate worse than death, memory modification",
+            "exposure": "Complete life erasure, never existed",
+            "reputation_loss": 1000
+          }
+        },
+        "complications": [
+          {
+            "event": "alien_technology_activation",
+            "probability": 0.6,
+            "description": "Unknown alien defenses activate automatically"
+          },
+          {
+            "event": "mind_control_detection",
+            "probability": 0.7,
+            "description": "Advanced psychological screening detects infiltration attempts"
+          },
+          {
+            "event": "reality_distortion_field",
+            "probability": 0.8,
+            "description": "Unknown technology makes infiltration nearly impossible"
+          }
+        ]
+      }
+    }
+  }
+}
