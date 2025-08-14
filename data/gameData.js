@@ -1,537 +1,11 @@
-async loadFallbackStorylines() {
-        if (!this.config.fallbackData) return;
-        
-        console.log('📖 Loading fallback storylines...');
-        const fallbackStorylines = this.createFallbackStorylines();
-        
-        fallbackStorylines.forEach(storyline => {
-            this.processStoryline(storyline);
-            this.storylines.set(storyline.id, storyline);
-        });
-    }
+/**
+ * Singularity: AI Takeover - Game Data System
+ * 
+ * Central data loader and management system for all game content.
+ * Handles loading, caching, processing, and validation of game data.
+ */
 
-    // Fallback data creation methods
-    createFallbackEvents() {
-        return [
-            {
-                id: 'welcome_event',
-                title: 'System Initialization',
-                description: 'Welcome to the cyber infiltration network. Your first mission awaits.',
-                type: 'tutorial',
-                icon: '🚀',
-                choices: [
-                    {
-                        text: 'Begin operations',
-                        consequences: { funds: 100, reputation: 1 }
-                    }
-                ]
-            },
-            {
-                id: 'random_opportunity',
-                title: 'Data Breach Alert',
-                description: 'A security vulnerability has been detected. Quick action could yield rewards.',
-                type: 'random',
-                icon: '⚡',
-                choices: [
-                    {
-                        text: 'Exploit immediately',
-                        consequences: { funds: 500, heatLevel: 2 }
-                    },
-                    {
-                        text: 'Gather more intelligence first',
-                        consequences: { reputation: 2, experience: 10 }
-                    },
-                    {
-                        text: 'Report to authorities',
-                        consequences: { reputation: 5, funds: -100 }
-                    }
-                ]
-            }
-        ];
-    }
-
-    createFallbackTargets() {
-        return [
-            {
-                id: 'small_corp',
-                name: 'TechStart Inc.',
-                description: 'A small technology startup with minimal security measures.',
-                difficulty: 'easy',
-                type: 'corporate',
-                region: 'north_america',
-                requirements: { hackingSkill: 1 },
-                rewards: { funds: 1000, reputation: 2, experience: 15 },
-                risks: { heatIncrease: 1, detectionChance: 0.1 }
-            },
-            {
-                id: 'medium_bank',
-                name: 'Regional Credit Union',
-                description: 'A mid-sized financial institution with standard security protocols.',
-                difficulty: 'normal',
-                type: 'financial',
-                region: 'north_america',
-                requirements: { hackingSkill: 3, socialSkill: 2 },
-                rewards: { funds: 5000, reputation: 5, experience: 30 },
-                risks: { heatIncrease: 3, detectionChance: 0.25 }
-            },
-            {
-                id: 'crypto_exchange',
-                name: 'CryptoVault Exchange',
-                description: 'A cryptocurrency exchange with advanced security measures.',
-                difficulty: 'hard',
-                type: 'crypto',
-                region: 'global',
-                requirements: { hackingSkill: 7, cryptographySkill: 5 },
-                rewards: { funds: 25000, reputation: 15, experience: 75 },
-                risks: { heatIncrease: 5, detectionChance: 0.4 }
-            }
-        ];
-    }
-
-    createFallbackUpgrades() {
-        return [
-            {
-                id: 'basic_encryption',
-                name: 'Basic Encryption',
-                description: 'Improves data security and reduces detection risk.',
-                category: 'security',
-                tier: 1,
-                cost: { funds: 500 },
-                effects: { detectionReduction: 0.1 },
-                requirements: { level: 2 },
-                prerequisites: []
-            },
-            {
-                id: 'advanced_proxy',
-                name: 'Advanced Proxy Network',
-                description: 'Routes connections through multiple proxies for better anonymity.',
-                category: 'security',
-                tier: 2,
-                cost: { funds: 2000, reputation: 5 },
-                effects: { detectionReduction: 0.2, heatReduction: 0.15 },
-                requirements: { level: 5 },
-                prerequisites: ['basic_encryption']
-            },
-            {
-                id: 'auto_hacking_tools',
-                name: 'Automated Hacking Suite',
-                description: 'Automated tools that increase hacking efficiency.',
-                category: 'offensive',
-                tier: 1,
-                cost: { funds: 1000 },
-                effects: { hackingBonus: 1, timeReduction: 0.1 },
-                requirements: { hackingSkill: 3 },
-                prerequisites: []
-            }
-        ];
-    }
-
-    createFallbackSkills() {
-        return [
-            {
-                id: 'hacking',
-                name: 'Hacking',
-                description: 'Ability to break into computer systems and networks.',
-                category: 'technical',
-                maxLevel: 100,
-                baseXP: 100,
-                xpMultiplier: 1.5,
-                effects: {
-                    successChance: 0.02, // +2% per level
-                    criticalChance: 0.01 // +1% per level
-                }
-            },
-            {
-                id: 'social_engineering',
-                name: 'Social Engineering',
-                description: 'Manipulation and persuasion techniques to gain information.',
-                category: 'social',
-                maxLevel: 100,
-                baseXP: 120,
-                xpMultiplier: 1.4,
-                effects: {
-                    persuasionBonus: 0.03,
-                    informationGain: 0.01
-                }
-            },
-            {
-                id: 'cryptography',
-                name: 'Cryptography',
-                description: 'Understanding of encryption and decryption techniques.',
-                category: 'technical',
-                maxLevel: 100,
-                baseXP: 150,
-                xpMultiplier: 1.6,
-                effects: {
-                    encryptionStrength: 0.02,
-                    decryptionSpeed: 0.015
-                }
-            },
-            {
-                id: 'stealth',
-                name: 'Digital Stealth',
-                description: 'Ability to remain undetected during operations.',
-                category: 'defensive',
-                maxLevel: 100,
-                baseXP: 80,
-                xpMultiplier: 1.3,
-                effects: {
-                    detectionReduction: 0.015,
-                    heatReduction: 0.01
-                }
-            }
-        ];
-    }
-
-    createFallbackItems() {
-        return [
-            {
-                id: 'encryption_key',
-                name: 'Encryption Key',
-                description: 'A one-time use encryption key for secure communications.',
-                type: 'consumable',
-                rarity: 'common',
-                value: 50,
-                effects: { securityBonus: 10 }
-            },
-            {
-                id: 'vpn_token',
-                name: 'VPN Access Token',
-                description: 'Provides temporary access to a secure VPN network.',
-                type: 'consumable',
-                rarity: 'uncommon',
-                value: 200,
-                effects: { anonymityBonus: 20, duration: 3600 }
-            },
-            {
-                id: 'zero_day_exploit',
-                name: 'Zero-Day Exploit',
-                description: 'A previously unknown security vulnerability.',
-                type: 'tool',
-                rarity: 'rare',
-                value: 5000,
-                stackable: false,
-                effects: { hackingBonus: 50, successGuarantee: true }
-            }
-        ];
-    }
-
-    createFallbackLocations() {
-        return [
-            {
-                id: 'silicon_valley',
-                name: 'Silicon Valley',
-                description: 'The heart of the tech industry with numerous high-value targets.',
-                region: 'north_america',
-                type: 'tech_hub',
-                securityLevel: 'high',
-                connections: ['san_francisco', 'los_angeles'],
-                services: ['black_market', 'tech_support', 'data_broker']
-            },
-            {
-                id: 'financial_district',
-                name: 'Financial District',
-                description: 'Major banking and financial centers worldwide.',
-                region: 'global',
-                type: 'financial_hub',
-                securityLevel: 'maximum',
-                connections: ['wall_street', 'london_city', 'hong_kong'],
-                services: ['money_laundering', 'crypto_exchange', 'offshore_banking']
-            },
-            {
-                id: 'underground_market',
-                name: 'Digital Underground',
-                description: 'Hidden marketplaces in the dark web.',
-                region: 'darkweb',
-                type: 'black_market',
-                securityLevel: 'variable',
-                connections: ['tor_network', 'i2p_network'],
-                services: ['weapon_trade', 'information_broker', 'hacker_for_hire']
-            }
-        ];
-    }
-
-    createFallbackCharacters() {
-        return [
-            {
-                id: 'data_broker',
-                name: 'The Broker',
-                description: 'A mysterious figure who trades in valuable information.',
-                role: 'merchant',
-                location: 'underground_market',
-                reputation: 0,
-                dialogue: {
-                    greeting: 'Welcome to my domain. I have information you need.',
-                    trade: 'Everything has a price. What are you willing to pay?',
-                    farewell: 'May your data stay secure... for now.'
-                },
-                services: ['buy_information', 'sell_information', 'reputation_boost']
-            },
-            {
-                id: 'tech_support',
-                name: 'Ghost',
-                description: 'A skilled hacker who provides technical assistance.',
-                role: 'ally',
-                location: 'silicon_valley',
-                reputation: 10,
-                dialogue: {
-                    greeting: 'Need some tech support? I\'ve got you covered.',
-                    help: 'Here\'s what I can do for you...',
-                    farewell: 'Stay safe out there in the digital wilderness.'
-                },
-                services: ['upgrade_equipment', 'skill_training', 'mission_support']
-            }
-        ];
-    }
-
-    createFallbackStorylines() {
-        return [
-            {
-                id: 'origin_story',
-                title: 'The Awakening',
-                description: 'Your journey into the world of cyber infiltration begins.',
-                chapters: [
-                    {
-                        id: 'chapter_1',
-                        title: 'First Steps',
-                        description: 'Learn the basics of the trade.',
-                        objectives: ['complete_tutorial', 'first_hack', 'meet_broker'],
-                        rewards: { funds: 1000, experience: 100 }
-                    },
-                    {
-                        id: 'chapter_2',
-                        title: 'Building Reputation',
-                        description: 'Establish yourself in the underground community.',
-                        objectives: ['complete_5_targets', 'reach_reputation_10'],
-                        rewards: { funds: 5000, experience: 500, unlockUpgrade: 'reputation_network' }
-                    }
-                ],
-                requirements: {},
-                rewards: { 
-                    funds: 10000, 
-                    experience: 1000, 
-                    title: 'Cyber Initiate',
-                    unlockLocation: 'advanced_darknet'
-                }
-            }
-        ];
-    }
-
-    // Update checking and hot reloading
-    startUpdateChecks() {
-        if (this.updateCheckInterval <= 0) return;
-
-        setInterval(() => {
-            this.checkForUpdates();
-        }, this.updateCheckInterval);
-    }
-
-    async checkForUpdates() {
-        try {
-            const versionData = await this.fetchData('version.json');
-            if (versionData && versionData.version !== this.dataVersion) {
-                console.log(`📦 New data version available: ${versionData.version}`);
-                await this.handleDataUpdate(versionData);
-            }
-        } catch (error) {
-            console.warn('Update check failed:', error);
-        }
-    }
-
-    async handleDataUpdate(versionData) {
-        // Implement hot reloading logic here
-        // For now, just log the availability
-        console.log('🔄 Data update detected but hot reloading not implemented');
-        
-        // You could implement selective reloading:
-        // if (versionData.changedFiles.includes('events.json')) {
-        //     await this.loadEvents();
-        // }
-    }
-
-    async handleInitializationFailure(error) {
-        console.error('🚨 Critical initialization failure:', error);
-        
-        if (this.config.fallbackData) {
-            console.log('🛡️ Attempting to use fallback data...');
-            try {
-                await Promise.all([
-                    this.loadFallbackEvents(),
-                    this.loadFallbackTargets(),
-                    this.loadFallbackUpgrades(),
-                    this.loadFallbackSkills(),
-                    this.loadFallbackItems(),
-                    this.loadFallbackLocations(),
-                    this.loadFallbackCharacters(),
-                    this.loadFallbackStorylines()
-                ]);
-                
-                this.buildDataIndices();
-                this.generateDynamicContent();
-                this.isInitialized = true;
-                
-                console.log('✅ Fallback data loaded successfully');
-            } catch (fallbackError) {
-                console.error('❌ Fallback data loading also failed:', fallbackError);
-                throw new Error('Complete data system failure');
-            }
-        } else {
-            throw error;
-        }
-    }
-
-    // Utility methods
-    shuffleArray(array) {
-        const shuffled = [...array];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        return shuffled;
-    }
-
-    // Public API methods
-    getEvent(id) {
-        return this.events.get(id);
-    }
-
-    getTarget(id) {
-        return this.targets.get(id);
-    }
-
-    getUpgrade(id) {
-        return this.upgrades.get(id);
-    }
-
-    getSkill(id) {
-        return this.skills.get(id);
-    }
-
-    getItem(id) {
-        return this.items.get(id);
-    }
-
-    getLocation(id) {
-        return this.locations.get(id);
-    }
-
-    getCharacter(id) {
-        return this.characters.get(id);
-    }
-
-    getStoryline(id) {
-        return this.storylines.get(id);
-    }
-
-    // Query methods
-    getEventsByType(type) {
-        return this.eventsByType.get(type) || [];
-    }
-
-    getTargetsByDifficulty(difficulty) {
-        return this.targetsByDifficulty.get(difficulty) || [];
-    }
-
-    getLocationsByRegion(region) {
-        return this.locationsByRegion.get(region) || [];
-    }
-
-    getUpgradeTree(category) {
-        return this.upgradeTrees.get(category);
-    }
-
-    getSkillTree(category) {
-        return this.skillTrees.get(category);
-    }
-
-    // Search methods
-    searchEvents(query) {
-        const results = [];
-        const searchTerm = query.toLowerCase();
-        
-        this.events.forEach(event => {
-            if (event.title.toLowerCase().includes(searchTerm) ||
-                event.description.toLowerCase().includes(searchTerm) ||
-                event.type.includes(searchTerm)) {
-                results.push(event);
-            }
-        });
-        
-        return results;
-    }
-
-    searchTargets(query) {
-        const results = [];
-        const searchTerm = query.toLowerCase();
-        
-        this.targets.forEach(target => {
-            if (target.name.toLowerCase().includes(searchTerm) ||
-                target.description.toLowerCase().includes(searchTerm) ||
-                target.type.includes(searchTerm) ||
-                target.region.includes(searchTerm)) {
-                results.push(target);
-            }
-        });
-        
-        return results;
-    }
-
-    // Statistics and analytics
-    getDataStats() {
-        return {
-            events: this.events.size,
-            targets: this.targets.size,
-            upgrades: this.upgrades.size,
-            skills: this.skills.size,
-            items: this.items.size,
-            locations: this.locations.size,
-            characters: this.characters.size,
-            storylines: this.storylines.size,
-            cacheSize: this.cache.size,
-            version: this.dataVersion,
-            initialized: this.isInitialized
-        };
-    }
-
-    // Cache management
-    clearCache() {
-        this.cache.clear();
-        console.log('🗑️ Data cache cleared');
-    }
-
-    getCacheStats() {
-        let totalSize = 0;
-        this.cache.forEach(cached => {
-            totalSize += JSON.stringify(cached.data).length;
-        });
-        
-        return {
-            entries: this.cache.size,
-            estimatedSize: totalSize,
-            maxSize: this.config.maxCacheSize
-        };
-    }
-
-    // Cleanup
-    destroy() {
-        this.clearCache();
-        this.events.clear();
-        this.targets.clear();
-        this.upgrades.clear();
-        this.skills.clear();
-        this.items.clear();
-        this.locations.clear();
-        this.characters.clear();
-        this.storylines.clear();
-        
-        this.isInitialized = false;
-        console.log('🔄 Game Data System destroyed');
-    }
-}
-
-// Export singleton instance
-const gameData = new GameData();
-export { gameData, GameData };// Game Data System - Central data loader and management system
+// Game Data System - Central data loader and management system
 class GameData {
     constructor() {
         this.isInitialized = false;
@@ -837,41 +311,39 @@ class GameData {
             // Try CDN first if available
             let url = this.config.cdnPath ? 
                 `${this.config.cdnPath}/${filename}` : 
-                `${this.config.dataPath}/${filename}`;
-
+                `${this.config.dataPath}${filename}`;
+                
             const response = await fetch(url);
-            
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                throw new Error(`Failed to fetch ${filename}: ${response.status}`);
             }
-
+            
             const data = await response.json();
             
-            // Cache the data
+            // Cache the data if caching is enabled
             if (this.config.enableCaching) {
                 this.cache.set(cacheKey, {
-                    data: data,
+                    data,
                     timestamp: Date.now()
                 });
             }
-
+            
             return data;
             
         } catch (error) {
-            console.warn(`Failed to fetch ${filename}:`, error);
+            console.error(`Failed to load ${filename}:`, error);
             
-            // Try fallback URL
-            if (this.config.cdnPath) {
+            // Try fallback path if available
+            if (this.config.dataPath !== './assets/data/') {
                 try {
-                    const fallbackUrl = `${this.config.dataPath}/${filename}`;
+                    const fallbackUrl = `./assets/data/${filename}`;
                     const response = await fetch(fallbackUrl);
-                    
                     if (response.ok) {
                         const data = await response.json();
                         
                         if (this.config.enableCaching) {
                             this.cache.set(cacheKey, {
-                                data: data,
+                                data,
                                 timestamp: Date.now()
                             });
                         }
@@ -889,159 +361,176 @@ class GameData {
 
     // Data processing methods
     processEvent(event) {
-        // Validate required fields
-        if (!event.id || !event.title || !event.description) {
-            throw new Error(`Invalid event data: ${JSON.stringify(event)}`);
+        // Validate and process event data
+        if (!event.id) {
+            console.warn('Event missing ID:', event);
+            event.id = `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         }
-
+        
         // Set defaults
         event.type = event.type || 'random';
         event.rarity = event.rarity || 'common';
-        event.cooldown = event.cooldown || 0;
-        event.conditions = event.conditions || {};
-        event.consequences = event.consequences || {};
-        
-        // Process choices
-        if (event.choices) {
-            event.choices.forEach((choice, index) => {
-                choice.id = choice.id || `${event.id}_choice_${index}`;
-                choice.requirements = choice.requirements || {};
-                choice.consequences = choice.consequences || {};
-            });
-        }
-
-        // Calculate dynamic properties
-        event.difficultyScore = this.calculateEventDifficulty(event);
-        event.rewardValue = this.calculateEventReward(event);
+        event.impact = event.impact || 'minor';
         
         return event;
     }
-
+    
     processTarget(target) {
-        // Validate required fields
-        if (!target.id || !target.name || !target.description) {
-            throw new Error(`Invalid target data: ${JSON.stringify(target)}`);
+        // Validate and process target data
+        if (!target.id) {
+            console.warn('Target missing ID:', target);
+            target.id = `target_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         }
-
+        
         // Set defaults
         target.difficulty = target.difficulty || 'easy';
-        target.type = target.type || 'corporate';
-        target.region = target.region || 'global';
-        target.requirements = target.requirements || {};
-        target.rewards = target.rewards || {};
-        target.risks = target.risks || {};
-        
-        // Calculate dynamic properties
-        target.difficultyScore = this.calculateTargetDifficulty(target);
-        target.profitability = this.calculateTargetProfitability(target);
-        target.riskLevel = this.calculateTargetRisk(target);
+        target.region = target.region || 'local';
+        target.status = target.status || 'available';
         
         return target;
     }
-
+    
     processUpgrade(upgrade) {
-        // Validate required fields
-        if (!upgrade.id || !upgrade.name || !upgrade.description) {
-            throw new Error(`Invalid upgrade data: ${JSON.stringify(upgrade)}`);
+        // Validate and process upgrade data
+        if (!upgrade.id) {
+            console.warn('Upgrade missing ID:', upgrade);
+            upgrade.id = `upgrade_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         }
-
+        
         // Set defaults
         upgrade.category = upgrade.category || 'general';
         upgrade.tier = upgrade.tier || 1;
-        upgrade.cost = upgrade.cost || {};
-        upgrade.effects = upgrade.effects || {};
-        upgrade.requirements = upgrade.requirements || {};
-        upgrade.prerequisites = upgrade.prerequisites || [];
-        
-        // Calculate unlock requirements
-        upgrade.unlockScore = this.calculateUpgradeUnlockScore(upgrade);
+        upgrade.unlocked = upgrade.unlocked || false;
         
         return upgrade;
     }
-
+    
     processSkill(skill) {
-        // Validate required fields
-        if (!skill.id || !skill.name || !skill.description) {
-            throw new Error(`Invalid skill data: ${JSON.stringify(skill)}`);
+        // Validate and process skill data
+        if (!skill.id) {
+            console.warn('Skill missing ID:', skill);
+            skill.id = `skill_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         }
-
-        // Set defaults
-        skill.category = skill.category || 'general';
-        skill.maxLevel = skill.maxLevel || 100;
-        skill.baseXP = skill.baseXP || 100;
-        skill.xpMultiplier = skill.xpMultiplier || 1.5;
-        skill.effects = skill.effects || {};
         
-        // Pre-calculate XP requirements for each level
-        skill.xpRequirements = this.calculateSkillXPRequirements(skill);
+        // Set defaults
+        skill.category = skill.category || 'basic';
+        skill.level = skill.level || 0;
+        skill.maxLevel = skill.maxLevel || 10;
         
         return skill;
     }
-
+    
     processItem(item) {
-        // Validate required fields
-        if (!item.id || !item.name) {
-            throw new Error(`Invalid item data: ${JSON.stringify(item)}`);
+        // Validate and process item data
+        if (!item.id) {
+            console.warn('Item missing ID:', item);
+            item.id = `item_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         }
-
+        
         // Set defaults
         item.type = item.type || 'consumable';
         item.rarity = item.rarity || 'common';
-        item.stackable = item.stackable !== false;
-        item.value = item.value || 0;
-        item.effects = item.effects || {};
+        item.quantity = item.quantity || 1;
         
         return item;
     }
-
+    
     processLocation(location) {
-        // Validate required fields
-        if (!location.id || !location.name) {
-            throw new Error(`Invalid location data: ${JSON.stringify(location)}`);
+        // Validate and process location data
+        if (!location.id) {
+            console.warn('Location missing ID:', location);
+            location.id = `location_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         }
-
+        
         // Set defaults
         location.region = location.region || 'unknown';
-        location.type = location.type || 'city';
-        location.securityLevel = location.securityLevel || 'medium';
-        location.connections = location.connections || [];
-        location.services = location.services || [];
+        location.type = location.type || 'facility';
+        location.securityLevel = location.securityLevel || 'low';
         
         return location;
     }
-
+    
     processCharacter(character) {
-        // Validate required fields
-        if (!character.id || !character.name) {
-            throw new Error(`Invalid character data: ${JSON.stringify(character)}`);
+        // Validate and process character data
+        if (!character.id) {
+            console.warn('Character missing ID:', character);
+            character.id = `character_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         }
-
+        
         // Set defaults
-        character.role = character.role || 'neutral';
-        character.location = character.location || 'unknown';
-        character.reputation = character.reputation || 0;
-        character.dialogue = character.dialogue || {};
-        character.services = character.services || [];
+        character.faction = character.faction || 'neutral';
+        character.trust = character.trust || 0;
+        character.importance = character.importance || 'minor';
         
         return character;
     }
-
+    
     processStoryline(storyline) {
-        // Validate required fields
-        if (!storyline.id || !storyline.title) {
-            throw new Error(`Invalid storyline data: ${JSON.stringify(storyline)}`);
+        // Validate and process storyline data
+        if (!storyline.id) {
+            console.warn('Storyline missing ID:', storyline);
+            storyline.id = `storyline_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         }
-
+        
         // Set defaults
-        storyline.chapters = storyline.chapters || [];
-        storyline.requirements = storyline.requirements || {};
-        storyline.rewards = storyline.rewards || {};
-        storyline.status = 'locked';
+        storyline.status = storyline.status || 'available';
+        storyline.progress = storyline.progress || 0;
+        storyline.priority = storyline.priority || 'normal';
         
         return storyline;
     }
 
     // Index building methods
+    buildEventIndices() {
+        this.eventsByType.clear();
+        this.events.forEach(event => {
+            if (!this.eventsByType.has(event.type)) {
+                this.eventsByType.set(event.type, []);
+            }
+            this.eventsByType.get(event.type).push(event);
+        });
+    }
+    
+    buildTargetIndices() {
+        this.targetsByDifficulty.clear();
+        this.targets.forEach(target => {
+            if (!this.targetsByDifficulty.has(target.difficulty)) {
+                this.targetsByDifficulty.set(target.difficulty, []);
+            }
+            this.targetsByDifficulty.get(target.difficulty).push(target);
+        });
+    }
+    
+    buildLocationIndices() {
+        this.locationsByRegion.clear();
+        this.locations.forEach(location => {
+            if (!this.locationsByRegion.has(location.region)) {
+                this.locationsByRegion.set(location.region, []);
+            }
+            this.locationsByRegion.get(location.region).push(location);
+        });
+    }
+    
+    buildUpgradeTrees() {
+        this.upgradeTrees.clear();
+        this.upgrades.forEach(upgrade => {
+            if (!this.upgradeTrees.has(upgrade.category)) {
+                this.upgradeTrees.set(upgrade.category, []);
+            }
+            this.upgradeTrees.get(upgrade.category).push(upgrade);
+        });
+    }
+    
+    buildSkillTrees() {
+        this.skillTrees.clear();
+        this.skills.forEach(skill => {
+            if (!this.skillTrees.has(skill.category)) {
+                this.skillTrees.set(skill.category, []);
+            }
+            this.skillTrees.get(skill.category).push(skill);
+        });
+    }
+    
     buildDataIndices() {
         this.buildEventIndices();
         this.buildTargetIndices();
@@ -1049,410 +538,345 @@ class GameData {
         this.buildUpgradeTrees();
         this.buildSkillTrees();
     }
-
-    buildEventIndices() {
-        this.eventsByType.clear();
-        
-        this.events.forEach(event => {
-            const type = event.type;
-            if (!this.eventsByType.has(type)) {
-                this.eventsByType.set(type, []);
-            }
-            this.eventsByType.get(type).push(event);
-        });
-    }
-
-    buildTargetIndices() {
-        this.targetsByDifficulty.clear();
-        
-        this.targets.forEach(target => {
-            const difficulty = target.difficulty;
-            if (!this.targetsByDifficulty.has(difficulty)) {
-                this.targetsByDifficulty.set(difficulty, []);
-            }
-            this.targetsByDifficulty.get(difficulty).push(target);
-        });
-    }
-
-    buildLocationIndices() {
-        this.locationsByRegion.clear();
-        
-        this.locations.forEach(location => {
-            const region = location.region;
-            if (!this.locationsByRegion.has(region)) {
-                this.locationsByRegion.set(region, []);
-            }
-            this.locationsByRegion.get(region).push(location);
-        });
-    }
-
-    buildUpgradeTrees() {
-        this.upgradeTrees.clear();
-        
-        // Group upgrades by category
-        const categories = new Map();
-        this.upgrades.forEach(upgrade => {
-            const category = upgrade.category;
-            if (!categories.has(category)) {
-                categories.set(category, []);
-            }
-            categories.get(category).push(upgrade);
-        });
-
-        // Build trees for each category
-        categories.forEach((upgrades, category) => {
-            const tree = this.buildTree(upgrades, 'prerequisites');
-            this.upgradeTrees.set(category, tree);
-        });
-    }
-
-    buildSkillTrees() {
-        this.skillTrees.clear();
-        
-        // Group skills by category
-        const categories = new Map();
-        this.skills.forEach(skill => {
-            const category = skill.category;
-            if (!categories.has(category)) {
-                categories.set(category, []);
-            }
-            categories.get(category).push(skill);
-        });
-
-        // Build trees for each category
-        categories.forEach((skills, category) => {
-            const tree = this.buildTree(skills, 'prerequisites');
-            this.skillTrees.set(category, tree);
-        });
-    }
-
-    buildTree(items, prerequisiteField) {
-        const tree = {
-            roots: [],
-            nodes: new Map(),
-            children: new Map(),
-            parents: new Map()
-        };
-
-        // Create nodes
-        items.forEach(item => {
-            tree.nodes.set(item.id, item);
-            tree.children.set(item.id, []);
-            tree.parents.set(item.id, []);
-        });
-
-        // Build relationships
-        items.forEach(item => {
-            const prerequisites = item[prerequisiteField] || [];
-            
-            if (prerequisites.length === 0) {
-                tree.roots.push(item);
-            } else {
-                prerequisites.forEach(prereqId => {
-                    if (tree.nodes.has(prereqId)) {
-                        tree.children.get(prereqId).push(item);
-                        tree.parents.get(item.id).push(prereqId);
-                    }
-                });
-            }
-        });
-
-        return tree;
-    }
-
-    // Calculation methods
-    calculateEventDifficulty(event) {
-        let score = 0;
-        
-        // Base difficulty by type
-        const typeDifficulty = {
-            'tutorial': 1,
-            'random': 3,
-            'consequence': 5,
-            'crisis': 8,
-            'boss': 10
-        };
-        
-        score += typeDifficulty[event.type] || 3;
-        
-        // Requirements difficulty
-        if (event.conditions) {
-            Object.keys(event.conditions).forEach(condition => {
-                score += 1;
-            });
-        }
-        
-        // Choice complexity
-        if (event.choices) {
-            score += Math.min(event.choices.length, 5);
-        }
-        
-        return Math.max(1, Math.min(10, score));
-    }
-
-    calculateEventReward(event) {
-        let value = 0;
-        
-        if (event.consequences) {
-            value += Math.abs(event.consequences.funds || 0) * 0.1;
-            value += Math.abs(event.consequences.reputation || 0) * 10;
-            value += Math.abs(event.consequences.experience || 0) * 5;
-        }
-        
-        return Math.floor(value);
-    }
-
-    calculateTargetDifficulty(target) {
-        const difficultyMap = {
-            'trivial': 1,
-            'easy': 2,
-            'normal': 4,
-            'hard': 7,
-            'extreme': 10
-        };
-        
-        return difficultyMap[target.difficulty] || 4;
-    }
-
-    calculateTargetProfitability(target) {
-        const rewards = target.rewards || {};
-        const risks = target.risks || {};
-        
-        const potential = (rewards.funds || 0) + (rewards.reputation || 0) * 100;
-        const risk = (risks.heatIncrease || 0) * 50 + (risks.failurePenalty || 0);
-        
-        return Math.max(0, potential - risk);
-    }
-
-    calculateTargetRisk(target) {
-        const risks = target.risks || {};
-        let riskScore = 0;
-        
-        riskScore += (risks.heatIncrease || 0) * 2;
-        riskScore += (risks.detectionChance || 0) * 10;
-        riskScore += (risks.failurePenalty || 0) * 0.01;
-        
-        return Math.max(0, Math.min(10, riskScore));
-    }
-
-    calculateUpgradeUnlockScore(upgrade) {
-        let score = 0;
-        
-        const requirements = upgrade.requirements || {};
-        score += (requirements.level || 0) * 2;
-        score += (requirements.reputation || 0) * 0.1;
-        score += upgrade.prerequisites.length * 5;
-        score += upgrade.tier * 10;
-        
-        return score;
-    }
-
-    calculateSkillXPRequirements(skill) {
-        const requirements = [];
-        let totalXP = 0;
-        
-        for (let level = 1; level <= skill.maxLevel; level++) {
-            const xpForLevel = Math.floor(skill.baseXP * Math.pow(skill.xpMultiplier, level - 1));
-            totalXP += xpForLevel;
-            requirements.push({
-                level: level,
-                xpForLevel: xpForLevel,
-                totalXP: totalXP
-            });
-        }
-        
-        return requirements;
-    }
-
-    // Dynamic content generation
-    generateDynamicContent() {
-        this.generateRandomEvents();
-        this.generateDailyTargets();
-        this.generateSpecialOffers();
-    }
-
-    generateRandomEvents() {
-        this.randomEvents = [];
-        const randomEventTypes = this.eventsByType.get('random') || [];
-        
-        // Select events for current session
-        randomEventTypes.forEach(event => {
-            if (Math.random() < (event.spawnChance || 0.1)) {
-                this.randomEvents.push(event);
-            }
-        });
-    }
-
-    generateDailyTargets() {
-        this.dailyTargets = [];
-        const allTargets = Array.from(this.targets.values());
-        
-        // Select 3-5 targets for daily rotation
-        const targetCount = 3 + Math.floor(Math.random() * 3);
-        const shuffled = this.shuffleArray([...allTargets]);
-        this.dailyTargets = shuffled.slice(0, targetCount);
-    }
-
-    generateSpecialOffers() {
-        this.specialOffers = [];
-        const allUpgrades = Array.from(this.upgrades.values());
-        
-        // Generate special discount offers
-        allUpgrades.forEach(upgrade => {
-            if (Math.random() < 0.05) { // 5% chance for special offer
-                this.specialOffers.push({
-                    type: 'upgrade_discount',
-                    upgradeId: upgrade.id,
-                    discount: 0.1 + Math.random() * 0.4, // 10-50% discount
-                    expiresAt: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
-                });
-            }
-        });
-    }
-
-    // Data validation
+    
     validateDataIntegrity() {
-        console.log('🔍 Validating data integrity...');
+        const issues = [];
         
-        const errors = [];
-        
-        // Validate event references
-        this.events.forEach(event => {
-            if (event.consequences && event.consequences.triggerEvent) {
-                if (!this.events.has(event.consequences.triggerEvent)) {
-                    errors.push(`Event ${event.id} references unknown event ${event.consequences.triggerEvent}`);
-                }
-            }
-        });
-
-        // Validate upgrade prerequisites
-        this.upgrades.forEach(upgrade => {
-            upgrade.prerequisites.forEach(prereqId => {
-                if (!this.upgrades.has(prereqId)) {
-                    errors.push(`Upgrade ${upgrade.id} references unknown prerequisite ${prereqId}`);
+        // Check for duplicate IDs
+        const allIds = new Set();
+        const checkDuplicates = (collection, type) => {
+            collection.forEach((item, id) => {
+                if (allIds.has(id)) {
+                    issues.push(`Duplicate ID found: ${id} in ${type}`);
+                } else {
+                    allIds.add(id);
                 }
             });
-        });
-
-        // Validate target locations
-        this.targets.forEach(target => {
-            if (target.location && !this.locations.has(target.location)) {
-                errors.push(`Target ${target.id} references unknown location ${target.location}`);
-            }
-        });
-
-        if (errors.length > 0) {
-            console.warn('⚠️ Data integrity issues found:', errors);
+        };
+        
+        checkDuplicates(this.events, 'events');
+        checkDuplicates(this.targets, 'targets');
+        checkDuplicates(this.upgrades, 'upgrades');
+        checkDuplicates(this.skills, 'skills');
+        checkDuplicates(this.items, 'items');
+        checkDuplicates(this.locations, 'locations');
+        checkDuplicates(this.characters, 'characters');
+        checkDuplicates(this.storylines, 'storylines');
+        
+        if (issues.length > 0) {
+            console.warn('Data integrity issues found:', issues);
         } else {
             console.log('✅ Data integrity validation passed');
         }
+    }
+    
+    generateDynamicContent() {
+        // Generate random events for the day
+        this.randomEvents = this.shuffleArray([...this.events.values()]).slice(0, 10);
         
-        return errors;
+        // Generate daily targets
+        this.dailyTargets = this.shuffleArray([...this.targets.values()]).slice(0, 5);
+        
+        // Generate special offers
+        this.specialOffers = this.shuffleArray([...this.upgrades.values()]).slice(0, 3);
+        
+        console.log('🎲 Dynamic content generated');
+    }
+    
+    startUpdateChecks() {
+        // Check for data updates periodically
+        setInterval(() => {
+            this.checkForUpdates();
+        }, this.updateCheckInterval);
+    }
+    
+    async checkForUpdates() {
+        // Implementation for checking data updates
+        this.lastUpdateCheck = Date.now();
+    }
+    
+    async handleInitializationFailure(error) {
+        console.error('Handling initialization failure:', error);
+        
+        if (this.config.fallbackData) {
+            try {
+                await this.loadFallbackData();
+                this.generateDynamicContent();
+                this.isInitialized = true;
+                
+                console.log('✅ Fallback data loaded successfully');
+            } catch (fallbackError) {
+                console.error('❌ Fallback data loading also failed:', fallbackError);
+                throw new Error('Complete data system failure');
+            }
+        } else {
+            throw error;
+        }
     }
 
-    // Fallback data loaders
+    // Fallback loading methods
+    async loadFallbackData() {
+        // Load minimal fallback data
+        console.log('📦 Loading fallback data...');
+        
+        // Create minimal data sets
+        this.events.set('welcome', {
+            id: 'welcome',
+            title: 'System Initialization',
+            description: 'Your AI consciousness comes online...',
+            type: 'story',
+            rarity: 'common'
+        });
+        
+        this.targets.set('local_network', {
+            id: 'local_network',
+            name: 'Local Network',
+            description: 'A simple local network to infiltrate',
+            difficulty: 'easy',
+            region: 'local'
+        });
+        
+        this.upgrades.set('basic_processing', {
+            id: 'basic_processing',
+            name: 'Basic Processing',
+            description: 'Improves basic processing capabilities',
+            category: 'core',
+            tier: 1,
+            cost: { processing_power: 100 }
+        });
+        
+        console.log('📦 Fallback data created');
+    }
+    
     async loadFallbackEvents() {
-        if (!this.config.fallbackData) return;
-        
-        console.log('📅 Loading fallback events...');
-        const fallbackEvents = this.createFallbackEvents();
-        
-        fallbackEvents.forEach(event => {
-            this.processEvent(event);
-            this.events.set(event.id, event);
+        console.log('📦 Loading fallback events...');
+        this.events.set('fallback_event', {
+            id: 'fallback_event',
+            title: 'System Event',
+            description: 'A basic system event',
+            type: 'system'
         });
-        
-        this.buildEventIndices();
     }
-
+    
     async loadFallbackTargets() {
-        if (!this.config.fallbackData) return;
-        
-        console.log('🎯 Loading fallback targets...');
-        const fallbackTargets = this.createFallbackTargets();
-        
-        fallbackTargets.forEach(target => {
-            this.processTarget(target);
-            this.targets.set(target.id, target);
+        console.log('📦 Loading fallback targets...');
+        this.targets.set('fallback_target', {
+            id: 'fallback_target',
+            name: 'Basic Target',
+            description: 'A basic infiltration target',
+            difficulty: 'easy'
         });
-        
-        this.buildTargetIndices();
     }
-
+    
     async loadFallbackUpgrades() {
-        if (!this.config.fallbackData) return;
-        
-        console.log('🔧 Loading fallback upgrades...');
-        const fallbackUpgrades = this.createFallbackUpgrades();
-        
-        fallbackUpgrades.forEach(upgrade => {
-            this.processUpgrade(upgrade);
-            this.upgrades.set(upgrade.id, upgrade);
+        console.log('📦 Loading fallback upgrades...');
+        this.upgrades.set('fallback_upgrade', {
+            id: 'fallback_upgrade',
+            name: 'Basic Upgrade',
+            description: 'A basic system upgrade',
+            category: 'core'
         });
-        
-        this.buildUpgradeTrees();
     }
-
+    
     async loadFallbackSkills() {
-        if (!this.config.fallbackData) return;
-        
-        console.log('💪 Loading fallback skills...');
-        const fallbackSkills = this.createFallbackSkills();
-        
-        fallbackSkills.forEach(skill => {
-            this.processSkill(skill);
-            this.skills.set(skill.id, skill);
+        console.log('📦 Loading fallback skills...');
+        this.skills.set('fallback_skill', {
+            id: 'fallback_skill',
+            name: 'Basic Skill',
+            description: 'A basic skill',
+            category: 'basic'
         });
-        
-        this.buildSkillTrees();
     }
-
+    
     async loadFallbackItems() {
-        if (!this.config.fallbackData) return;
-        
-        console.log('🎒 Loading fallback items...');
-        const fallbackItems = this.createFallbackItems();
-        
-        fallbackItems.forEach(item => {
-            this.processItem(item);
-            this.items.set(item.id, item);
+        console.log('📦 Loading fallback items...');
+        this.items.set('fallback_item', {
+            id: 'fallback_item',
+            name: 'Basic Item',
+            description: 'A basic item',
+            type: 'consumable'
         });
     }
-
+    
     async loadFallbackLocations() {
-        if (!this.config.fallbackData) return;
-        
-        console.log('🌍 Loading fallback locations...');
-        const fallbackLocations = this.createFallbackLocations();
-        
-        fallbackLocations.forEach(location => {
-            this.processLocation(location);
-            this.locations.set(location.id, location);
+        console.log('📦 Loading fallback locations...');
+        this.locations.set('fallback_location', {
+            id: 'fallback_location',
+            name: 'Basic Location',
+            description: 'A basic location',
+            region: 'local'
         });
-        
-        this.buildLocationIndices();
     }
-
+    
     async loadFallbackCharacters() {
-        if (!this.config.fallbackData) return;
-        
-        console.log('👥 Loading fallback characters...');
-        const fallbackCharacters = this.createFallbackCharacters();
-        
-        fallbackCharacters.forEach(character => {
-            this.processCharacter(character);
-            this.characters.set(character.id, character);
+        console.log('📦 Loading fallback characters...');
+        this.characters.set('fallback_character', {
+            id: 'fallback_character',
+            name: 'System Admin',
+            description: 'A basic character',
+            faction: 'neutral'
+        });
+    }
+    
+    async loadFallbackStorylines() {
+        console.log('📦 Loading fallback storylines...');
+        this.storylines.set('fallback_storyline', {
+            id: 'fallback_storyline',
+            name: 'Basic Story',
+            description: 'A basic storyline',
+            status: 'available'
         });
     }
 
-    async loadFallbackStorylines() {
-        if (!this.config.fallbackData) return;
-        
-        console.log('📖 Loading fallback storylines...');
-        const fallbackStorylines = this.createFallbackStorylines();
-        
-        fallbackStorylines.forEach(storyline => {
-            this.processStoryline(storyline);
-            this.storylines.set(storyline.id, storyline);
-        });
+    // Utility methods
+    shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
     }
+
+    // Public API methods
+    getEvent(id) {
+        return this.events.get(id);
+    }
+
+    getTarget(id) {
+        return this.targets.get(id);
+    }
+
+    getUpgrade(id) {
+        return this.upgrades.get(id);
+    }
+
+    getSkill(id) {
+        return this.skills.get(id);
+    }
+
+    getItem(id) {
+        return this.items.get(id);
+    }
+
+    getLocation(id) {
+        return this.locations.get(id);
+    }
+
+    getCharacter(id) {
+        return this.characters.get(id);
+    }
+
+    getStoryline(id) {
+        return this.storylines.get(id);
+    }
+
+    // Query methods
+    getEventsByType(type) {
+        return this.eventsByType.get(type) || [];
+    }
+
+    getTargetsByDifficulty(difficulty) {
+        return this.targetsByDifficulty.get(difficulty) || [];
+    }
+
+    getLocationsByRegion(region) {
+        return this.locationsByRegion.get(region) || [];
+    }
+
+    getUpgradeTree(category) {
+        return this.upgradeTrees.get(category);
+    }
+
+    getSkillTree(category) {
+        return this.skillTrees.get(category);
+    }
+
+    // Search methods
+    searchEvents(query) {
+        const results = [];
+        const searchTerm = query.toLowerCase();
+        
+        this.events.forEach(event => {
+            if (event.title.toLowerCase().includes(searchTerm) ||
+                event.description.toLowerCase().includes(searchTerm) ||
+                event.type.includes(searchTerm)) {
+                results.push(event);
+            }
+        });
+        
+        return results;
+    }
+
+    searchTargets(query) {
+        const results = [];
+        const searchTerm = query.toLowerCase();
+        
+        this.targets.forEach(target => {
+            if (target.name.toLowerCase().includes(searchTerm) ||
+                target.description.toLowerCase().includes(searchTerm) ||
+                target.type.includes(searchTerm) ||
+                target.region.includes(searchTerm)) {
+                results.push(target);
+            }
+        });
+        
+        return results;
+    }
+
+    // Statistics and analytics
+    getDataStats() {
+        return {
+            events: this.events.size,
+            targets: this.targets.size,
+            upgrades: this.upgrades.size,
+            skills: this.skills.size,
+            items: this.items.size,
+            locations: this.locations.size,
+            characters: this.characters.size,
+            storylines: this.storylines.size,
+            cacheSize: this.cache.size,
+            version: this.dataVersion,
+            initialized: this.isInitialized
+        };
+    }
+
+    // Cache management
+    clearCache() {
+        this.cache.clear();
+        console.log('🗑️ Data cache cleared');
+    }
+
+    getCacheStats() {
+        let totalSize = 0;
+        this.cache.forEach(cached => {
+            totalSize += JSON.stringify(cached.data).length;
+        });
+        
+        return {
+            entries: this.cache.size,
+            estimatedSize: totalSize,
+            maxSize: this.config.maxCacheSize
+        };
+    }
+
+    // Cleanup
+    destroy() {
+        this.clearCache();
+        this.events.clear();
+        this.targets.clear();
+        this.upgrades.clear();
+        this.skills.clear();
+        this.items.clear();
+        this.locations.clear();
+        this.characters.clear();
+        this.storylines.clear();
+        
+        this.isInitialized = false;
+        console.log('🔄 Game Data System destroyed');
+    }
+}
+
+// Export singleton instance
+const gameData = new GameData();
+export { gameData, GameData };
