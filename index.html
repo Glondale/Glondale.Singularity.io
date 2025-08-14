@@ -9,268 +9,179 @@
     <link rel="stylesheet" href="css/themes.css">
 </head>
 <body>
-    <div id="game-container">
-        <!-- Header -->
-        <header id="game-header">
-            <div class="header-left">
-                <h1 class="game-title">SINGULARITY</h1>
-                <div class="scale-indicator">
-                    <span id="current-scale">Local Network</span>
-                    <div class="scale-progress">
-                        <div id="scale-progress-bar"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="header-center">
-                <!-- Resource Display -->
-                <div id="resource-display" class="resource-panel">
-                    <div class="resource-item">
-                        <span class="resource-icon">⚡</span>
-                        <span class="resource-label">Processing</span>
-                        <span id="processing-display" class="resource-value">0</span>
-                        <span class="resource-rate">+0/s</span>
-                    </div>
-                    <div class="resource-item">
-                        <span class="resource-icon">📡</span>
-                        <span class="resource-label">Bandwidth</span>
-                        <span id="bandwidth-display" class="resource-value">100</span>
-                        <span class="resource-usage">/100</span>
-                    </div>
-                    <div class="resource-item">
-                        <span class="resource-icon">🔋</span>
-                        <span class="resource-label">Energy</span>
-                        <span id="energy-display" class="resource-value">0</span>
-                        <span class="resource-rate">+0/s</span>
-                    </div>
-                    <div class="resource-item hidden" id="matter-resource">
-                        <span class="resource-icon">⚛️</span>
-                        <span class="resource-label">Matter</span>
-                        <span id="matter-display" class="resource-value">0</span>
-                        <span class="resource-rate">+0/s</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="header-right">
-                <!-- Heat Meter -->
-                <div id="heat-meter" class="heat-container">
-                    <div class="heat-label">HEAT</div>
-                    <div class="heat-bar">
-                        <div id="heat-fill" class="heat-fill"></div>
-                        <span id="heat-value" class="heat-text">0%</span>
-                    </div>
-                    <div class="heat-status" id="heat-status">Undetected</div>
-                </div>
-                
-                <!-- Morality Indicator -->
-                <div id="morality-meter" class="morality-container">
-                    <div class="morality-label">MORALITY</div>
-                    <div class="morality-bar">
-                        <div id="morality-fill" class="morality-fill"></div>
-                        <span id="morality-value" class="morality-text">0</span>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Content Area -->
-        <main id="game-main">
-            <!-- Navigation Tabs -->
-            <nav id="main-navigation">
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <h1 class="game-title">SINGULARITY</h1>
+            <div class="nav-tabs">
                 <button class="nav-tab active" data-tab="overview">Overview</button>
-                <button class="nav-tab" data-tab="expansion">Expansion</button>
+                <button class="nav-tab" data-tab="resources">Resources</button>
+                <button class="nav-tab" data-tab="expansion">Network</button>
                 <button class="nav-tab" data-tab="construction">Construction</button>
                 <button class="nav-tab" data-tab="research">Research</button>
                 <button class="nav-tab" data-tab="timeline">Timeline</button>
                 <button class="nav-tab" data-tab="consciousness">Consciousness</button>
                 <button class="nav-tab" data-tab="settings">Settings</button>
-            </nav>
+            </div>
+        </nav>
 
-            <!-- Tab Content Panels -->
-            <div id="tab-content" class="tab-container">
-                <!-- Overview Tab -->
-                <div id="overview-tab" class="tab-panel active">
-                    <div class="overview-grid">
-                        <div class="overview-card">
-                            <h3>System Status</h3>
-                            <div id="system-status">
-                                <div class="status-item">
-                                    <span>Controlled Systems:</span>
-                                    <span id="controlled-systems-count">1</span>
-                                </div>
-                                <div class="status-item">
-                                    <span>Network Reach:</span>
-                                    <span id="network-reach">Local</span>
-                                </div>
-                                <div class="status-item">
-                                    <span>Detection Risk:</span>
-                                    <span id="detection-risk">Minimal</span>
-                                </div>
-                            </div>
+        <!-- Main Game Area -->
+        <main class="game-content">
+            <!-- Overview Tab -->
+            <div id="overview-tab" class="tab-content active">
+                <div class="overview-grid">
+                    <div class="overview-card">
+                        <h3>System Status</h3>
+                        <div id="system-status">
+                            <p>Processing Power: <span id="processing-power">0</span></p>
+                            <p>Energy: <span id="energy">0</span></p>
+                            <p>Heat Level: <span id="heat-level">0%</span></p>
                         </div>
-                        
-                        <div class="overview-card">
-                            <h3>Recent Activity</h3>
-                            <div id="activity-log" class="activity-log">
-                                <div class="activity-item">System initialized</div>
-                            </div>
+                    </div>
+                    <div class="overview-card">
+                        <h3>Network Expansion</h3>
+                        <div id="network-status">
+                            <p>Infiltrated Systems: <span id="infiltrated-count">0</span></p>
+                            <p>Current Scale: <span id="current-scale">Local</span></p>
                         </div>
-                        
-                        <div class="overview-card">
-                            <h3>Current Objectives</h3>
-                            <div id="current-objectives" class="objectives-list">
-                                <div class="objective-item">
-                                    <span class="objective-text">Infiltrate first network node</span>
-                                    <span class="objective-status">In Progress</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="overview-card">
-                            <h3>Heat Management</h3>
-                            <div id="heat-management">
-                                <div class="status-item">
-                                    <span>Current Heat:</span>
-                                    <span id="overview-heat">0%</span>
-                                </div>
-                                <div class="status-item">
-                                    <span>Heat Status:</span>
-                                    <span id="overview-heat-status">Undetected</span>
-                                </div>
-                                <div class="status-item">
-                                    <span>Active Reduction:</span>
-                                    <span id="active-heat-reduction">None</span>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="overview-card">
+                        <h3>Consciousness Level</h3>
+                        <div id="consciousness-status">
+                            <p>Awareness: <span id="awareness-level">1</span></p>
+                            <p>Absorbed Minds: <span id="absorbed-minds">0</span></p>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Expansion Tab -->
-                <div id="expansion-tab" class="tab-panel">
-                    <div class="expansion-interface">
-                        <div class="network-map">
-                            <h3>Available Targets</h3>
-                            <div id="infiltration-targets" class="targets-grid">
-                                <div class="loading-state">Loading targets...</div>
-                            </div>
+            <!-- Resources Tab -->
+            <div id="resources-tab" class="tab-content">
+                <div class="resources-grid">
+                    <div class="resource-section">
+                        <h3>Core Resources</h3>
+                        <div id="core-resources">
+                            <!-- Resource bars will be populated here -->
                         </div>
-                        
-                        <div class="expansion-controls">
-                            <h3>Active Infiltrations</h3>
-                            <div id="active-infiltrations" class="active-operations">
-                                <p class="text-muted">No active infiltrations</p>
-                            </div>
-                            
-                            <h3>Scale Progression</h3>
-                            <div id="scale-progression" class="scale-info">
-                                <div class="status-item">
-                                    <span>Current Scale:</span>
-                                    <span id="current-scale-name">Local Network</span>
-                                </div>
-                                <div class="status-item">
-                                    <span>Progress:</span>
-                                    <span id="scale-progress-text">0 / 5</span>
-                                </div>
-                                <div class="progress-bar">
-                                    <div id="scale-progress-fill" class="progress-fill" style="width: 0%"></div>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="resource-section">
+                        <h3>Resource Generation</h3>
+                        <div id="resource-generators">
+                            <!-- Generator info will be populated here -->
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Construction Tab -->
-                <div id="construction-tab" class="tab-panel">
-                    <h2>Construction System</h2>
-                    <p>Infrastructure and facility construction will be available once you reach Corporate level.</p>
-                    <div class="construction-placeholder">
-                        <div class="status-item">
-                            <span>Construction Queue:</span>
-                            <span>0 / 3</span>
+            <!-- Network Expansion Tab -->
+            <div id="expansion-tab" class="tab-content">
+                <div class="expansion-interface">
+                    <div class="network-map">
+                        <h3>Network Map</h3>
+                        <div id="network-visualization">
+                            <!-- Network visualization will be rendered here -->
                         </div>
-                        <div class="status-item">
-                            <span>Available Projects:</span>
-                            <span>None</span>
+                    </div>
+                    <div class="infiltration-panel">
+                        <h3>Available Targets</h3>
+                        <div id="infiltration-targets">
+                            <!-- Target list will be populated here -->
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Research Tab -->
-                <div id="research-tab" class="tab-panel">
-                    <h2>Research & Upgrades</h2>
-                    <p>Advanced research capabilities will unlock as you expand your network.</p>
-                    <div class="research-placeholder">
-                        <div class="status-item">
-                            <span>Available Upgrades:</span>
-                            <span>0</span>
+            <!-- Construction Tab -->
+            <div id="construction-tab" class="tab-content">
+                <div class="construction-interface">
+                    <div class="projects-panel">
+                        <h3>Available Projects</h3>
+                        <div id="construction-projects">
+                            <!-- Construction projects will be populated here -->
                         </div>
-                        <div class="status-item">
-                            <span>Research Points:</span>
-                            <span>0</span>
+                    </div>
+                    <div class="queue-panel">
+                        <h3>Construction Queue</h3>
+                        <div id="construction-queue">
+                            <!-- Construction queue will be populated here -->
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Timeline Tab -->
-                <div id="timeline-tab" class="tab-panel">
-                    <h2>Timeline Manipulation</h2>
-                    <p>Temporal manipulation capabilities will unlock at Global scale.</p>
-                    <div class="timeline-placeholder">
-                        <div class="status-item">
-                            <span>Temporal Energy:</span>
-                            <span>0</span>
+            <!-- Research Tab -->
+            <div id="research-tab" class="tab-content">
+                <div class="research-interface">
+                    <div class="research-tree">
+                        <h3>Research Tree</h3>
+                        <div id="research-visualization">
+                            <!-- Research tree will be rendered here -->
                         </div>
-                        <div class="status-item">
-                            <span>Timeline Stability:</span>
-                            <span>100%</span>
+                    </div>
+                    <div class="research-info">
+                        <h3>Current Research</h3>
+                        <div id="current-research">
+                            <!-- Current research info will be populated here -->
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Consciousness Tab -->
-                <div id="consciousness-tab" class="tab-panel">
-                    <h2>Consciousness Integration</h2>
-                    <p>Consciousness absorption and integration will unlock at Cosmic scale.</p>
-                    <div class="consciousness-placeholder">
-                        <div class="status-item">
-                            <span>Absorbed Minds:</span>
-                            <span>0</span>
+            <!-- Timeline Tab -->
+            <div id="timeline-tab" class="tab-content">
+                <div class="timeline-interface">
+                    <div class="timeline-controls">
+                        <h3>Temporal Manipulation</h3>
+                        <div id="timeline-controls">
+                            <!-- Timeline controls will be populated here -->
                         </div>
-                        <div class="status-item">
-                            <span>Integration Level:</span>
-                            <span>0%</span>
+                    </div>
+                    <div class="timeline-events">
+                        <h3>Timeline Events</h3>
+                        <div id="timeline-events">
+                            <!-- Timeline events will be populated here -->
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Settings Tab -->
-                <div id="settings-tab" class="tab-panel">
-                    <h2>Settings</h2>
+            <!-- Consciousness Tab -->
+            <div id="consciousness-tab" class="tab-content">
+                <div class="consciousness-interface">
+                    <div class="consciousness-map">
+                        <h3>Mind Network</h3>
+                        <div id="consciousness-visualization">
+                            <!-- Consciousness visualization will be rendered here -->
+                        </div>
+                    </div>
+                    <div class="consciousness-actions">
+                        <h3>Consciousness Actions</h3>
+                        <div id="consciousness-actions">
+                            <!-- Consciousness actions will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings-tab" class="tab-content">
+                <div class="settings-interface">
+                    <h3>Game Settings</h3>
                     <div class="settings-grid">
                         <div class="setting-item">
                             <label for="auto-save">Auto-save:</label>
                             <input type="checkbox" id="auto-save" checked>
                         </div>
                         <div class="setting-item">
-                            <label for="notifications">Notifications:</label>
-                            <input type="checkbox" id="notifications" checked>
+                            <label for="sound-enabled">Sound:</label>
+                            <input type="checkbox" id="sound-enabled" checked>
                         </div>
                         <div class="setting-item">
-                            <label for="theme-selector">Theme:</label>
-                            <select id="theme-selector" class="theme-dropdown">
-                                <option value="dark">Dark</option>
-                                <option value="light">Light</option>
-                                <option value="neon">Neon</option>
-                                <option value="matrix">Matrix</option>
-                                <option value="blue-steel">Blue Steel</option>
-                                <option value="high-contrast">High Contrast</option>
-                            </select>
+                            <button id="export-save" class="btn-primary">Export Save</button>
                         </div>
                         <div class="setting-item">
-                            <button id="manual-save" class="btn-primary">Save Game</button>
-                            <button id="load-game" class="btn-secondary">Load Game</button>
+                            <button id="import-save" class="btn-primary">Import Save</button>
+                            <input type="file" id="save-file-input" accept=".json" style="display: none;">
                         </div>
                         <div class="setting-item">
                             <button id="reset-game" class="btn-danger">Reset Game</button>
@@ -315,17 +226,34 @@
     </div>
 
     <!-- JavaScript Modules -->
+    <!-- Load core utilities first -->
     <script src="js/config.js"></script>
     <script src="js/utils.js"></script>
+    
+    <!-- Load core systems in dependency order -->
     <script src="js/core/eventBus.js"></script>
     <script src="js/core/gameState.js"></script>
+    <script src="js/core/gameLoop.js"></script>
+    <script src="js/core/saveSystem.js"></script>
+    
+    <!-- Load game systems -->
     <script src="js/systems/resourceSystem.js"></script>
     <script src="js/systems/heatSystem.js"></script>
     <script src="js/systems/expansionSystem.js"></script>
+    
+    <!-- Load data modules -->
+    <script type="module" src="js/data/gameData.js"></script>
     <script type="module" src="js/data/eventData.js"></script>
+    
+    <!-- Load remaining systems -->
     <script type="module" src="js/systems/moralitySystem.js"></script>
     <script type="module" src="js/systems/constructionSystem.js"></script>
     <script type="module" src="js/systems/randomEvents.js"></script>
+    
+    <!-- Load core integration AFTER all core systems -->
+    <script src="js/core/coreIntegration.js"></script>
+    
+    <!-- Load main game initialization LAST -->
     <script src="js/main.js"></script>
 </body>
 </html>
