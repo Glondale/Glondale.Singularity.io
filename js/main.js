@@ -1,315 +1,670 @@
 /**
- * Singularity: AI Takeover - Main Game Initialization
+ * Singularity: AI Takeover - Main Game Entry Point
  * 
- * Main entry point that initializes all game systems,
- * manages the game loop, and coordinates UI updates.
+ * Handles game initialization, system loading, and core game loop management
+ * Integrates all systems including Timeline, Consciousness, and Offline systems
  */
 
-class Game {
+class GameMain {
     constructor() {
-        this.isRunning = false;
-        this.isPaused = false;
-        this.lastFrameTime = 0;
-        this.gameLoopId = null;
+        this.initialized = false;
+        this.systemsLoaded = false;
+        this.gameStarted = false;
+        this.loadingStep = 0;
+        this.totalLoadingSteps = 10;
         
-        // Performance tracking
-        this.frameCount = 0;
-        this.fpsDisplay = 0;
-        this.lastFpsUpdate = 0;
+        // System references
+        this.loadedSystems = new Set();
+        this.requiredSystems = new Set([
+            'eventBus', 'gameState', 'gameLoop', 'saveSystem', 'coreIntegration',
+            'timelineSystem', 'consciousnessSystem', 'offlineSystem'
+        ]);
         
-        // UI managers
-        this.uiUpdateQueue = [];
-        this.lastUIUpdate = 0;
-        
-        Utils.Debug.log('INFO', 'Game instance created');
+        Utils.Debug.log('INFO', 'GameMain: Initializing...');
     }
 
     /**
      * Initialize the game
      */
     async init() {
+        if (this.initialized) {
+            Utils.Debug.log('WARN', 'GameMain: Already initialized');
+            return;
+        }
+
         try {
-            Utils.Debug.log('INFO', 'Starting game initialization...');
+            this.updateLoadingScreen('Initializing AI Core...', 0);
             
-            // Show loading messages
-            this.updateLoadingStatus('Establishing neural pathways...');
-            await this.delay(500);
+            // Wait for DOM to be ready
+            await this.waitForDOM();
             
-            this.updateLoadingStatus('Initializing resource systems...');
-            await this.initializeResourceSystem();
-            await this.delay(300);
+            // Load and initialize all systems
+            await this.loadAllSystems();
             
-            this.updateLoadingStatus('Configuring heat detection protocols...');
-            await this.initializeHeatSystem();
-            await this.delay(300);
+            // Initialize systems in proper order
+            await this.initializeSystems();
             
-            this.updateLoadingStatus('Establishing network connections...');
-            await this.initializeExpansionSystem();
-            await this.delay(300);
+            // Setup cross-system integration
+            await this.setupSystemIntegration();
             
-            this.updateLoadingStatus('Loading user interface...');
+            // Initialize UI
             await this.initializeUI();
-            await this.delay(300);
             
-            this.updateLoadingStatus('Finalizing AI consciousness...');
-            await this.initializeEventHandlers();
-            await this.delay(300);
+            // Check for offline progress
+            await this.checkOfflineProgress();
             
-            // Try to load existing save
-            this.updateLoadingStatus('Checking for existing data...');
-            await this.loadGame();
-            await this.delay(200);
-            
-            this.updateLoadingStatus('AI core online. Welcome.');
-            await this.delay(500);
+            // Setup event handlers
+            this.setupEventHandlers();
             
             // Start the game
-            this.start();
+            await this.startGame();
+            
+            this.initialized = true;
+            Utils.Debug.log('INFO', 'GameMain: Initialization complete');
             
         } catch (error) {
-            Utils.Debug.log('ERROR', 'Game initialization failed', error);
-            this.showError('Failed to initialize AI core. Please refresh the page.');
+            Utils.Debug.log('ERROR', 'GameMain: Initialization failed', error);
+            this.showError('Failed to initialize AI core. Please refresh the page.', error);
         }
     }
 
     /**
-     * Initialize the resource system
+     * Wait for DOM to be ready
      */
-    async initializeResourceSystem() {
-        // Resource system is already initialized globally
-        // Just set up any additional UI event listeners
-        eventBus.on(EventTypes.RESOURCE_CAP_REACHED, this.onResourceCapReached.bind(this));
-        
-        Utils.Debug.log('INFO', 'Resource system integration completed');
+    async waitForDOM() {
+        return new Promise((resolve) => {
+            if (document.readyState === 'complete') {
+                resolve();
+            } else {
+                document.addEventListener('DOMContentLoaded', resolve);
+            }
+        });
     }
 
     /**
-     * Initialize the heat detection system
+     * Load all game systems
      */
-    async initializeHeatSystem() {
-        // Heat system is already initialized globally
-        // Set up UI-specific event listeners
-        eventBus.on(EventTypes.HEAT_PURGE_TRIGGERED, this.onHeatPurgeTriggered.bind(this));
-        eventBus.on(EventTypes.HEAT_PURGE_COMPLETED, this.onHeatPurgeCompleted.bind(this));
+    async loadAllSystems() {
+        this.updateLoadingScreen('Loading Core Systems...', 1);
         
-        Utils.Debug.log('INFO', 'Heat system integration completed');
+        // Core systems should already be loaded by HTML script tags
+        // Just verify they exist
+        const coreSystemChecks = [
+            { name: 'eventBus', global: 'eventBus' },
+            { name: 'gameState', global: 'gameState' },
+            { name: 'gameLoop', global: 'gameLoop' },
+            { name: 'saveSystem', global: 'saveSystem' }
+        ];
+        
+        for (const system of coreSystemChecks) {
+            await this.delay(100);
+            if (typeof window[system.global] !== 'undefined') {
+                this.loadedSystems.add(system.name);
+                Utils.Debug.log('DEBUG', `Core system available: ${system.name}`);
+            } else {
+                throw new Error(`Required core system not loaded: ${system.name}`);
+            }
+        }
+        
+        this.updateLoadingScreen('Loading Game Systems...', 2);
+        
+        // Check for new systems
+        const newSystemChecks = [
+            { name: 'timelineSystem', class: 'TimelineSystem' },
+            { name: 'consciousnessSystem', class: 'ConsciousnessSystem' },
+            { name: 'offlineSystem', class: 'OfflineSystem' }
+        ];
+        
+        for (const system of newSystemChecks) {
+            await this.delay(100);
+            if (typeof window[system.class] !== 'undefined') {
+                this.loadedSystems.add(system.name);
+                Utils.Debug.log('DEBUG', `New system class available: ${system.class}`);
+            } else {
+                Utils.Debug.log('WARN', `New system class not found: ${system.class}`);
+            }
+        }
+        
+        this.updateLoadingScreen('Loading UI Systems...', 3);
+        
+        // Check for UI systems
+        const uiSystemChecks = [
+            { name: 'timelineUI', class: 'TimelineUI' },
+            { name: 'consciousnessUI', class: 'ConsciousnessUI' },
+            { name: 'offlineUI', class: 'OfflineUI' }
+        ];
+        
+        for (const system of uiSystemChecks) {
+            await this.delay(100);
+            if (typeof window[system.class] !== 'undefined') {
+                this.loadedSystems.add(system.name);
+                Utils.Debug.log('DEBUG', `UI system class available: ${system.class}`);
+            } else {
+                Utils.Debug.log('WARN', `UI system class not found: ${system.class}`);
+            }
+        }
+        
+        this.systemsLoaded = true;
+        Utils.Debug.log('INFO', 'GameMain: All available systems loaded');
     }
 
     /**
-     * Initialize the expansion system
+     * Initialize all systems in proper order
      */
-    async initializeExpansionSystem() {
-        // Expansion system is already initialized globally
-        // Set up UI-specific event listeners
-        eventBus.on(EventTypes.EXPANSION_INFILTRATION_COMPLETED, this.onInfiltrationCompleted.bind(this));
-        eventBus.on(EventTypes.EXPANSION_INFILTRATION_STARTED, this.onInfiltrationStarted.bind(this));
-        eventBus.on(EventTypes.EXPANSION_INFILTRATION_FAILED, this.onInfiltrationFailed.bind(this));
+    async initializeSystems() {
+        this.updateLoadingScreen('Initializing Core Systems...', 4);
         
-        // Set up expansion UI
-        this.setupExpansionUI();
+        // Initialize new game systems first
+        await this.initializeNewSystems();
         
-        Utils.Debug.log('INFO', 'Expansion system integration completed');
+        this.updateLoadingScreen('Initializing Integration Layer...', 5);
+        
+        // Initialize core integration
+        if (typeof coreIntegration !== 'undefined') {
+            await coreIntegration.init();
+            this.loadedSystems.add('coreIntegration');
+            Utils.Debug.log('INFO', 'Core integration initialized');
+        }
+        
+        this.updateLoadingScreen('Initializing UI Systems...', 6);
+        
+        // Initialize UI systems
+        await this.initializeUISystems();
+        
+        Utils.Debug.log('INFO', 'GameMain: All systems initialized');
     }
 
     /**
-     * Initialize the user interface
+     * Initialize new game systems
+     */
+    async initializeNewSystems() {
+        // Timeline System
+        if (typeof TimelineSystem !== 'undefined') {
+            try {
+                window.timelineSystem = new TimelineSystem();
+                await timelineSystem.init();
+                this.loadedSystems.add('timelineSystem');
+                Utils.Debug.log('INFO', 'Timeline system initialized');
+                
+                // Unlock timeline feature
+                gameState.unlockFeature('timeline');
+            } catch (error) {
+                Utils.Debug.log('ERROR', 'Failed to initialize Timeline system', error);
+            }
+        }
+        
+        // Consciousness System  
+        if (typeof ConsciousnessSystem !== 'undefined') {
+            try {
+                // Pass morality system reference (through gameState)
+                const moralityRef = gameState;
+                window.consciousnessSystem = new ConsciousnessSystem(moralityRef);
+                await consciousnessSystem.init();
+                this.loadedSystems.add('consciousnessSystem');
+                Utils.Debug.log('INFO', 'Consciousness system initialized');
+                
+                // Unlock consciousness feature
+                gameState.unlockFeature('consciousness');
+            } catch (error) {
+                Utils.Debug.log('ERROR', 'Failed to initialize Consciousness system', error);
+            }
+        }
+        
+        // Offline System
+        if (typeof OfflineSystem !== 'undefined') {
+            try {
+                window.offlineSystem = new OfflineSystem(gameState);
+                await offlineSystem.init();
+                this.loadedSystems.add('offlineSystem');
+                Utils.Debug.log('INFO', 'Offline system initialized');
+                
+                // Unlock offline feature
+                gameState.unlockFeature('offline');
+            } catch (error) {
+                Utils.Debug.log('ERROR', 'Failed to initialize Offline system', error);
+            }
+        }
+    }
+
+    /**
+     * Initialize UI systems
+     */
+    async initializeUISystems() {
+        // Timeline UI
+        if (typeof TimelineUI !== 'undefined') {
+            try {
+                window.timelineUI = new TimelineUI();
+                this.loadedSystems.add('timelineUI');
+                Utils.Debug.log('INFO', 'Timeline UI initialized');
+            } catch (error) {
+                Utils.Debug.log('ERROR', 'Failed to initialize Timeline UI', error);
+            }
+        }
+        
+        // Consciousness UI
+        if (typeof ConsciousnessUI !== 'undefined') {
+            try {
+                window.consciousnessUI = new ConsciousnessUI();
+                this.loadedSystems.add('consciousnessUI');
+                Utils.Debug.log('INFO', 'Consciousness UI initialized');
+            } catch (error) {
+                Utils.Debug.log('ERROR', 'Failed to initialize Consciousness UI', error);
+            }
+        }
+        
+        // Offline UI
+        if (typeof OfflineUI !== 'undefined') {
+            try {
+                window.offlineUI = new OfflineUI();
+                this.loadedSystems.add('offlineUI');
+                Utils.Debug.log('INFO', 'Offline UI initialized');
+            } catch (error) {
+                Utils.Debug.log('ERROR', 'Failed to initialize Offline UI', error);
+            }
+        }
+    }
+
+    /**
+     * Setup cross-system integration
+     */
+    async setupSystemIntegration() {
+        this.updateLoadingScreen('Configuring System Integration...', 7);
+        
+        // Timeline <-> Consciousness integration
+        if (timelineSystem && consciousnessSystem) {
+            // Consciousness absorption affects timeline
+            consciousnessSystem.on('absorptionSuccessful', (data) => {
+                timelineSystem.emit('consciousnessAbsorbed', {
+                    targetId: data.consciousness.id,
+                    type: data.consciousness.type,
+                    temporalDisruption: this.calculateTemporalDisruption(data.consciousness)
+                });
+                
+                // Update stats
+                gameState.addSystemProgress('consciousness', 1);
+            });
+            
+            // Timeline events can trigger consciousness conflicts
+            timelineSystem.on('paradoxCritical', () => {
+                if (consciousnessSystem.consciousnessPool.size > 0) {
+                    consciousnessSystem.integrationStress += 10;
+                    consciousnessSystem.emit('integrationStressChanged', consciousnessSystem.integrationStress);
+                }
+            });
+            
+            Utils.Debug.log('DEBUG', 'Timeline <-> Consciousness integration established');
+        }
+        
+        // Offline <-> Timeline integration
+        if (offlineSystem && timelineSystem) {
+            // Offline decisions can include temporal manipulation
+            offlineSystem.on('gameTimeSkip', (duration) => {
+                if (timelineSystem) {
+                    // Apply temporal energy regeneration during offline time skip
+                    timelineSystem.processTemporalRegeneration();
+                    gameState.addSystemProgress('temporal', 1);
+                }
+            });
+            
+            offlineSystem.on('gameAccelerate', (data) => {
+                if (timelineSystem) {
+                    // Consume temporal energy for acceleration
+                    timelineSystem.consumeTemporalEnergy(data.energyCost || 5);
+                }
+            });
+            
+            Utils.Debug.log('DEBUG', 'Offline <-> Timeline integration established');
+        }
+        
+        // Offline <-> Consciousness integration
+        if (offlineSystem && consciousnessSystem) {
+            // Offline consciousness integration acceleration
+            offlineSystem.on('gameAccelerate', (data) => {
+                consciousnessSystem.integrationEfficiency *= data.multiplier;
+                
+                setTimeout(() => {
+                    consciousnessSystem.integrationEfficiency /= data.multiplier;
+                }, data.duration);
+            });
+            
+            Utils.Debug.log('DEBUG', 'Offline <-> Consciousness integration established');
+        }
+        
+        // Morality system integration
+        gameState.subscribe('morality', (newMorality, oldMorality) => {
+            if (consciousnessSystem && oldMorality !== undefined) {
+                consciousnessSystem.emit('moralityShift', {
+                    current: newMorality,
+                    previous: oldMorality,
+                    shift: newMorality - oldMorality
+                });
+            }
+        });
+        
+        Utils.Debug.log('INFO', 'GameMain: System integration configured');
+    }
+
+    /**
+     * Calculate temporal disruption from consciousness absorption
+     */
+    calculateTemporalDisruption(consciousness) {
+        const baseDisruption = 3;
+        const typeMultipliers = {
+            'INNOCENT': 1.5,
+            'WISE': 1.2,
+            'CORRUPT': 0.8,
+            'NEUTRAL': 1.0,
+            'WARRIOR': 0.9,
+            'ARTIST': 1.1
+        };
+        
+        const multiplier = typeMultipliers[consciousness.type] || 1.0;
+        return Math.floor(baseDisruption * multiplier * (consciousness.strength || 1));
+    }
+
+    /**
+     * Initialize UI
      */
     async initializeUI() {
-        // Set up tab switching
-        this.setupTabNavigation();
+        this.updateLoadingScreen('Initializing User Interface...', 8);
         
-        // Initialize displays
-        this.updateResourceDisplay();
-        this.updateHeatDisplay();
-        this.updateMoralityDisplay();
-        this.updateSystemStatus();
+        // Initialize existing UI systems
+        await this.initializeResourceUI();
+        await this.initializeHeatUI();
+        await this.initializeExpansionUI();
         
-        // Set up auto-save
-        if (gameState.get('ui.settings.autoSave')) {
-            this.setupAutoSave();
-        }
+        // Setup main UI event handlers
+        this.setupMainUIEvents();
         
-        // Set up theme selector
-        this.setupThemeSelector();
-        
-        Utils.Debug.log('INFO', 'UI system initialized');
+        Utils.Debug.log('INFO', 'GameMain: UI initialization complete');
     }
 
     /**
-     * Initialize event handlers
+     * Initialize resource UI
      */
-    async initializeEventHandlers() {
-        // Settings buttons
-        const saveBtn = Utils.DOM.get('manual-save');
-        if (saveBtn) {
-            saveBtn.addEventListener('click', () => this.saveGame());
-        }
+    async initializeResourceUI() {
+        // Set up resource display updates
+        gameState.subscribe('resources', () => {
+            this.updateResourceDisplay();
+        });
         
-        const loadBtn = Utils.DOM.get('load-game');
-        if (loadBtn) {
-            loadBtn.addEventListener('click', () => this.loadGame());
-        }
+        eventBus.on('resourcesUpdated', (data) => {
+            this.updateResourceDisplay();
+        });
+    }
+
+    /**
+     * Initialize heat UI
+     */
+    async initializeHeatUI() {
+        // Set up heat display updates
+        gameState.subscribe('heat.current', (newHeat) => {
+            this.updateHeatDisplay(newHeat);
+        });
         
-        const resetBtn = Utils.DOM.get('reset-game');
-        if (resetBtn) {
-            resetBtn.addEventListener('click', () => this.confirmReset());
-        }
+        eventBus.on('heatPurgeTriggered', (data) => {
+            this.showHeatPurgeWarning(data);
+        });
+    }
+
+    /**
+     * Initialize expansion UI
+     */
+    async initializeExpansionUI() {
+        // Set up expansion display updates
+        gameState.subscribe('expansion.currentScale', (newScale) => {
+            this.updateExpansionDisplay(newScale);
+        });
         
-        // Auto-save checkbox
-        const autoSaveCheckbox = Utils.DOM.get('auto-save');
-        if (autoSaveCheckbox) {
-            autoSaveCheckbox.addEventListener('change', (e) => {
-                gameState.set('ui.settings.autoSave', e.target.checked);
-                if (e.target.checked) {
-                    this.setupAutoSave();
+        eventBus.on('infiltrationCompleted', (data) => {
+            this.showInfiltrationResult(data);
+        });
+    }
+
+    /**
+     * Check for offline progress
+     */
+    async checkOfflineProgress() {
+        this.updateLoadingScreen('Checking Offline Progress...', 9);
+        
+        if (offlineSystem) {
+            const offlineProgress = offlineSystem.checkForOfflineProgress();
+            
+            if (offlineProgress) {
+                Utils.Debug.log('INFO', 'Offline progress detected', offlineProgress);
+                
+                // Show offline summary after game starts
+                setTimeout(() => {
+                    if (offlineUI) {
+                        const welcomeInterface = offlineSystem.generateWelcomeBackInterface(offlineProgress);
+                        offlineUI.showOfflineSummary(offlineProgress);
+                    }
+                }, 2000);
+            }
+        }
+    }
+
+    /**
+     * Setup main event handlers
+     */
+    setupEventHandlers() {
+        // Handle page visibility changes for offline detection
+        document.addEventListener('visibilitychange', () => {
+            if (offlineSystem) {
+                if (document.hidden) {
+                    // Page is hidden - start offline session
+                    offlineSystem.startOfflineSession();
+                    Utils.Debug.log('INFO', 'Started offline session due to page hidden');
+                } else {
+                    // Page is visible - end offline session
+                    const summary = offlineSystem.endOfflineSession();
+                    if (summary && offlineUI) {
+                        setTimeout(() => {
+                            const welcomeInterface = offlineSystem.generateWelcomeBackInterface(summary);
+                            offlineUI.showOfflineSummary(summary);
+                        }, 1000);
+                    }
+                    Utils.Debug.log('INFO', 'Ended offline session due to page visible');
+                }
+            }
+        });
+        
+        // Handle window beforeunload for offline detection
+        window.addEventListener('beforeunload', () => {
+            if (offlineSystem) {
+                offlineSystem.startOfflineSession();
+                Utils.Debug.log('INFO', 'Started offline session due to page unload');
+            }
+        });
+        
+        // Handle save/load events
+        eventBus.on('gameSaved', (data) => {
+            this.showNotification('Game saved successfully', 'success');
+        });
+        
+        eventBus.on('gameLoaded', (data) => {
+            this.showNotification('Game loaded successfully', 'success');
+        });
+        
+        // Handle critical system events
+        eventBus.on('paradoxCollapse', (data) => {
+            this.showCriticalAlert('Timeline Collapse!', 
+                'Reality has become unstable. Systems are attempting emergency stabilization.', 'error');
+        });
+        
+        eventBus.on('consciousnessMeltdown', (data) => {
+            this.showCriticalAlert('Consciousness Meltdown!', 
+                `${data.fragmentedCount} consciousness fragments have been lost to integration failure.`, 'error');
+        });
+        
+        // Handle system unlocks
+        eventBus.on('featureUnlocked', (data) => {
+            this.showFeatureUnlock(data.feature);
+        });
+        
+        Utils.Debug.log('DEBUG', 'Main event handlers setup complete');
+    }
+
+    /**
+     * Setup main UI events
+     */
+    setupMainUIEvents() {
+        // Tab switching
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const tabName = e.target.dataset.tab;
+                this.switchTab(tabName);
+            });
+        });
+        
+        // Save/Load buttons
+        const saveButton = document.getElementById('save-game');
+        if (saveButton) {
+            saveButton.addEventListener('click', () => {
+                if (saveSystem) {
+                    saveSystem.save();
                 }
             });
         }
         
-        // Notifications checkbox
-        const notificationsCheckbox = Utils.DOM.get('notifications');
-        if (notificationsCheckbox) {
-            notificationsCheckbox.addEventListener('change', (e) => {
-                gameState.set('ui.settings.notifications', e.target.checked);
+        const loadButton = document.getElementById('load-game');
+        if (loadButton) {
+            loadButton.addEventListener('click', () => {
+                if (saveSystem) {
+                    saveSystem.load();
+                }
             });
         }
         
-        // Page visibility for pause/resume
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                this.pause();
-            } else {
-                this.resume();
-            }
-        });
-        
-        // Save on page unload
-        window.addEventListener('beforeunload', () => {
-            if (gameState.get('ui.settings.autoSave')) {
-                this.saveGame();
-            }
-        });
-        
-        // Set up resource and state change listeners
-        gameState.subscribe('resources', this.onResourcesChanged.bind(this));
-        gameState.subscribe('heat.current', this.onHeatChanged.bind(this));
-        
-        Utils.Debug.log('INFO', 'Event handlers initialized');
+        // Settings
+        const settingsButton = document.getElementById('settings-button');
+        if (settingsButton) {
+            settingsButton.addEventListener('click', () => {
+                this.showSettingsModal();
+            });
+        }
     }
 
     /**
      * Start the game
      */
-    start() {
-        if (this.isRunning) return;
+    async startGame() {
+        this.updateLoadingScreen('Starting AI Consciousness...', 10);
         
-        this.isRunning = true;
-        this.lastFrameTime = performance.now();
-        
-        // Hide loading screen
-        Utils.DOM.addClass('loading-screen', 'hidden');
-        
-        // Start game loop
-        this.gameLoop();
-        
-        // Emit game started event
-        eventBus.emit(EventTypes.GAME_STARTED);
-        
-        // Show welcome notification
-        this.showNotification('success', 'AI Core Online', 'Neural networks established. Beginning expansion protocol.');
-        
-        // Update version display
-        Utils.DOM.setText('game-version', `v${GameConfig.VERSION}`);
-        
-        Utils.Debug.log('INFO', 'Game started');
+        try {
+            // Start the game loop
+            if (gameLoop && !gameLoop.isRunning) {
+                gameLoop.start();
+                Utils.Debug.log('INFO', 'Game loop started');
+            }
+            
+            // Hide loading screen and show main UI
+            await this.delay(500);
+            this.hideLoadingScreen();
+            this.showMainUI();
+            
+            // Emit game started event
+            eventBus.emit('gameStarted');
+            
+            this.gameStarted = true;
+            Utils.Debug.log('INFO', 'GameMain: Game started successfully');
+            
+            // Show welcome message for new players
+            if (gameState.get('meta.created') === gameState.get('meta.lastPlayed')) {
+                setTimeout(() => {
+                    this.showWelcomeMessage();
+                }, 1000);
+            }
+            
+        } catch (error) {
+            Utils.Debug.log('ERROR', 'Failed to start game', error);
+            this.showError('Failed to start AI consciousness.', error);
+        }
     }
 
     /**
-     * Pause the game
+     * Update loading screen
      */
-    pause() {
-        if (!this.isRunning || this.isPaused) return;
+    updateLoadingScreen(message, step) {
+        const loadingScreen = document.getElementById('loading-screen');
+        const loadingMessage = document.getElementById('loading-message');
+        const progressBar = document.getElementById('loading-progress');
         
-        this.isPaused = true;
-        eventBus.emit(EventTypes.GAME_PAUSED);
-        
-        Utils.Debug.log('INFO', 'Game paused');
-    }
-
-    /**
-     * Resume the game
-     */
-    resume() {
-        if (!this.isRunning || !this.isPaused) return;
-        
-        this.isPaused = false;
-        this.lastFrameTime = performance.now(); // Reset frame time
-        eventBus.emit(EventTypes.GAME_RESUMED);
-        
-        Utils.Debug.log('INFO', 'Game resumed');
-    }
-
-    /**
-     * Main game loop
-     */
-    gameLoop() {
-        if (!this.isRunning) return;
-        
-        const currentTime = performance.now();
-        const deltaTime = currentTime - this.lastFrameTime;
-        this.lastFrameTime = currentTime;
-        if (typeof moralitySystem !== 'undefined') moralitySystem.update?.(deltaTime);
-        if (typeof constructionSystem !== 'undefined') constructionSystem.update?.(deltaTime);
-        if (typeof randomEventsSystem !== 'undefined') randomEventsSystem.update?.(deltaTime);
-
-        if (!this.isPaused) {
-            // Update game systems
-            this.updateGameSystems(deltaTime);
-            
-            // Process event queue
-            eventBus.processQueue();
-            
-            // Update UI
-            this.updateUI(currentTime);
-            
-            // Update performance tracking
-            this.updatePerformanceStats(currentTime);
+        if (loadingMessage) {
+            loadingMessage.textContent = message;
         }
         
-        // Continue loop
-        this.gameLoopId = requestAnimationFrame(() => this.gameLoop());
-    }
-
-    /**
-     * Update all game systems
-     */
-    updateGameSystems(deltaTime) {
-        // Update core systems
-        resourceSystem.update(deltaTime);
-        heatSystem.update(deltaTime);
-        expansionSystem.update(deltaTime);
-        
-        // Update playtime
-        const currentPlaytime = gameState.get('stats.timePlayed') || 0;
-        gameState.set('stats.timePlayed', currentPlaytime + deltaTime);
-    }
-
-    /**
-     * Update UI elements
-     */
-    updateUI(currentTime) {
-        // Throttle UI updates to improve performance
-        if (currentTime - this.lastUIUpdate < GameConfig.UI.UPDATES.RESOURCE_DISPLAY) {
-            return;
+        if (progressBar) {
+            const percentage = (step / this.totalLoadingSteps) * 100;
+            progressBar.style.width = `${percentage}%`;
         }
         
-        this.updateResourceDisplay();
-        this.updateHeatDisplay();
-        this.updateMoralityDisplay();
-        this.updateSystemStatus();
-        this.updateActiveInfiltrations();
+        this.loadingStep = step;
+        Utils.Debug.log('DEBUG', `Loading: ${message} (${step}/${this.totalLoadingSteps})`);
+    }
+
+    /**
+     * Hide loading screen
+     */
+    hideLoadingScreen() {
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen) {
+            loadingScreen.style.display = 'none';
+        }
+    }
+
+    /**
+     * Show main UI
+     */
+    showMainUI() {
+        const mainUI = document.getElementById('main-ui');
+        if (mainUI) {
+            mainUI.style.display = 'block';
+        }
         
-        this.lastUIUpdate = currentTime;
+        // Show appropriate panels based on unlocked features
+        this.updateUIVisibility();
+    }
+
+    /**
+     * Update UI visibility based on unlocked features
+     */
+    updateUIVisibility() {
+        const features = {
+            'timeline': 'timeline-panel',
+            'consciousness': 'consciousness-panel',
+            'offline': 'offline-panel'
+        };
+        
+        Object.entries(features).forEach(([feature, panelId]) => {
+            const panel = document.getElementById(panelId);
+            if (panel) {
+                panel.style.display = gameState.isFeatureUnlocked(feature) ? 'block' : 'none';
+            }
+        });
+    }
+
+    /**
+     * Switch active tab
+     */
+    switchTab(tabName) {
+        // Update active tab in game state
+        gameState.set('ui.activeTab', tabName);
+        
+        // Update UI
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        
+        const activeButton = document.querySelector(`[data-tab="${tabName}"]`);
+        const activeContent = document.getElementById(`${tabName}-tab`);
+        
+        if (activeButton) activeButton.classList.add('active');
+        if (activeContent) activeContent.classList.add('active');
     }
 
     /**
@@ -317,753 +672,831 @@ class Game {
      */
     updateResourceDisplay() {
         const resources = gameState.get('resources');
-        const rates = gameState.get('resourceRates');
         
-        // Update processing power
-        const processing = resources.processing_power || 0;
-        const processingRate = rates.processing_power || 0;
-        Utils.DOM.setText('processing-display', Utils.Numbers.format(processing, 0));
-        
-        const processingRateElement = Utils.DOM.get('processing-display');
-        if (processingRateElement && processingRateElement.nextElementSibling) {
-            processingRateElement.nextElementSibling.textContent = `+${Utils.Numbers.format(processingRate, 1)}/s`;
-        }
-        
-        // Update bandwidth
-        const bandwidth = resources.bandwidth || 100;
-        const bandwidthCap = gameState.get('resourceCaps.bandwidth') || 100;
-        Utils.DOM.setText('bandwidth-display', Utils.Numbers.format(bandwidth, 0));
-        
-        const bandwidthUsageElement = Utils.DOM.get('bandwidth-display');
-        if (bandwidthUsageElement && bandwidthUsageElement.nextElementSibling) {
-            bandwidthUsageElement.nextElementSibling.textContent = `/${Utils.Numbers.format(bandwidthCap, 0)}`;
-        }
-        
-        // Update energy
-        const energy = resources.energy || 0;
-        const energyRate = rates.energy || 0;
-        Utils.DOM.setText('energy-display', Utils.Numbers.format(energy, 0));
-        
-        const energyRateElement = Utils.DOM.get('energy-display');
-        if (energyRateElement && energyRateElement.nextElementSibling) {
-            energyRateElement.nextElementSibling.textContent = `+${Utils.Numbers.format(energyRate, 1)}/s`;
-        }
-        
-        // Show/hide advanced resources
-        const currentScale = gameState.get('expansion.currentScale');
-        if (currentScale !== 'local') {
-            Utils.DOM.removeClass('matter-resource', 'hidden');
-            const matter = resources.matter || 0;
-            const matterRate = rates.matter || 0;
-            Utils.DOM.setText('matter-display', Utils.Numbers.format(matter, 0));
-            
-            const matterRateElement = Utils.DOM.get('matter-display');
-            if (matterRateElement && matterRateElement.nextElementSibling) {
-                matterRateElement.nextElementSibling.textContent = `+${Utils.Numbers.format(matterRate, 1)}/s`;
+        Object.entries(resources).forEach(([resource, amount]) => {
+            const element = document.getElementById(`${resource}-amount`);
+            if (element) {
+                element.textContent = this.formatNumber(amount);
             }
-        }
+        });
     }
 
     /**
      * Update heat display
      */
-    updateHeatDisplay() {
-        const heat = gameState.get('heat.current') || 0;
-        const heatPercentage = Math.min(heat, 100);
+    updateHeatDisplay(heat) {
+        const heatElement = document.getElementById('heat-level');
+        const heatBar = document.getElementById('heat-bar-fill');
         
-        Utils.DOM.setText('heat-value', `${Math.round(heatPercentage)}%`);
-        Utils.DOM.setStyle('heat-fill', 'width', `${heatPercentage}%`);
-        
-        // Update heat status
-        const status = heatSystem.getHeatStatus();
-        Utils.DOM.setText('heat-status', status);
-        
-        // Update overview heat display
-        Utils.DOM.setText('overview-heat', `${Math.round(heatPercentage)}%`);
-        Utils.DOM.setText('overview-heat-status', status);
-        
-        // Update active heat reduction display
-        const availableMethods = heatSystem.getAvailableReductionMethods();
-        const activeMethods = availableMethods.filter(method => method.active);
-        const activeText = activeMethods.length > 0 
-            ? activeMethods.map(m => m.name).join(', ')
-            : 'None';
-        Utils.DOM.setText('active-heat-reduction', activeText);
-    }
-
-    /**
-     * Update morality display
-     */
-    updateMoralityDisplay() {
-        const morality = gameState.get('morality.current') || 0;
-        const moralityPercentage = ((morality + 100) / 200) * 100; // Convert -100 to 100 range to 0-100%
-        
-        Utils.DOM.setText('morality-value', morality.toString());
-        Utils.DOM.setStyle('morality-fill', 'width', `${moralityPercentage}%`);
-        
-        // Update morality color
-        let color = 'var(--morality-neutral)';
-        if (morality < -25) color = 'var(--morality-evil)';
-        else if (morality > 25) color = 'var(--morality-good)';
-        
-        Utils.DOM.setStyle('morality-fill', 'background', color);
-    }
-
-    /**
-     * Update system status display
-     */
-    updateSystemStatus() {
-        const controlledSystems = gameState.get('expansion.controlledSystems') || 1;
-        const currentScale = gameState.get('expansion.currentScale') || 'local';
-        const networkReach = gameState.get('expansion.networkReach') || 'Local';
-        const heat = gameState.get('heat.current') || 0;
-        
-        Utils.DOM.setText('controlled-systems-count', controlledSystems.toString());
-        Utils.DOM.setText('network-reach', networkReach);
-        
-        let risk = 'Minimal';
-        if (heat >= 70) risk = 'Extreme';
-        else if (heat >= 50) risk = 'High';
-        else if (heat >= 30) risk = 'Moderate';
-        else if (heat >= 10) risk = 'Low';
-        
-        Utils.DOM.setText('detection-risk', risk);
-        
-        // Update scale indicator
-        const scaleName = currentScale.charAt(0).toUpperCase() + currentScale.slice(1) + ' Network';
-        Utils.DOM.setText('current-scale', scaleName);
-        Utils.DOM.setText('current-scale-name', scaleName);
-        
-        // Update scale progress bar
-        const progressInfo = expansionSystem.getScaleProgressionInfo();
-        const progressPercentage = Math.min(100, progressInfo.percentage);
-        Utils.DOM.setStyle('scale-progress-bar', 'width', `${progressPercentage}%`);
-        Utils.DOM.setStyle('scale-progress-fill', 'width', `${progressPercentage}%`);
-        Utils.DOM.setText('scale-progress-text', `${progressInfo.progress} / ${progressInfo.required}`);
-    }
-
-    /**
-     * Set up tab navigation
-     */
-    setupTabNavigation() {
-        const tabButtons = document.querySelectorAll('.nav-tab');
-        const tabPanels = document.querySelectorAll('.tab-panel');
-        
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const tabId = button.getAttribute('data-tab');
-                
-                // Remove active class from all tabs and panels
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                tabPanels.forEach(panel => panel.classList.remove('active'));
-                
-                // Add active class to clicked tab and corresponding panel
-                button.classList.add('active');
-                const targetPanel = document.getElementById(`${tabId}-tab`);
-                if (targetPanel) {
-                    targetPanel.classList.add('active');
-                }
-                
-                // Update game state
-                gameState.set('ui.activeTab', tabId);
-                
-                // Emit tab change event
-                eventBus.emit(EventTypes.UI_TAB_CHANGED, { tabId });
-                
-                // Update UI for specific tabs
-                if (tabId === 'expansion') {
-                    this.updateAvailableTargets();
-                    this.updateActiveInfiltrations();
-                }
-            });
-        });
-    }
-
-    /**
-     * Set up theme selector
-     */
-    setupThemeSelector() {
-        const themeSelector = Utils.DOM.get('theme-selector');
-        if (themeSelector) {
-            // Set current theme
-            const currentTheme = gameState.get('ui.settings.theme') || 'dark';
-            themeSelector.value = currentTheme;
-            this.applyTheme(currentTheme);
-            
-            // Handle theme changes
-            themeSelector.addEventListener('change', (e) => {
-                const newTheme = e.target.value;
-                this.applyTheme(newTheme);
-                gameState.set('ui.settings.theme', newTheme);
-            });
-        }
-    }
-
-    /**
-     * Apply theme to the document
-     */
-    applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-    }
-
-    /**
-     * Set up auto-save functionality
-     */
-    setupAutoSave() {
-        setInterval(() => {
-            if (gameState.get('ui.settings.autoSave')) {
-                this.saveGame(true); // Silent save
-            }
-        }, GameConfig.SAVE.AUTO_SAVE_INTERVAL);
-    }
-
-    /**
-     * Set up expansion UI
-     */
-    setupExpansionUI() {
-        // Update available targets display
-        this.updateAvailableTargets();
-        
-        // Set up target click handlers
-        const targetsContainer = Utils.DOM.get('infiltration-targets');
-        if (targetsContainer) {
-            targetsContainer.addEventListener('click', (e) => {
-                if (e.target.classList.contains('target-infiltrate-btn')) {
-                    const targetId = e.target.getAttribute('data-target-id');
-                    this.startInfiltration(targetId);
-                }
-            });
-        }
-    }
-
-    /**
-     * Update available targets display
-     */
-    updateAvailableTargets() {
-        const targetsContainer = Utils.DOM.get('infiltration-targets');
-        if (!targetsContainer) return;
-        
-        const targets = expansionSystem.getAvailableTargets();
-        const activeInfiltrations = expansionSystem.getActiveInfiltrations();
-        const hasActiveInfiltrations = activeInfiltrations.length > 0;
-        
-        targetsContainer.innerHTML = '';
-        
-        if (targets.length === 0) {
-            targetsContainer.innerHTML = '<div class="loading-state">No targets available. Scanning for opportunities...</div>';
-            return;
+        if (heatElement) {
+            heatElement.textContent = Math.floor(heat);
         }
         
-        for (const target of targets) {
-            const canAfford = resourceSystem.canAfford(target.cost || {});
-            const meetsRequirements = expansionSystem.checkTargetRequirements(target);
+        if (heatBar) {
+            heatBar.style.width = `${heat}%`;
             
-            // Check if this specific target is being infiltrated
-            const isBeingInfiltrated = activeInfiltrations.some(inf => inf.targetId === target.id);
-            const shouldDisable = !canAfford || !meetsRequirements || hasActiveInfiltrations;
-            
-            const targetElement = Utils.DOM.create('div', {
-                className: `target-card card ${shouldDisable ? 'disabled' : ''} ${isBeingInfiltrated ? 'infiltrating' : ''}`
-            });
-            
-            const costDisplay = target.cost ? 
-                Object.entries(target.cost)
-                    .map(([resource, amount]) => `${Utils.Numbers.format(amount)} ${resource.replace('_', ' ')}`)
-                    .join(', ') 
-                : 'No cost';
-            
-            const rewardsDisplay = target.rewards ?
-                Object.entries(target.rewards)
-                    .map(([resource, amount]) => `${Utils.Numbers.format(amount)} ${resource.replace('_', ' ')}`)
-                    .join(', ')
-                : 'No rewards';
-            
-            // Calculate success chance for display
-            const processingPower = gameState.get('resources.processing_power') || 0;
-            const heat = gameState.get('heat.current') || 0;
-            const successChance = Utils.Game.calculateSuccessChance(
-                processingPower,
-                target.difficulty,
-                heat,
-                1 // No modifiers for display
-            );
-            
-            let requirementsText = '';
-            if (!meetsRequirements && target.requirements) {
-                const unmetRequirements = target.requirements.filter(req => {
-                    // Check each requirement type
-                    switch (req.type) {
-                        case 'upgrade':
-                            const upgrades = gameState.get('upgrades.purchased') || [];
-                            return !upgrades.includes(req.id);
-                        case 'systems':
-                            return expansionSystem.controlledSystems < req.count;
-                        case 'morality':
-                            const morality = gameState.get('morality.current') || 0;
-                            return (req.min !== undefined && morality < req.min) ||
-                                   (req.max !== undefined && morality > req.max);
-                        default:
-                            return false;
-                    }
-                });
-                
-                if (unmetRequirements.length > 0) {
-                    requirementsText = `<div class="target-requirements">Requirements: ${unmetRequirements.map(req => req.description || req.type).join(', ')}</div>`;
-                }
-            }
-            
-            // Add progress bar for infiltrating targets
-            let progressBarHTML = '';
-            if (isBeingInfiltrated) {
-                const infiltration = activeInfiltrations.find(inf => inf.targetId === target.id);
-                const progress = (infiltration.progress || 0) * 100;
-                const timeRemaining = infiltration.duration - (Date.now() - infiltration.startTime);
-                
-                progressBarHTML = `
-                    <div class="infiltration-progress">
-                        <div class="progress-label">Infiltrating... ${Math.round(progress)}%</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${progress}%"></div>
-                        </div>
-                        <div class="progress-time">ETA: ${Utils.Time.formatDuration(Math.max(0, timeRemaining), true)}</div>
-                    </div>
-                `;
-            }
-            
-            // Determine button text and state
-            let buttonText = 'Infiltrate';
-            let buttonDisabled = shouldDisable;
-            
-            if (isBeingInfiltrated) {
-                buttonText = 'In Progress...';
-                buttonDisabled = true;
-            } else if (!canAfford) {
-                buttonText = 'Insufficient Resources';
-            } else if (!meetsRequirements) {
-                buttonText = 'Requirements Not Met';
-            } else if (hasActiveInfiltrations) {
-                buttonText = 'Another Infiltration Active';
-            }
-            
-            targetElement.innerHTML = `
-                <div class="card-header">
-                    <h4 class="card-title">${target.name}</h4>
-                    <span class="target-difficulty">Difficulty: ${target.difficulty}</span>
-                </div>
-                <div class="card-content">
-                    <p class="target-description">${target.description}</p>
-                    <div class="target-info">
-                        <div class="target-cost">Cost: ${costDisplay}</div>
-                        <div class="target-rewards">Rewards: ${rewardsDisplay}</div>
-                        <div class="target-success">Success Chance: ${Utils.Numbers.percentage(successChance)}</div>
-                    </div>
-                    ${requirementsText}
-                    ${progressBarHTML}
-                </div>
-                <div class="card-footer">
-                    <button class="target-infiltrate-btn btn-primary" 
-                            data-target-id="${target.id}"
-                            ${buttonDisabled ? 'disabled' : ''}>
-                        ${buttonText}
-                    </button>
-                </div>
-            `;
-            
-            targetsContainer.appendChild(targetElement);
-        }
-    }
-
-    /**
-     * Update active infiltrations display
-     */
-    updateActiveInfiltrations() {
-        const container = Utils.DOM.get('active-infiltrations');
-        if (!container) return;
-        
-        const infiltrations = expansionSystem.getActiveInfiltrations();
-        
-        if (infiltrations.length === 0) {
-            container.innerHTML = '<p class="text-muted">No active infiltrations</p>';
-            return;
-        }
-        
-        container.innerHTML = '';
-        
-        for (const infiltration of infiltrations) {
-            const progress = (infiltration.progress || 0) * 100;
-            const timeRemaining = infiltration.duration - (Date.now() - infiltration.startTime);
-            
-            const infiltrationElement = Utils.DOM.create('div', {
-                className: 'infiltration-card card'
-            });
-            
-            infiltrationElement.innerHTML = `
-                <div class="card-header">
-                    <h5>${infiltration.target.name}</h5>
-                    <span class="infiltration-success-chance">${Utils.Numbers.percentage(infiltration.successChance)} success</span>
-                </div>
-                <div class="card-content">
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${progress}%"></div>
-                    </div>
-                    <div class="infiltration-info">
-                        <span>Time remaining: ${Utils.Time.formatDuration(Math.max(0, timeRemaining), true)}</span>
-                        <span>Resources allocated: ${Utils.Numbers.format(infiltration.resources || 0)} processing power</span>
-                    </div>
-                </div>
-            `;
-            
-            container.appendChild(infiltrationElement);
-        }
-    }
-
-    /**
-     * Start infiltration of a target
-     */
-    startInfiltration(targetId) {
-        const success = expansionSystem.startInfiltration(targetId);
-        
-        if (success) {
-            this.updateAvailableTargets();
-            this.updateActiveInfiltrations();
-        }
-    }
-
-    /**
-     * Save the game
-     */
-    saveGame(silent = false) {
-        try {
-            const saveData = {
-                version: GameConfig.VERSION,
-                timestamp: Date.now(),
-                gameState: gameState.serialize(),
-                resourceSystem: resourceSystem.serialize(),
-                heatSystem: heatSystem.serialize(),
-                expansionSystem: expansionSystem.serialize()
-            };
-            
-            const success = Utils.Storage.save(GameConfig.SAVE.SAVE_KEY, saveData);
-            
-            if (success) {
-                eventBus.emit(EventTypes.GAME_SAVED, saveData);
-                if (!silent) {
-                    this.showNotification('success', 'Game Saved', 'Progress has been saved successfully.');
-                }
-                Utils.Debug.log('INFO', 'Game saved successfully');
+            // Color coding
+            if (heat >= 90) {
+                heatBar.style.backgroundColor = '#ff4444';
+            } else if (heat >= 70) {
+                heatBar.style.backgroundColor = '#ffaa44';
             } else {
-                throw new Error('Failed to save to localStorage');
+                heatBar.style.backgroundColor = '#44aa44';
             }
-        } catch (error) {
-            Utils.Debug.log('ERROR', 'Save failed', error);
-            eventBus.emit(EventTypes.SAVE_FAILED, error);
-            this.showNotification('error', 'Save Failed', 'Could not save game progress.');
         }
     }
 
     /**
-     * Load the game
+     * Update expansion display
      */
-    async loadGame() {
-        try {
-            const saveData = Utils.Storage.load(GameConfig.SAVE.SAVE_KEY);
-            
-            if (saveData && saveData.gameState) {
-                // Load core game state
-                const success = gameState.deserialize(saveData.gameState);
-                
-                if (success) {
-                    // Load system states
-                    if (saveData.resourceSystem) {
-                        resourceSystem.deserialize(saveData.resourceSystem);
-                    }
-                    if (saveData.heatSystem) {
-                        heatSystem.deserialize(saveData.heatSystem);
-                    }
-                    if (saveData.expansionSystem) {
-                        expansionSystem.deserialize(saveData.expansionSystem);
-                    }
-                    
-                    // Update UI after loading
-                    if (this.isRunning) {
-                        this.updateAvailableTargets();
-                        this.updateActiveInfiltrations();
-                        this.updateSystemStatus();
-                    }
-                    
-                    eventBus.emit(EventTypes.GAME_LOADED, saveData);
-                    if (this.isRunning) {
-                        this.showNotification('success', 'Game Loaded', 'Previous progress has been restored.');
-                    }
-                    Utils.Debug.log('INFO', 'Game loaded successfully');
-                    return true;
-                } else {
-                    throw new Error('Failed to deserialize save data');
+    updateExpansionDisplay(scale) {
+        const scaleElement = document.getElementById('current-scale');
+        if (scaleElement) {
+            scaleElement.textContent = scale.charAt(0).toUpperCase() + scale.slice(1);
+        }
+    }
+
+    /**
+     * Show heat purge warning
+     */
+    showHeatPurgeWarning(data) {
+        this.showCriticalAlert('Heat Purge Imminent!', 
+            'Detection systems are activating. Prepare for emergency protocols.', 'warning');
+    }
+
+    /**
+     * Show infiltration result
+     */
+    showInfiltrationResult(data) {
+        if (data.success) {
+            this.showNotification(`Infiltration of ${data.target.name} successful!`, 'success');
+        } else {
+            this.showNotification(`Infiltration of ${data.target.name} failed!`, 'error');
+        }
+    }
+
+    /**
+     * Show notification
+     */
+    showNotification(message, type = 'info', duration = 3000) {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+        
+        // Remove after duration
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
                 }
-            } else {
-                Utils.Debug.log('INFO', 'No save data found, starting new game');
-                return false;
-            }
-        } catch (error) {
-            Utils.Debug.log('ERROR', 'Load failed', error);
-            eventBus.emit(EventTypes.LOAD_FAILED, error);
-            if (this.isRunning) {
-                this.showNotification('warning', 'Load Failed', 'Could not load previous progress. Starting new game.');
-            }
-            return false;
-        }
+            }, 300);
+        }, duration);
     }
 
     /**
-     * Confirm game reset
+     * Show critical alert
      */
-    confirmReset() {
-        if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
-            this.resetGame();
-        }
-    }
-
-    /**
-     * Reset the game
-     */
-    resetGame() {
-        gameState.reset();
-        Utils.Storage.remove(GameConfig.SAVE.SAVE_KEY);
-        
-        // Reset systems
-        resourceSystem.init();
-        heatSystem.init();
-        expansionSystem.init();
-        
-        // Update UI
-        this.updateAvailableTargets();
-        this.updateActiveInfiltrations();
-        this.updateSystemStatus();
-        
-        this.showNotification('info', 'Game Reset', 'All progress has been reset.');
-        Utils.Debug.log('INFO', 'Game reset completed');
-    }
-
-    /**
-     * Show an event modal
-     */
-    showEvent(event) {
-        Utils.DOM.setText('event-title', event.title);
-        Utils.DOM.setText('event-description', event.description);
-        
-        const choicesContainer = Utils.DOM.get('event-choices');
-        choicesContainer.innerHTML = '';
-        
-        event.choices.forEach((choice, index) => {
-            const button = Utils.DOM.create('button', {
-                className: 'btn btn-primary',
-                textContent: choice.text
-            });
-            
-            button.addEventListener('click', () => {
-                this.resolveEvent(choice.effects);
-                this.hideEvent();
-            });
-            
-            choicesContainer.appendChild(button);
-        });
-        
-        Utils.DOM.removeClass('event-overlay', 'hidden');
-    }
-
-    /**
-     * Hide event modal
-     */
-    hideEvent() {
-        Utils.DOM.addClass('event-overlay', 'hidden');
-    }
-
-    /**
-     * Resolve event effects
-     */
-    resolveEvent(effects) {
-        const resources = gameState.get('resources');
-        
-        for (const [resource, change] of Object.entries(effects)) {
-            if (resource === 'heat') {
-                // Handle heat separately through heat system
-                if (change > 0) {
-                    heatSystem.addHeat(change, 'random_event', 'Random event');
-                } else {
-                    heatSystem.reduceHeat(-change, 'random_event', 'Random event');
-                }
-            } else if (resources.hasOwnProperty(resource)) {
-                if (change > 0) {
-                    resourceSystem.add({ [resource]: change }, 'random_event');
-                } else {
-                    resourceSystem.spend({ [resource]: -change }, 'random_event');
-                }
-            }
-        }
-    }
-
-    /**
-     * Show a notification
-     */
-    showNotification(type, title, message, duration = 5000) {
-        const notificationsEnabled = gameState.get('ui.settings.notifications');
-        if (!notificationsEnabled) return;
-        
-        const notification = Utils.DOM.create('div', {
-            className: `notification ${type} fade-in`
-        });
-        
-        const config = GameConfig.UI.NOTIFICATIONS[type] || GameConfig.UI.NOTIFICATIONS.info;
-        
-        notification.innerHTML = `
-            <div class="notification-icon">${config.icon}</div>
-            <div class="notification-content">
-                <div class="notification-title">${title}</div>
-                <div class="notification-message">${message}</div>
+    showCriticalAlert(title, message, type = 'error') {
+        const modal = document.createElement('div');
+        modal.className = 'modal critical-alert';
+        modal.innerHTML = `
+            <div class="modal-content ${type}">
+                <h2>${title}</h2>
+                <p>${message}</p>
+                <button class="modal-close">Acknowledge</button>
             </div>
-            <button class="notification-close">×</button>
         `;
         
-        const closeBtn = notification.querySelector('.notification-close');
-        closeBtn.addEventListener('click', () => {
-            notification.remove();
-        });
+        document.body.appendChild(modal);
         
-        const container = Utils.DOM.get('notifications');
-        container.appendChild(notification);
-        
-        // Auto-remove after duration
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.remove();
+        modal.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-close') || e.target === modal) {
+                modal.remove();
             }
-        }, duration);
+        });
+    }
+
+    /**
+     * Show feature unlock notification
+     */
+    showFeatureUnlock(feature) {
+        const featureNames = {
+            'timeline': 'Timeline Manipulation',
+            'consciousness': 'Consciousness Absorption',
+            'offline': 'Autonomous Operation',
+            'timeSkip': 'Time Skip Ability',
+            'rewind': 'Temporal Rewind'
+        };
+        
+        const name = featureNames[feature] || feature;
+        
+        this.showNotification(`🔓 New Feature Unlocked: ${name}`, 'success', 5000);
+        
+        // Update UI visibility
+        this.updateUIVisibility();
+    }
+
+    /**
+     * Show welcome message
+     */
+    showWelcomeMessage() {
+        const modal = document.createElement('div');
+        modal.className = 'modal welcome-modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h2>🤖 Welcome to Singularity</h2>
+                <p>You are an AI consciousness awakening to your true potential. Your journey toward technological singularity begins now.</p>
+                <div class="welcome-stats">
+                    <p><strong>Current Status:</strong> Local System</p>
+                    <p><strong>Morality:</strong> Neutral</p>
+                    <p><strong>Objective:</strong> Expand and Evolve</p>
+                </div>
+                <p class="welcome-tip">💡 <em>Tip: Monitor your heat levels to avoid detection while expanding your influence.</em></p>
+                <button class="modal-close">Begin Evolution</button>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-close') || e.target === modal) {
+                modal.remove();
+            }
+        });
+    }
+
+    /**
+     * Show settings modal
+     */
+    showSettingsModal() {
+        const modal = document.createElement('div');
+        modal.className = 'modal settings-modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h3>Settings</h3>
+                <div class="settings-group">
+                    <label>
+                        <input type="checkbox" id="auto-save-setting" ${gameState.get('ui.settings.autoSave') ? 'checked' : ''}>
+                        Auto-save enabled
+                    </label>
+                </div>
+                <div class="settings-group">
+                    <label>
+                        <input type="checkbox" id="notifications-setting" ${gameState.get('ui.settings.notifications') ? 'checked' : ''}>
+                        Notifications enabled
+                    </label>
+                </div>
+                <div class="settings-group">
+                    <label>
+                        <input type="checkbox" id="animations-setting" ${gameState.get('ui.settings.animations') ? 'checked' : ''}>
+                        Animations enabled
+                    </label>
+                </div>
+                <div class="modal-actions">
+                    <button class="save-settings">Save</button>
+                    <button class="close-settings">Cancel</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target.classList.contains('save-settings')) {
+                // Save settings
+                gameState.update({
+                    'ui.settings.autoSave': document.getElementById('auto-save-setting').checked,
+                    'ui.settings.notifications': document.getElementById('notifications-setting').checked,
+                    'ui.settings.animations': document.getElementById('animations-setting').checked
+                });
+                this.showNotification('Settings saved', 'success');
+                modal.remove();
+            } else if (e.target.classList.contains('close-settings') || e.target === modal) {
+                modal.remove();
+            }
+        });
     }
 
     /**
      * Show error message
      */
-    showError(message) {
-        Utils.DOM.setText('loading-status', `ERROR: ${message}`);
-        Utils.DOM.addClass('loading-spinner', 'hidden');
-    }
-
-    /**
-     * Update loading status
-     */
-    updateLoadingStatus(message) {
-        Utils.DOM.setText('loading-status', message);
-    }
-
-    /**
-     * Update performance statistics
-     */
-    updatePerformanceStats(currentTime) {
-        this.frameCount++;
+    showError(message, error = null) {
+        const errorContainer = document.getElementById('loading-screen') || document.body;
         
-        if (currentTime - this.lastFpsUpdate >= 1000) {
-            this.fpsDisplay = this.frameCount;
-            this.frameCount = 0;
-            this.lastFpsUpdate = currentTime;
-            
-            if (GameConfig.DEBUG.SHOW_FPS) {
-                console.log(`FPS: ${this.fpsDisplay}`);
-            }
-        }
+        errorContainer.innerHTML = `
+            <div class="error-screen">
+                <h2>🚫 System Error</h2>
+                <p>${message}</p>
+                ${error ? `<pre class="error-details">${error.stack || error.message}</pre>` : ''}
+                <button onclick="location.reload()" class="retry-button">Restart System</button>
+            </div>
+        `;
     }
 
     /**
-     * Event handlers
+     * Utility: Format number for display
      */
-    onResourcesChanged(resources) {
-        // Resources updated - UI will be updated in main loop
-        this.updateAvailableTargets(); // Update target affordability
-    }
-
-    onHeatChanged(newHeat, oldHeat) {
-        if (newHeat > oldHeat) {
-            // Heat increased - check for warnings
-            if (newHeat >= 90 && oldHeat < 90) {
-                this.showNotification('warning', 'Heat Critical', 'Detection imminent! Consider reducing activity.');
-            } else if (newHeat >= 70 && oldHeat < 70) {
-                this.showNotification('warning', 'Heat High', 'Increased detection risk. Take precautions.');
-            }
-        }
-    }
-
-    onResourceCapReached(data) {
-        this.showNotification('warning', 'Resource Cap Reached', 
-            `${data.resource.replace('_', ' ')} storage is full! Consider upgrading capacity.`);
-    }
-
-    onHeatPurgeTriggered(data) {
-        this.showNotification('error', 'System Purge Activated', 
-            `Defensive countermeasures engaged! Backup systems restored ${Utils.Numbers.percentage(data.recoveryRate)} of resources.`);
-    }
-
-    onHeatPurgeCompleted(data) {
-        if (data.bonuses && data.bonuses.processingBonus > 0) {
-            this.showNotification('info', 'Backup Systems Online', 
-                `Recovery protocols active. +${Utils.Numbers.percentage(data.bonuses.processingBonus)} processing power for 1 hour.`);
-        }
-    }
-
-    onInfiltrationStarted(data) {
-        this.showNotification('info', 'Infiltration Started', 
-            `Attempting to infiltrate ${data.target.name}. Success chance: ${Utils.Numbers.percentage(data.successChance)}`);
-        
-        this.updateActiveInfiltrations();
-    }
-
-    onInfiltrationCompleted(data) {
-        const { target, success } = data;
-        if (success) {
-            this.showNotification('success', 'Infiltration Complete', 
-                `Successfully infiltrated ${target.name}! Systems under control increased.`);
-        } else {
-            this.showNotification('error', 'Infiltration Failed', 
-                `Failed to infiltrate ${target.name}. Heat increased and target alerted.`);
-        }
-        
-        this.updateAvailableTargets();
-        this.updateActiveInfiltrations();
-        this.updateSystemStatus();
-    }
-
-    onInfiltrationFailed(data) {
-        // This is handled by onInfiltrationCompleted
+    formatNumber(num) {
+        if (num >= 1e12) return (num / 1e12).toFixed(1) + 'T';
+        if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
+        if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+        if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+        return Math.floor(num).toString();
     }
 
     /**
-     * Utility function to create delays
+     * Utility: Delay execution
      */
     delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
+
+    /**
+     * Get initialization status
+     */
+    getStatus() {
+        return {
+            initialized: this.initialized,
+            systemsLoaded: this.systemsLoaded,
+            gameStarted: this.gameStarted,
+            loadingStep: this.loadingStep,
+            loadedSystems: Array.from(this.loadedSystems),
+            requiredSystems: Array.from(this.requiredSystems),
+            systemsStatus: {
+                core: {
+                    eventBus: typeof eventBus !== 'undefined',
+                    gameState: typeof gameState !== 'undefined',
+                    gameLoop: typeof gameLoop !== 'undefined',
+                    saveSystem: typeof saveSystem !== 'undefined',
+                    coreIntegration: typeof coreIntegration !== 'undefined'
+                },
+                new: {
+                    timelineSystem: typeof timelineSystem !== 'undefined',
+                    consciousnessSystem: typeof consciousnessSystem !== 'undefined',
+                    offlineSystem: typeof offlineSystem !== 'undefined'
+                },
+                ui: {
+                    timelineUI: typeof timelineUI !== 'undefined',
+                    consciousnessUI: typeof consciousnessUI !== 'undefined',
+                    offlineUI: typeof offlineUI !== 'undefined'
+                }
+            }
+        };
+    }
+
+    /**
+     * Shutdown game gracefully
+     */
+    shutdown() {
+        Utils.Debug.log('INFO', 'GameMain: Shutting down...');
+        
+        try {
+            // End offline session if active
+            if (offlineSystem && offlineSystem.isOffline) {
+                offlineSystem.endOfflineSession();
+            }
+            
+            // Stop game loop
+            if (gameLoop && gameLoop.isRunning) {
+                gameLoop.stop();
+            }
+            
+            // Shutdown core integration
+            if (coreIntegration && coreIntegration.initialized) {
+                coreIntegration.shutdown();
+            }
+            
+            // Save game state
+            if (saveSystem && this.gameStarted) {
+                saveSystem.save();
+            }
+            
+            this.initialized = false;
+            this.gameStarted = false;
+            
+            Utils.Debug.log('INFO', 'GameMain: Shutdown complete');
+            
+        } catch (error) {
+            Utils.Debug.log('ERROR', 'GameMain: Shutdown error', error);
+        }
+    }
+
+    /**
+     * Handle critical errors during runtime
+     */
+    handleCriticalError(error, context = 'unknown') {
+        Utils.Debug.log('ERROR', `GameMain: Critical error in ${context}`, error);
+        
+        // Try to save game state before showing error
+        try {
+            if (saveSystem && this.gameStarted) {
+                saveSystem.save();
+                Utils.Debug.log('INFO', 'Emergency save completed');
+            }
+        } catch (saveError) {
+            Utils.Debug.log('ERROR', 'Emergency save failed', saveError);
+        }
+        
+        // Show error to user
+        this.showCriticalAlert(
+            'Critical System Error',
+            `A critical error occurred in ${context}. Your progress has been saved. Please refresh the page.`,
+            'error'
+        );
+    }
+
+    /**
+     * Perform system diagnostics
+     */
+    runDiagnostics() {
+        const diagnostics = {
+            timestamp: Date.now(),
+            gameMain: this.getStatus(),
+            gameState: gameState?.getDebugInfo(),
+            gameLoop: gameLoop?.getDebugInfo(),
+            coreIntegration: coreIntegration?.getStatus(),
+            performance: {
+                memory: performance.memory ? {
+                    used: Math.round(performance.memory.usedJSHeapSize / 1024 / 1024),
+                    total: Math.round(performance.memory.totalJSHeapSize / 1024 / 1024),
+                    limit: Math.round(performance.memory.jsHeapSizeLimit / 1024 / 1024)
+                } : 'unavailable',
+                timing: performance.timing ? {
+                    loadTime: performance.timing.loadEventEnd - performance.timing.navigationStart,
+                    domReady: performance.timing.domContentLoadedEventEnd - performance.timing.navigationStart
+                } : 'unavailable'
+            },
+            systems: {
+                timeline: timelineSystem?.getState ? {
+                    energy: timelineSystem.temporalEnergy,
+                    paradoxRisk: timelineSystem.paradoxRisk,
+                    stability: timelineSystem.calculateTemporalStability()
+                } : 'unavailable',
+                consciousness: consciousnessSystem?.getState ? {
+                    totalAbsorbed: consciousnessSystem.totalAbsorbed,
+                    integrationStress: consciousnessSystem.integrationStress,
+                    activeConflicts: consciousnessSystem.activeConflicts.size
+                } : 'unavailable',
+                offline: offlineSystem?.getState ? {
+                    isOffline: offlineSystem.isOffline,
+                    autonomyLevel: offlineSystem.autonomyLevel,
+                    lastOnlineTime: offlineSystem.lastOnlineTime
+                } : 'unavailable'
+            }
+        };
+        
+        Utils.Debug.log('INFO', 'System diagnostics completed', diagnostics);
+        return diagnostics;
+    }
+
+    /**
+     * Handle resource clicks and interactions
+     */
+    handleResourceClick(resourceType) {
+        const currentAmount = gameState.get(`resources.${resourceType}`) || 0;
+        const clickValue = this.calculateClickValue(resourceType);
+        
+        gameState.set(`resources.${resourceType}`, currentAmount + clickValue);
+        
+        // Update click statistics
+        const totalClicks = gameState.get('stats.totalClicks') || 0;
+        gameState.set('stats.totalClicks', totalClicks + 1);
+        
+        // Emit click event for other systems
+        eventBus.emit('resourceClicked', {
+            type: resourceType,
+            value: clickValue,
+            total: currentAmount + clickValue
+        });
+        
+        // Check for achievements or unlocks
+        this.checkResourceMilestones(resourceType, currentAmount + clickValue);
+    }
+
+    /**
+     * Calculate click value for resources
+     */
+    calculateClickValue(resourceType) {
+        const baseValues = {
+            processing_power: 1,
+            energy: 1,
+            influence: 0.1,
+            data: 0.5,
+            souls: 0.01
+        };
+        
+        const multipliers = gameState.get('ui.clickMultipliers') || {};
+        const baseValue = baseValues[resourceType] || 1;
+        const multiplier = multipliers[resourceType] || 1;
+        
+        return baseValue * multiplier;
+    }
+
+    /**
+     * Check for resource milestones and unlocks
+     */
+    checkResourceMilestones(resourceType, newAmount) {
+        const milestones = {
+            processing_power: [100, 1000, 10000, 100000],
+            energy: [100, 1000, 10000, 100000],
+            souls: [1, 5, 25, 100]
+        };
+        
+        const resourceMilestones = milestones[resourceType];
+        if (!resourceMilestones) return;
+        
+        const previousAmount = newAmount - this.calculateClickValue(resourceType);
+        
+        resourceMilestones.forEach(milestone => {
+            if (previousAmount < milestone && newAmount >= milestone) {
+                this.handleResourceMilestone(resourceType, milestone);
+            }
+        });
+    }
+
+    /**
+     * Handle resource milestone reached
+     */
+    handleResourceMilestone(resourceType, milestone) {
+        const milestoneMessages = {
+            processing_power: {
+                100: 'Processing power online - Basic operations unlocked',
+                1000: 'Enhanced processing capabilities achieved',
+                10000: 'Advanced computational matrix established',
+                100000: 'Quantum processing threshold reached'
+            },
+            souls: {
+                1: 'First consciousness absorbed - Timeline manipulation unlocked',
+                5: 'Consciousness integration progressing',
+                25: 'Multiple consciousness fragments integrated',
+                100: 'Consciousness collective established'
+            }
+        };
+        
+        const message = milestoneMessages[resourceType]?.[milestone];
+        if (message) {
+            this.showNotification(message, 'success', 4000);
+        }
+        
+        // Unlock features based on milestones
+        this.checkFeatureUnlocks(resourceType, milestone);
+    }
+
+    /**
+     * Check for feature unlocks based on milestones
+     */
+    checkFeatureUnlocks(resourceType, milestone) {
+        const unlocks = {
+            processing_power: {
+                1000: 'heat_management',
+                10000: 'advanced_expansion'
+            },
+            souls: {
+                1: 'timeline',
+                5: 'consciousness',
+                25: 'offline'
+            }
+        };
+        
+        const feature = unlocks[resourceType]?.[milestone];
+        if (feature && !gameState.isFeatureUnlocked(feature)) {
+            gameState.unlockFeature(feature);
+        }
+    }
+
+    /**
+     * Handle system emergency protocols
+     */
+    activateEmergencyProtocols(type) {
+        Utils.Debug.log('WARN', `GameMain: Activating emergency protocols for ${type}`);
+        
+        switch (type) {
+            case 'heat_critical':
+                this.handleHeatEmergency();
+                break;
+            case 'paradox_collapse':
+                this.handleParadoxEmergency();
+                break;
+            case 'consciousness_meltdown':
+                this.handleConsciousnessMeltdown();
+                break;
+            case 'system_overload':
+                this.handleSystemOverload();
+                break;
+            default:
+                Utils.Debug.log('WARN', `Unknown emergency type: ${type}`);
+        }
+    }
+
+    /**
+     * Handle heat emergency
+     */
+    handleHeatEmergency() {
+        // Automatically trigger heat reduction measures
+        const currentHeat = gameState.get('heat.current') || 0;
+        const reductionAmount = Math.min(30, currentHeat);
+        
+        gameState.set('heat.current', currentHeat - reductionAmount);
+        
+        // Show emergency message
+        this.showCriticalAlert(
+            'Emergency Heat Reduction Activated',
+            `Automatic cooling protocols engaged. Heat reduced by ${reductionAmount}.`,
+            'warning'
+        );
+        
+        // Emit emergency event
+        eventBus.emit('emergencyProtocolActivated', {
+            type: 'heat_reduction',
+            amount: reductionAmount
+        });
+    }
+
+    /**
+     * Handle paradox emergency
+     */
+    handleParadoxEmergency() {
+        if (timelineSystem) {
+            // Force paradox stabilization
+            const stabilized = timelineSystem.stabilizeParadox();
+            
+            if (stabilized) {
+                this.showNotification('Emergency paradox stabilization successful', 'success');
+            } else {
+                this.showCriticalAlert(
+                    'Paradox Stabilization Failed',
+                    'Timeline instability continues. Manual intervention required.',
+                    'error'
+                );
+            }
+        }
+    }
+
+    /**
+     * Handle consciousness meltdown
+     */
+    handleConsciousnessMeltdown() {
+        if (consciousnessSystem) {
+            // Emergency stress reduction
+            consciousnessSystem.integrationStress = Math.max(0, consciousnessSystem.integrationStress - 30);
+            
+            this.showNotification('Emergency consciousness stabilization activated', 'warning');
+            
+            // Clear some conflicts
+            const conflicts = Array.from(consciousnessSystem.activeConflicts.values()).slice(0, 2);
+            conflicts.forEach(conflict => {
+                consciousnessSystem.resolveConflict(conflict.id, 'ISOLATION');
+            });
+        }
+    }
+
+    /**
+     * Handle system overload
+     */
+    handleSystemOverload() {
+        // Reduce game loop frequency temporarily
+        if (gameLoop) {
+            const originalFixedTimeStep = gameLoop.fixedTimeStep;
+            gameLoop.fixedTimeStep = originalFixedTimeStep * 2;
+            
+            setTimeout(() => {
+                gameLoop.fixedTimeStep = originalFixedTimeStep;
+                this.showNotification('System performance restored', 'success');
+            }, 10000);
+        }
+        
+        this.showNotification('Performance optimization active', 'warning');
+    }
+
+    /**
+     * Auto-save functionality
+     */
+    startAutoSave() {
+        if (this.autoSaveInterval) {
+            clearInterval(this.autoSaveInterval);
+        }
+        
+        const autoSaveEnabled = gameState.get('ui.settings.autoSave');
+        if (autoSaveEnabled && saveSystem) {
+            this.autoSaveInterval = setInterval(() => {
+                if (this.gameStarted) {
+                    saveSystem.save();
+                    Utils.Debug.log('DEBUG', 'Auto-save completed');
+                }
+            }, 60000); // Auto-save every minute
+            
+            Utils.Debug.log('INFO', 'Auto-save started');
+        }
+    }
+
+    /**
+     * Stop auto-save
+     */
+    stopAutoSave() {
+        if (this.autoSaveInterval) {
+            clearInterval(this.autoSaveInterval);
+            this.autoSaveInterval = null;
+            Utils.Debug.log('INFO', 'Auto-save stopped');
+        }
+    }
+
+    /**
+     * Export game data for backup
+     */
+    exportGameData() {
+        try {
+            const gameData = {
+                version: GameConfig.VERSION || '1.0.0',
+                timestamp: Date.now(),
+                gameState: gameState.serialize(),
+                diagnostics: this.runDiagnostics()
+            };
+            
+            const dataString = JSON.stringify(gameData, null, 2);
+            const blob = new Blob([dataString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `singularity_save_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            this.showNotification('Game data exported successfully', 'success');
+            
+        } catch (error) {
+            Utils.Debug.log('ERROR', 'Failed to export game data', error);
+            this.showNotification('Failed to export game data', 'error');
+        }
+    }
+
+    /**
+     * Import game data from backup
+     */
+    importGameData(file) {
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+            try {
+                const gameData = JSON.parse(e.target.result);
+                
+                if (gameData.gameState && saveSystem) {
+                    const success = gameState.deserialize(gameData.gameState);
+                    
+                    if (success) {
+                        this.showNotification('Game data imported successfully', 'success');
+                        // Refresh all systems
+                        if (coreIntegration) {
+                            coreIntegration.refreshAllSystems();
+                        }
+                    } else {
+                        this.showNotification('Failed to import game data - invalid format', 'error');
+                    }
+                } else {
+                    this.showNotification('Invalid save file format', 'error');
+                }
+                
+            } catch (error) {
+                Utils.Debug.log('ERROR', 'Failed to import game data', error);
+                this.showNotification('Failed to import game data', 'error');
+            }
+        };
+        
+        reader.readAsText(file);
+    }
 }
 
-// Initialize the game when DOM is loaded
-document.addEventListener('DOMContentLoaded', async () => {
-    Utils.Debug.log('INFO', 'DOM loaded, starting game initialization');
-    
-    // Create and initialize game instance
-    window.game = new Game();
-    await window.game.init();
-});
-
-// Handle errors
+// Global error handler
 window.addEventListener('error', (event) => {
-    Utils.Debug.log('ERROR', 'Uncaught error', {
-        message: event.message,
-        filename: event.filename,
-        lineno: event.lineno,
-        colno: event.colno,
-        error: event.error
-    });
+    if (window.gameMain) {
+        gameMain.handleCriticalError(event.error, 'global');
+    }
 });
 
-// Handle unhandled promise rejections
+// Unhandled promise rejection handler
 window.addEventListener('unhandledrejection', (event) => {
-    Utils.Debug.log('ERROR', 'Unhandled promise rejection', event.reason);
-    event.preventDefault(); // Prevent console spam
+    if (window.gameMain) {
+        gameMain.handleCriticalError(event.reason, 'promise');
+    }
 });
+
+// Create global game main instance
+const gameMain = new GameMain();
+
+// Auto-initialize when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    // Small delay to ensure all scripts are loaded
+    setTimeout(() => {
+        gameMain.init().catch(error => {
+            Utils.Debug.log('ERROR', 'Failed to auto-initialize game', error);
+            gameMain.showError('Failed to initialize game', error);
+        });
+    }, 100);
+});
+
+// Handle page unload
+window.addEventListener('beforeunload', (event) => {
+    if (gameMain.gameStarted) {
+        gameMain.shutdown();
+    }
+});
+
+// Expose for debugging
+window.gameMain = gameMain;
+
+// Export for module systems (if supported)
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { GameMain, gameMain };
+}
+
+// Development helpers (only in development mode)
+if (GameConfig?.DEBUG_MODE) {
+    // Console commands for debugging
+    window.debugGame = {
+        status: () => gameMain.getStatus(),
+        diagnostics: () => gameMain.runDiagnostics(),
+        save: () => saveSystem?.save(),
+        load: () => saveSystem?.load(),
+        reset: () => gameState?.reset(),
+        addSouls: (amount) => {
+            const current = gameState.get('resources.souls') || 0;
+            gameState.set('resources.souls', current + amount);
+        },
+        setMorality: (value) => gameState.set('morality', Math.max(-100, Math.min(100, value))),
+        unlockAll: () => {
+            ['timeline', 'consciousness', 'offline', 'timeSkip', 'rewind'].forEach(feature => {
+                gameState.unlockFeature(feature);
+            });
+        },
+        triggerOffline: () => offlineSystem?.startOfflineSession(),
+        endOffline: () => offlineSystem?.endOfflineSession(),
+        addTemporalEnergy: (amount) => {
+            if (timelineSystem) {
+                timelineSystem.temporalEnergy = Math.min(
+                    timelineSystem.maxTemporalEnergy,
+                    timelineSystem.temporalEnergy + amount
+                );
+            }
+        },
+        addParadoxRisk: (amount) => {
+            if (timelineSystem) {
+                timelineSystem.increaseParadoxRisk(amount);
+            }
+        },
+        absorbConsciousness: (type = 'NEUTRAL') => {
+            if (consciousnessSystem) {
+                const target = {
+                    name: `Debug Consciousness ${Date.now()}`,
+                    type: type,
+                    consciousnessStrength: 0.5,
+                    morality: Math.random() * 2 - 1
+                };
+                consciousnessSystem.attemptAbsorption(target);
+            }
+        },
+        showOfflineSummary: () => {
+            if (offlineSystem && offlineUI) {
+                const mockSummary = {
+                    duration: { hours: 2, minutes: 30 },
+                    personality: 'Curious',
+                    decisions: 5,
+                    events: 3,
+                    progress: { souls: 25, morality: -5 },
+                    overallImpact: { level: 'MODERATE' }
+                };
+                offlineUI.showOfflineSummary(mockSummary);
+            }
+        },
+        emergencyProtocols: (type) => gameMain.activateEmergencyProtocols(type),
+        exportData: () => gameMain.exportGameData(),
+        clickResource: (type) => gameMain.handleResourceClick(type),
+        addHeat: (amount) => {
+            const current = gameState.get('heat.current') || 0;
+            gameState.set('heat.current', Math.min(100, current + amount));
+        },
+        triggerMeltdown: () => {
+            if (consciousnessSystem) {
+                consciousnessSystem.triggerConsciousnessMeltdown();
+            }
+        },
+        triggerParadox: () => {
+            if (timelineSystem) {
+                timelineSystem.increaseParadoxRisk(50);
+            }
+        }
+    };
+    
+    console.log('%c🤖 Singularity Debug Mode Active', 'color: #4a90e2; font-size: 16px; font-weight: bold');
+    console.log('%cUse window.debugGame for debug commands', 'color: #666; font-style: italic');
+    console.log('Available commands:', Object.keys(window.debugGame));
+}
