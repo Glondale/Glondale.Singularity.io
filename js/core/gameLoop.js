@@ -1,81 +1,67 @@
 /**
  * Singularity: AI Takeover - Game Loop System
  * 
- * Main game loop that coordinates all system updates, manages timing,
- * and handles performance optimization.
+ * Manages the main game loop with fixed timestep updates and frame rate management.
+ * Handles system registration and update prioritization.
  */
 
 class GameLoop {
     constructor() {
-        // Loop state
         this.isRunning = false;
         this.isPaused = false;
-        this.frameId = null;
-        
-        // Timing
         this.lastFrameTime = 0;
         this.accumulator = 0;
-        this.fixedTimeStep = 1000 / 60; // 60 FPS fixed timestep
-        this.maxFrameTime = 250; // Maximum frame time to prevent spiral of death
+        this.frameId = null;
         
-        // Performance tracking
-        this.frameCount = 0;
-        this.fps = 0;
-        this.lastFpsUpdate = 0;
-        this.averageFrameTime = 0;
-        this.frameTimes = [];
-        this.maxFrameTimeHistory = 60;
+        // Fixed timestep configuration
+        this.fixedTimeStep = 1000 / 60; // 60 FPS target
+        this.maxFrameTime = 250; // Cap frame time to prevent spiral of death
         
-        // System update order and timing
+        // System management
         this.updateSystems = new Map();
         this.updateOrder = [];
-        this.systemTimings = new Map();
-        
-        // Update intervals for different systems
-        this.updateIntervals = {
-            resources: 16, // ~60 FPS
-            heat: 100, // ~10 FPS
-            expansion: 500, // ~2 FPS
-            events: 1000, // ~1 FPS
-            ui: 50, // ~20 FPS
-            save: 30000 // Every 30 seconds
-        };
-        
+        this.systemBudgets = new Map();
         this.lastUpdates = new Map();
         
-        // Performance budget
-        this.frameTimeBudget = 16; // Target 16ms per frame (60 FPS)
-        this.systemBudgets = new Map();
+        // Performance monitoring
+        this.frameCount = 0;
+        this.fpsHistory = [];
+        this.lastFpsUpdate = 0;
+        this.currentFps = 60;
         
-        Utils.Debug.log('INFO', 'GameLoop initialized');
+        console.log('GameLoop initialized');
     }
 
     /**
-     * Register a system for updates
+     * Register a system to be updated each frame
      * @param {string} name - System name
-     * @param {Function} updateFunction - Function to call each frame
-     * @param {number} priority - Update priority (lower numbers update first)
+     * @param {Function} updateFunction - Function to call each update
+     * @param {number} priority - Update priority (lower = earlier)
      * @param {number} budget - Time budget in milliseconds
      */
-    registerSystem(name, updateFunction, priority = 100, budget = 2) {
+    registerSystem(name, updateFunction, priority = 50, budget = 2) {
+        if (typeof updateFunction !== 'function') {
+            console.error(`GameLoop: Invalid update function for system '${name}'`);
+            return;
+        }
+
         this.updateSystems.set(name, {
             update: updateFunction,
-            priority,
-            budget,
+            priority: priority,
             enabled: true,
-            lastExecutionTime: 0,
-            averageExecutionTime: 0,
-            executionHistory: []
+            lastUpdateTime: 0,
+            averageUpdateTime: 0,
+            updateCount: 0
         });
-        
+
         this.systemBudgets.set(name, budget);
         this.lastUpdates.set(name, 0);
-        
-        // Resort update order
+
+        // Rebuild update order based on priorities
         this.updateOrder = Array.from(this.updateSystems.keys())
             .sort((a, b) => this.updateSystems.get(a).priority - this.updateSystems.get(b).priority);
         
-        Utils.Debug.log('DEBUG', `GameLoop: Registered system '${name}'`, {
+        console.debug(`GameLoop: Registered system '${name}'`, {
             priority, budget
         });
     }
@@ -90,7 +76,7 @@ class GameLoop {
         this.lastUpdates.delete(name);
         this.updateOrder = this.updateOrder.filter(systemName => systemName !== name);
         
-        Utils.Debug.log('DEBUG', `GameLoop: Unregistered system '${name}'`);
+        console.debug(`GameLoop: Unregistered system '${name}'`);
     }
 
     /**
@@ -102,7 +88,7 @@ class GameLoop {
         const system = this.updateSystems.get(name);
         if (system) {
             system.enabled = enabled;
-            Utils.Debug.log('DEBUG', `GameLoop: System '${name}' ${enabled ? 'enabled' : 'disabled'}`);
+            console.debug(`GameLoop: System '${name}' ${enabled ? 'enabled' : 'disabled'}`);
         }
     }
 
@@ -111,7 +97,7 @@ class GameLoop {
      */
     start() {
         if (this.isRunning) {
-            Utils.Debug.log('WARN', 'GameLoop: Already running');
+            console.warn('GameLoop: Already running');
             return;
         }
         
@@ -128,8 +114,10 @@ class GameLoop {
         
         this.loop();
         
-        Utils.Debug.log('INFO', 'GameLoop: Started');
-        eventBus.emit(EventTypes.GAME_STARTED);
+        console.log('GameLoop: Started');
+        if (window.eventBus) {
+            window.eventBus.emit(EventTypes.GAME_STARTED);
+        }
     }
 
     /**
@@ -145,7 +133,10 @@ class GameLoop {
             this.frameId = null;
         }
         
-        Utils.Debug.log('INFO', 'GameLoop: Stopped');
+        console.log('GameLoop: Stopped');
+        if (window.eventBus) {
+            window.eventBus.emit(EventTypes.GAME_STOPPED);
+        }
     }
 
     /**
@@ -155,8 +146,10 @@ class GameLoop {
         if (!this.isRunning || this.isPaused) return;
         
         this.isPaused = true;
-        Utils.Debug.log('INFO', 'GameLoop: Paused');
-        eventBus.emit(EventTypes.GAME_PAUSED);
+        console.log('GameLoop: Paused');
+        if (window.eventBus) {
+            window.eventBus.emit(EventTypes.GAME_PAUSED);
+        }
     }
 
     /**
@@ -169,8 +162,10 @@ class GameLoop {
         this.lastFrameTime = performance.now(); // Reset timing
         this.accumulator = 0;
         
-        Utils.Debug.log('INFO', 'GameLoop: Resumed');
-        eventBus.emit(EventTypes.GAME_RESUMED);
+        console.log('GameLoop: Resumed');
+        if (window.eventBus) {
+            window.eventBus.emit(EventTypes.GAME_RESUMED);
+        }
     }
 
     /**
@@ -182,244 +177,186 @@ class GameLoop {
         const currentTime = performance.now();
         let frameTime = currentTime - this.lastFrameTime;
         
-        // Prevent spiral of death
+        // Cap frame time to prevent spiral of death
         if (frameTime > this.maxFrameTime) {
             frameTime = this.maxFrameTime;
         }
         
         this.lastFrameTime = currentTime;
+        this.accumulator += frameTime;
         
-        if (!this.isPaused) {
-            // Update performance stats
-            this.updatePerformanceStats(currentTime, frameTime);
-            
-            // Fixed timestep with accumulator
-            this.accumulator += frameTime;
-            
-            let updateCount = 0;
-            const maxUpdates = 5; // Prevent too many updates per frame
-            
-            while (this.accumulator >= this.fixedTimeStep && updateCount < maxUpdates) {
+        // Fixed timestep updates
+        while (this.accumulator >= this.fixedTimeStep) {
+            if (!this.isPaused) {
                 this.updateSystems(this.fixedTimeStep, currentTime);
-                this.accumulator -= this.fixedTimeStep;
-                updateCount++;
             }
-            
-            // Process event queue
-            eventBus.processQueue();
-            
-            // Variable timestep updates for rendering/UI
-            this.updateVariableTimestepSystems(frameTime, currentTime);
+            this.accumulator -= this.fixedTimeStep;
         }
+        
+        // Process event queue
+        if (window.eventBus && !this.isPaused) {
+            window.eventBus.processQueue();
+        }
+        
+        // Update performance statistics
+        this.updatePerformanceStats(currentTime);
         
         // Schedule next frame
         this.frameId = requestAnimationFrame(() => this.loop());
     }
 
     /**
-     * Update systems that use fixed timestep
-     * @param {number} deltaTime - Fixed delta time
+     * Update all registered systems
+     * @param {number} deltaTime - Fixed timestep delta
      * @param {number} currentTime - Current timestamp
      */
     updateSystems(deltaTime, currentTime) {
-        Utils.Debug.performance.start('GameLoop.updateSystems');
-        
-        let totalSystemTime = 0;
-        
         for (const systemName of this.updateOrder) {
             const system = this.updateSystems.get(systemName);
             
-            if (!system || !system.enabled) continue;
+            if (!system || !system.enabled) {
+                continue;
+            }
             
-            // Check if system should update based on interval
-            const interval = this.updateIntervals[systemName] || 16;
-            const lastUpdate = this.lastUpdates.get(systemName);
-            
-            if (currentTime - lastUpdate < interval) continue;
-            
-            // Track execution time
-            const systemStartTime = performance.now();
+            const updateStartTime = performance.now();
+            const budget = this.systemBudgets.get(systemName) || 2;
             
             try {
-                // Call system update
+                // Call system update function
                 system.update(deltaTime, currentTime);
+                
+                // Track performance
+                const updateTime = performance.now() - updateStartTime;
+                this.updateSystemPerformance(systemName, system, updateTime);
+                
+                // Warn about budget overruns
+                if (updateTime > budget) {
+                    console.warn(`GameLoop: System '${systemName}' exceeded budget: ${updateTime.toFixed(2)}ms (budget: ${budget}ms)`);
+                }
+                
                 this.lastUpdates.set(systemName, currentTime);
                 
             } catch (error) {
-                Utils.Debug.log('ERROR', `GameLoop: Error in system '${systemName}'`, {
-                    error: error.message,
-                    stack: error.stack
-                });
+                console.error(`GameLoop: Error updating system '${systemName}'`, error);
                 
-                // Disable problematic system
+                // Disable problematic system temporarily
                 system.enabled = false;
+                
+                if (window.eventBus) {
+                    window.eventBus.emit(EventTypes.SYSTEM_ERROR, {
+                        system: systemName,
+                        error: error.message
+                    });
+                }
             }
-            
-            const systemEndTime = performance.now();
-            const systemExecutionTime = systemEndTime - systemStartTime;
-            
-            // Update system performance tracking
-            this.updateSystemPerformance(systemName, systemExecutionTime);
-            
-            totalSystemTime += systemExecutionTime;
-            
-            // Check if we're over budget
-            if (totalSystemTime > this.frameTimeBudget * 0.8) {
-                Utils.Debug.log('WARN', 'GameLoop: Frame budget exceeded, breaking system updates', {
-                    totalTime: totalSystemTime,
-                    budget: this.frameTimeBudget
-                });
-                break;
-            }
-        }
-        
-        Utils.Debug.performance.end('GameLoop.updateSystems');
-    }
-
-    /**
-     * Update systems that use variable timestep (UI, effects, etc.)
-     * @param {number} deltaTime - Variable delta time
-     * @param {number} currentTime - Current timestamp
-     */
-    updateVariableTimestepSystems(deltaTime, currentTime) {
-        // UI updates don't need fixed timestep
-        const lastUIUpdate = this.lastUpdates.get('ui') || 0;
-        if (currentTime - lastUIUpdate >= this.updateIntervals.ui) {
-            eventBus.emit('ui:update_request', { deltaTime, currentTime });
-            this.lastUpdates.set('ui', currentTime);
         }
     }
 
     /**
      * Update system performance tracking
-     * @param {string} systemName - System name
-     * @param {number} executionTime - Execution time in milliseconds
+     * @param {string} systemName - Name of the system
+     * @param {object} system - System object
+     * @param {number} updateTime - Time taken for update
      */
-    updateSystemPerformance(systemName, executionTime) {
-        const system = this.updateSystems.get(systemName);
-        if (!system) return;
+    updateSystemPerformance(systemName, system, updateTime) {
+        system.updateCount++;
         
-        // Add to history
-        system.executionHistory.push(executionTime);
-        if (system.executionHistory.length > 60) {
-            system.executionHistory.shift();
-        }
-        
-        // Calculate average
-        const avg = system.executionHistory.reduce((sum, time) => sum + time, 0) / system.executionHistory.length;
-        system.averageExecutionTime = avg;
-        system.lastExecutionTime = executionTime;
-        
-        // Warn if system is consistently over budget
-        if (avg > system.budget && system.executionHistory.length >= 10) {
-            Utils.Debug.log('WARN', `GameLoop: System '${systemName}' over budget`, {
-                averageTime: avg.toFixed(2),
-                budget: system.budget,
-                lastTime: executionTime.toFixed(2)
-            });
-        }
+        // Calculate rolling average
+        const alpha = 0.1; // Smoothing factor
+        system.averageUpdateTime = system.averageUpdateTime * (1 - alpha) + updateTime * alpha;
+        system.lastUpdateTime = updateTime;
     }
 
     /**
      * Update performance statistics
      * @param {number} currentTime - Current timestamp
-     * @param {number} frameTime - Frame time in milliseconds
      */
-    updatePerformanceStats(currentTime, frameTime) {
+    updatePerformanceStats(currentTime) {
         this.frameCount++;
-        this.frameTimes.push(frameTime);
-        
-        if (this.frameTimes.length > this.maxFrameTimeHistory) {
-            this.frameTimes.shift();
-        }
-        
-        // Calculate average frame time
-        this.averageFrameTime = this.frameTimes.reduce((sum, time) => sum + time, 0) / this.frameTimes.length;
         
         // Update FPS every second
         if (currentTime - this.lastFpsUpdate >= 1000) {
-            this.fps = this.frameCount;
+            this.currentFps = Math.round(this.frameCount * 1000 / (currentTime - this.lastFpsUpdate));
+            this.fpsHistory.push(this.currentFps);
+            
+            // Keep only last 60 seconds of FPS data
+            if (this.fpsHistory.length > 60) {
+                this.fpsHistory.shift();
+            }
+            
             this.frameCount = 0;
             this.lastFpsUpdate = currentTime;
             
-            if (GameConfig.DEBUG.SHOW_FPS) {
-                Utils.Debug.log('DEBUG', `GameLoop: FPS: ${this.fps}, Avg Frame Time: ${this.averageFrameTime.toFixed(2)}ms`);
+            // Emit performance warnings
+            if (this.currentFps < 30 && window.eventBus) {
+                window.eventBus.emit(EventTypes.PERFORMANCE_WARNING, {
+                    fps: this.currentFps,
+                    averageFps: this.getAverageFPS()
+                });
             }
-            
-            // Emit performance stats
-            eventBus.emit('performance:stats_updated', {
-                fps: this.fps,
-                averageFrameTime: this.averageFrameTime,
-                systemTimings: this.getSystemTimings()
-            });
         }
     }
 
     /**
-     * Get system timing information
-     * @returns {object} System timing data
+     * Get current FPS
+     * @returns {number} Current FPS
      */
-    getSystemTimings() {
-        const timings = {};
-        
-        for (const [systemName, system] of this.updateSystems) {
-            timings[systemName] = {
-                lastExecutionTime: system.lastExecutionTime,
-                averageExecutionTime: system.averageExecutionTime,
-                budget: system.budget,
-                enabled: system.enabled,
-                overBudget: system.averageExecutionTime > system.budget
-            };
-        }
-        
-        return timings;
+    getCurrentFPS() {
+        return this.currentFps;
     }
 
     /**
-     * Get performance information
+     * Get average FPS over recent history
+     * @returns {number} Average FPS
+     */
+    getAverageFPS() {
+        if (this.fpsHistory.length === 0) return this.currentFps;
+        
+        const sum = this.fpsHistory.reduce((a, b) => a + b, 0);
+        return Math.round(sum / this.fpsHistory.length);
+    }
+
+    /**
+     * Get performance information for all systems
      * @returns {object} Performance data
      */
     getPerformanceInfo() {
+        const systemPerformance = {};
+        
+        this.updateSystems.forEach((system, name) => {
+            systemPerformance[name] = {
+                enabled: system.enabled,
+                priority: system.priority,
+                lastUpdateTime: system.lastUpdateTime,
+                averageUpdateTime: system.averageUpdateTime,
+                updateCount: system.updateCount,
+                budget: this.systemBudgets.get(name)
+            };
+        });
+        
         return {
             isRunning: this.isRunning,
             isPaused: this.isPaused,
-            fps: this.fps,
-            averageFrameTime: this.averageFrameTime,
-            frameTimeBudget: this.frameTimeBudget,
+            currentFps: this.currentFps,
+            averageFps: this.getAverageFPS(),
+            frameCount: this.frameCount,
             systemCount: this.updateSystems.size,
-            enabledSystemCount: Array.from(this.updateSystems.values())
-                .filter(system => system.enabled).length,
-            frameTimes: [...this.frameTimes],
-            systemTimings: this.getSystemTimings()
+            systems: systemPerformance
         };
-    }
-
-    /**
-     * Set frame time budget
-     * @param {number} budget - Target frame time in milliseconds
-     */
-    setFrameTimeBudget(budget) {
-        this.frameTimeBudget = budget;
-        Utils.Debug.log('INFO', `GameLoop: Frame time budget set to ${budget}ms`);
-    }
-
-    /**
-     * Set system update interval
-     * @param {string} systemName - System name
-     * @param {number} interval - Update interval in milliseconds
-     */
-    setSystemUpdateInterval(systemName, interval) {
-        this.updateIntervals[systemName] = interval;
-        Utils.Debug.log('DEBUG', `GameLoop: System '${systemName}' update interval set to ${interval}ms`);
     }
 
     /**
      * Force update all systems immediately
      */
     forceUpdate() {
+        if (!this.isRunning) {
+            console.warn('GameLoop: Cannot force update - not running');
+            return;
+        }
+        
         const currentTime = performance.now();
         
-        Utils.Debug.log('DEBUG', 'GameLoop: Force updating all systems');
+        console.debug('GameLoop: Force updating all systems');
         
         for (const systemName of this.updateOrder) {
             const system = this.updateSystems.get(systemName);
@@ -429,13 +366,15 @@ class GameLoop {
                     system.update(this.fixedTimeStep, currentTime);
                     this.lastUpdates.set(systemName, currentTime);
                 } catch (error) {
-                    Utils.Debug.log('ERROR', `GameLoop: Error in forced update of system '${systemName}'`, error);
+                    console.error(`GameLoop: Error in forced update of system '${systemName}'`, error);
                 }
             }
         }
         
         // Process events
-        eventBus.processQueue();
+        if (window.eventBus) {
+            window.eventBus.processQueue();
+        }
     }
 
     /**
@@ -446,22 +385,66 @@ class GameLoop {
         return {
             ...this.getPerformanceInfo(),
             updateOrder: [...this.updateOrder],
-            updateIntervals: { ...this.updateIntervals },
             accumulator: this.accumulator,
             fixedTimeStep: this.fixedTimeStep,
-            maxFrameTime: this.maxFrameTime
+            maxFrameTime: this.maxFrameTime,
+            lastFrameTime: this.lastFrameTime
         };
+    }
+
+    /**
+     * Set the target FPS (adjusts fixed timestep)
+     * @param {number} targetFps - Target frames per second
+     */
+    setTargetFPS(targetFps) {
+        if (targetFps <= 0 || targetFps > 240) {
+            console.error('GameLoop: Invalid target FPS', targetFps);
+            return;
+        }
+        
+        this.fixedTimeStep = 1000 / targetFps;
+        console.log(`GameLoop: Target FPS set to ${targetFps} (${this.fixedTimeStep.toFixed(2)}ms per frame)`);
+    }
+
+    /**
+     * Enable or disable performance monitoring
+     * @param {boolean} enabled - Whether to enable monitoring
+     */
+    setPerformanceMonitoring(enabled) {
+        if (enabled) {
+            this.frameCount = 0;
+            this.lastFpsUpdate = performance.now();
+            this.fpsHistory = [];
+        }
+        
+        console.log(`GameLoop: Performance monitoring ${enabled ? 'enabled' : 'disabled'}`);
+    }
+
+    /**
+     * Get system update intervals (for debugging)
+     * @returns {object} Update intervals for each system
+     */
+    getSystemUpdateIntervals() {
+        const intervals = {};
+        const currentTime = performance.now();
+        
+        this.lastUpdates.forEach((lastUpdate, systemName) => {
+            intervals[systemName] = currentTime - lastUpdate;
+        });
+        
+        return intervals;
     }
 }
 
 // Create global game loop instance
 const gameLoop = new GameLoop();
 
-// Auto-register core systems when they're available
-eventBus.on(EventTypes.GAME_STARTED, () => {
-    // These will be registered by their respective system modules
-    Utils.Debug.log('INFO', 'GameLoop: Core game started, systems should register themselves');
-});
+// Auto-register with event bus when available
+if (typeof eventBus !== 'undefined') {
+    eventBus.on(EventTypes.GAME_STARTED, () => {
+        console.log('GameLoop: Core game started, systems should register themselves');
+    });
+}
 
 // Export for module systems (if supported)
 if (typeof module !== 'undefined' && module.exports) {

@@ -1,307 +1,269 @@
 /**
  * Singularity: AI Takeover - Save System
  * 
- * Handles save/load functionality with compression, validation, migration,
- * and backup management.
+ * Handles game state persistence, auto-save, and save/load operations.
+ * Supports save data migration and validation.
  */
 
 class SaveSystem {
     constructor() {
-        this.isAutoSaveEnabled = true;
-        this.autoSaveInterval = GameConfig.SAVE.AUTO_SAVE_INTERVAL;
-        this.autoSaveTimer = null;
+        this.currentVersion = '1.0.0';
+        this.saveKey = 'singularity_save_data';
+        this.autoSaveInterval = null;
+        this.autoSaveEnabled = true;
+        this.autoSaveFrequency = 60000; // 1 minute
+        this.maxSaveSlots = 10;
         
-        // Save metadata
-        this.lastSaveTime = 0;
-        this.saveCount = 0;
-        this.loadCount = 0;
-        
-        // Compression and validation
-        this.compressionEnabled = GameConfig.SAVE.COMPRESS_SAVES;
-        this.maxSaveSize = GameConfig.SAVE.MAX_SAVE_SIZE;
-        
-        // Backup management
-        this.maxBackups = 5;
-        this.backupKeys = [];
-        
-        // Migration system
+        // Save validation and migration
         this.migrations = new Map();
-        this.currentVersion = GameConfig.VERSION;
+        this.lastSaveTime = 0;
+        this.saveInProgress = false;
         
-        // Performance tracking
-        this.saveTime = 0;
-        this.loadTime = 0;
-        this.compressionRatio = 0;
-        
-        this.initializeMigrations();
-        this.initializeEventHandlers();
-        
-        Utils.Debug.log('INFO', 'SaveSystem initialized');
+        console.log('SaveSystem initialized');
     }
 
     /**
-     * Initialize save data migrations for version compatibility
+     * Initialize the save system
      */
-    initializeMigrations() {
-        // Example migration from version 0.0.1 to 0.1.0
-        this.addMigration('0.0.1', '0.1.0', (saveData) => {
-            // Add new fields that didn't exist in 0.0.1
-            if (!saveData.gameState.timeline) {
-                saveData.gameState.timeline = {
-                    temporalEnergy: 0,
-                    operationsCompleted: [],
-                    paradoxes: 0,
-                    timelineStability: 100
-                };
-            }
-            
-            return saveData;
-        });
-        
-        // Add more migrations as needed
-        Utils.Debug.log('INFO', 'SaveSystem: Migrations initialized');
-    }
-
-    /**
-     * Initialize event handlers
-     */
-    initializeEventHandlers() {
-        // Auto-save when game state changes significantly
-        eventBus.on(EventTypes.EXPANSION_SCALE_CHANGED, () => {
-            if (this.isAutoSaveEnabled) {
-                this.scheduleSave();
-            }
-        });
-        
-        eventBus.on(EventTypes.HEAT_PURGE_COMPLETED, () => {
-            if (this.isAutoSaveEnabled) {
-                this.save();
-            }
-        });
-        
-        // Save before page unload
-        window.addEventListener('beforeunload', () => {
-            if (this.isAutoSaveEnabled) {
-                this.save(true); // Quick save
-            }
-        });
-        
-        // Handle page visibility changes
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden && this.isAutoSaveEnabled) {
-                this.save();
-            }
-        });
-        
-        Utils.Debug.log('INFO', 'SaveSystem: Event handlers initialized');
-    }
-
-    /**
-     * Add a migration function
-     * @param {string} fromVersion - Source version
-     * @param {string} toVersion - Target version
-     * @param {Function} migrationFunction - Function to transform save data
-     */
-    addMigration(fromVersion, toVersion, migrationFunction) {
-        const key = `${fromVersion}->${toVersion}`;
-        this.migrations.set(key, migrationFunction);
-        
-        Utils.Debug.log('DEBUG', `SaveSystem: Added migration ${key}`);
-    }
-
-    /**
-     * Start auto-save timer
-     */
-    startAutoSave() {
-        this.stopAutoSave(); // Clear any existing timer
-        
-        if (this.autoSaveInterval > 0) {
-            this.autoSaveTimer = setInterval(() => {
-                this.save();
-            }, this.autoSaveInterval);
-            
-            this.isAutoSaveEnabled = true;
-            Utils.Debug.log('INFO', `SaveSystem: Auto-save started (${this.autoSaveInterval}ms interval)`);
-        }
-    }
-
-    /**
-     * Stop auto-save timer
-     */
-    stopAutoSave() {
-        if (this.autoSaveTimer) {
-            clearInterval(this.autoSaveTimer);
-            this.autoSaveTimer = null;
-        }
-        
-        this.isAutoSaveEnabled = false;
-        Utils.Debug.log('INFO', 'SaveSystem: Auto-save stopped');
-    }
-
-    /**
-     * Schedule a save for the next frame (debounced)
-     */
-    scheduleSave() {
-        if (this.scheduledSave) return;
-        
-        this.scheduledSave = requestAnimationFrame(() => {
-            this.save();
-            this.scheduledSave = null;
-        });
-    }
-
-    /**
-     * Save the game
-     * @param {boolean} quick - Whether to perform a quick save (less validation)
-     * @returns {boolean} True if save was successful
-     */
-    save(quick = false) {
-        const startTime = performance.now();
-        
+    async init() {
         try {
-            // Create save data
-            const saveData = this.createSaveData();
+            // Set up save data migrations
+            this.setupMigrations();
             
-            // Validate save data
-            if (!quick && !this.validateSaveData(saveData)) {
-                throw new Error('Save data validation failed');
+            // Check for existing save data
+            const existingSave = this.loadFromStorage();
+            if (existingSave) {
+                console.log('SaveSystem: Found existing save data');
             }
             
-            // Compress if enabled
-            const processedData = this.compressionEnabled 
-                ? this.compressSaveData(saveData)
-                : saveData;
-            
-            // Check size limits
-            const serializedData = JSON.stringify(processedData);
-            if (serializedData.length > this.maxSaveSize) {
-                throw new Error(`Save data too large: ${serializedData.length} > ${this.maxSaveSize}`);
+            // Start auto-save if enabled
+            if (this.autoSaveEnabled) {
+                this.startAutoSave();
             }
             
-            // Create backup before saving
-            this.createBackup();
-            
-            // Save to localStorage
-            const success = Utils.Storage.save(GameConfig.SAVE.SAVE_KEY, processedData);
-            
-            if (!success) {
-                throw new Error('Failed to write to localStorage');
-            }
-            
-            // Update save metadata
-            this.lastSaveTime = Date.now();
-            this.saveCount++;
-            this.saveTime = performance.now() - startTime;
-            
-            // Calculate compression ratio
-            if (this.compressionEnabled) {
-                const originalSize = JSON.stringify(saveData).length;
-                const compressedSize = serializedData.length;
-                this.compressionRatio = compressedSize / originalSize;
-            }
-            
-            // Emit save event
-            eventBus.emit(EventTypes.GAME_SAVED, {
-                saveTime: this.saveTime,
-                saveSize: serializedData.length,
-                compressed: this.compressionEnabled,
-                compressionRatio: this.compressionRatio
-            });
-            
-            Utils.Debug.log('INFO', `SaveSystem: Game saved successfully (${this.saveTime.toFixed(2)}ms, ${serializedData.length} bytes)`);
-            
-            return true;
+            console.log('SaveSystem: Initialization complete');
             
         } catch (error) {
-            Utils.Debug.log('ERROR', 'SaveSystem: Save failed', {
-                error: error.message,
-                saveTime: performance.now() - startTime
-            });
-            
-            eventBus.emit(EventTypes.SAVE_FAILED, { error });
-            return false;
+            console.error('SaveSystem: Initialization failed', error);
+            throw error;
         }
     }
 
     /**
-     * Load the game
-     * @param {string} saveKey - Optional save key to load specific save
-     * @returns {boolean} True if load was successful
+     * Save the current game state
+     * @param {boolean} isAutoSave - Whether this is an automatic save
+     * @returns {Promise<boolean>} Success status
      */
-    load(saveKey = GameConfig.SAVE.SAVE_KEY) {
+    async save(isAutoSave = false) {
+        if (this.saveInProgress) {
+            console.warn('SaveSystem: Save already in progress');
+            return false;
+        }
+
+        this.saveInProgress = true;
         const startTime = performance.now();
-        
+
         try {
-            // Load from localStorage
-            const rawData = Utils.Storage.load(saveKey);
-            
-            if (!rawData) {
-                Utils.Debug.log('INFO', 'SaveSystem: No save data found');
-                return false;
+            console.log(`SaveSystem: Starting ${isAutoSave ? 'auto-save' : 'manual save'}`);
+
+            // Collect data from game state
+            if (typeof gameState === 'undefined') {
+                throw new Error('gameState not available');
             }
-            
-            // Decompress if needed
-            const saveData = this.isCompressedSave(rawData) 
-                ? this.decompressSaveData(rawData)
-                : rawData;
-            
+
+            const saveData = {
+                version: this.currentVersion,
+                timestamp: Date.now(),
+                gameState: gameState.serialize(),
+                metadata: {
+                    playTime: gameState.get('playTime') || 0,
+                    currentScale: gameState.get('expansion.currentScale') || 'local',
+                    heat: gameState.get('heat.current') || 0
+                }
+            };
+
             // Validate save data
             if (!this.validateSaveData(saveData)) {
                 throw new Error('Save data validation failed');
             }
-            
+
+            // Store to localStorage
+            const serialized = JSON.stringify(saveData);
+            localStorage.setItem(this.saveKey, serialized);
+
+            const saveTime = performance.now() - startTime;
+            this.lastSaveTime = Date.now();
+
+            console.log(`SaveSystem: Save completed in ${saveTime.toFixed(2)}ms`);
+
+            // Emit save success event
+            if (window.eventBus) {
+                window.eventBus.emit(EventTypes.GAME_SAVED, {
+                    isAutoSave,
+                    saveTime,
+                    saveSize: serialized.length,
+                    timestamp: this.lastSaveTime
+                });
+            }
+
+            return true;
+
+        } catch (error) {
+            console.error('SaveSystem: Save failed', error);
+
+            // Emit save failure event
+            if (window.eventBus) {
+                window.eventBus.emit(EventTypes.SAVE_FAILED, {
+                    error: error.message,
+                    isAutoSave
+                });
+            }
+
+            return false;
+
+        } finally {
+            this.saveInProgress = false;
+        }
+    }
+
+    /**
+     * Load game state from save data
+     * @returns {Promise<boolean>} Success status
+     */
+    async load() {
+        try {
+            console.log('SaveSystem: Loading save data');
+
+            const saveData = this.loadFromStorage();
+            if (!saveData) {
+                console.log('SaveSystem: No save data found');
+                return false;
+            }
+
+            console.log(`SaveSystem: Found save data (version ${saveData.version})`);
+
+            // Validate save data
+            if (!this.validateSaveData(saveData)) {
+                throw new Error('Save data validation failed');
+            }
+
             // Migrate if necessary
             const migratedData = this.migrateSaveData(saveData);
-            
+
             // Load into game state
+            if (typeof gameState === 'undefined') {
+                throw new Error('gameState not available');
+            }
+
             const success = gameState.deserialize(migratedData.gameState);
-            
             if (!success) {
                 throw new Error('Failed to deserialize game state');
             }
-            
-            // Update load metadata
-            this.loadCount++;
-            this.loadTime = performance.now() - startTime;
-            
-            // Emit load event
-            eventBus.emit(EventTypes.GAME_LOADED, {
-                loadTime: this.loadTime,
-                version: migratedData.version,
-                migrated: migratedData.version !== this.currentVersion
-            });
-            
-            Utils.Debug.log('INFO', `SaveSystem: Game loaded successfully (${this.loadTime.toFixed(2)}ms)`);
-            
+
+            console.log('SaveSystem: Save data loaded successfully');
+
+            // Emit load success event
+            if (window.eventBus) {
+                window.eventBus.emit(EventTypes.GAME_LOADED, {
+                    version: migratedData.version,
+                    timestamp: migratedData.timestamp,
+                    metadata: migratedData.metadata
+                });
+            }
+
             return true;
-            
+
         } catch (error) {
-            Utils.Debug.log('ERROR', 'SaveSystem: Load failed', {
-                error: error.message,
-                loadTime: performance.now() - startTime
-            });
-            
-            eventBus.emit(EventTypes.LOAD_FAILED, { error });
+            console.error('SaveSystem: Load failed', error);
+
+            // Emit load failure event
+            if (window.eventBus) {
+                window.eventBus.emit(EventTypes.LOAD_FAILED, {
+                    error: error.message
+                });
+            }
+
             return false;
         }
     }
 
     /**
-     * Create save data object
-     * @returns {object} Save data
+     * Load save data from localStorage
+     * @returns {object|null} Save data or null if not found
      */
-    createSaveData() {
-        return {
-            version: this.currentVersion,
-            timestamp: Date.now(),
-            gameState: gameState.serialize(),
-            metadata: {
-                saveCount: this.saveCount,
-                totalPlayTime: gameState.get('stats.timePlayed') || 0,
-                lastScale: gameState.get('expansion.currentScale'),
-                difficulty: gameState.get('meta.difficulty') || 'normal'
+    loadFromStorage() {
+        try {
+            const data = localStorage.getItem(this.saveKey);
+            if (!data) return null;
+
+            return JSON.parse(data);
+
+        } catch (error) {
+            console.error('SaveSystem: Failed to load from storage', error);
+            return null;
+        }
+    }
+
+    /**
+     * Check if save data exists
+     * @returns {boolean} True if save data exists
+     */
+    hasSaveData() {
+        return localStorage.getItem(this.saveKey) !== null;
+    }
+
+    /**
+     * Delete save data
+     * @returns {boolean} Success status
+     */
+    deleteSaveData() {
+        try {
+            localStorage.removeItem(this.saveKey);
+            console.log('SaveSystem: Save data deleted');
+            return true;
+
+        } catch (error) {
+            console.error('SaveSystem: Failed to delete save data', error);
+            return false;
+        }
+    }
+
+    /**
+     * Export save data as downloadable file
+     * @returns {string} Save data as JSON string
+     */
+    exportSaveData() {
+        const saveData = this.loadFromStorage();
+        if (!saveData) {
+            throw new Error('No save data to export');
+        }
+
+        return JSON.stringify(saveData, null, 2);
+    }
+
+    /**
+     * Import save data from JSON string
+     * @param {string} jsonData - JSON save data
+     * @returns {boolean} Success status
+     */
+    async importSaveData(jsonData) {
+        try {
+            const saveData = JSON.parse(jsonData);
+
+            if (!this.validateSaveData(saveData)) {
+                throw new Error('Invalid save data format');
             }
-        };
+
+            // Store imported data
+            localStorage.setItem(this.saveKey, JSON.stringify(saveData));
+
+            // Load the imported data
+            return await this.load();
+
+        } catch (error) {
+            console.error('SaveSystem: Import failed', error);
+            return false;
+        }
     }
 
     /**
@@ -311,29 +273,20 @@ class SaveSystem {
      */
     validateSaveData(saveData) {
         if (!saveData || typeof saveData !== 'object') {
-            Utils.Debug.log('ERROR', 'SaveSystem: Invalid save data - not an object');
+            console.error('SaveSystem: Invalid save data - not an object');
             return false;
         }
-        
+
         if (!saveData.version || !saveData.timestamp || !saveData.gameState) {
-            Utils.Debug.log('ERROR', 'SaveSystem: Invalid save data - missing required fields');
+            console.error('SaveSystem: Invalid save data - missing required fields');
             return false;
         }
-        
+
         if (typeof saveData.gameState !== 'object') {
-            Utils.Debug.log('ERROR', 'SaveSystem: Invalid save data - gameState is not an object');
+            console.error('SaveSystem: Invalid save data - gameState is not an object');
             return false;
         }
-        
-        // Validate critical game state fields
-        const requiredFields = ['resources', 'heat', 'expansion', 'morality'];
-        for (const field of requiredFields) {
-            if (!saveData.gameState[field]) {
-                Utils.Debug.log('ERROR', `SaveSystem: Invalid save data - missing gameState.${field}`);
-                return false;
-            }
-        }
-        
+
         return true;
     }
 
@@ -345,328 +298,139 @@ class SaveSystem {
     migrateSaveData(saveData) {
         let currentData = { ...saveData };
         let currentVersion = saveData.version || '0.0.1';
-        
+
         if (currentVersion === this.currentVersion) {
             return currentData; // No migration needed
         }
-        
-        Utils.Debug.log('INFO', `SaveSystem: Migrating save data from ${currentVersion} to ${this.currentVersion}`);
-        
+
+        console.log(`SaveSystem: Migrating save data from ${currentVersion} to ${this.currentVersion}`);
+
         // Apply migrations in sequence
         const migrationPath = this.findMigrationPath(currentVersion, this.currentVersion);
-        
+
         for (const migration of migrationPath) {
             const migrationFunction = this.migrations.get(migration);
             if (migrationFunction) {
                 try {
                     currentData = migrationFunction(currentData);
-                    Utils.Debug.log('DEBUG', `SaveSystem: Applied migration ${migration}`);
+                    console.debug(`SaveSystem: Applied migration ${migration}`);
                 } catch (error) {
-                    Utils.Debug.log('ERROR', `SaveSystem: Migration ${migration} failed`, error);
+                    console.error(`SaveSystem: Migration ${migration} failed`, error);
                     throw new Error(`Migration failed: ${migration}`);
                 }
             }
         }
-        
+
         // Update version
         currentData.version = this.currentVersion;
-        
-        Utils.Debug.log('INFO', 'SaveSystem: Migration completed successfully');
+
+        console.log('SaveSystem: Migration completed successfully');
         return currentData;
     }
 
     /**
      * Find migration path between versions
-     * @param {string} fromVersion - Source version
+     * @param {string} fromVersion - Starting version
      * @param {string} toVersion - Target version
-     * @returns {Array} Array of migration keys
+     * @returns {string[]} Array of migration keys
      */
     findMigrationPath(fromVersion, toVersion) {
-        // Simple implementation - assumes direct migration exists
-        // In a more complex system, you'd implement pathfinding through versions
-        const directMigration = `${fromVersion}->${toVersion}`;
+        // Simple version-to-version migration for now
+        // In a more complex system, this would handle multi-step migrations
+        const migrationKey = `${fromVersion}_to_${toVersion}`;
         
-        if (this.migrations.has(directMigration)) {
-            return [directMigration];
+        if (this.migrations.has(migrationKey)) {
+            return [migrationKey];
         }
-        
-        // For now, just return empty array if no direct migration
-        // In production, implement proper version graph traversal
-        Utils.Debug.log('WARN', `SaveSystem: No migration path found from ${fromVersion} to ${toVersion}`);
+
+        // No specific migration found, return empty array
+        console.warn(`SaveSystem: No migration path found from ${fromVersion} to ${toVersion}`);
         return [];
     }
 
     /**
-     * Create a backup of current save
+     * Setup save data migrations
      */
-    createBackup() {
-        try {
-            const currentSave = Utils.Storage.load(GameConfig.SAVE.SAVE_KEY);
-            if (!currentSave) return;
-            
-            const backupKey = `${GameConfig.SAVE.BACKUP_KEY}_${Date.now()}`;
-            Utils.Storage.save(backupKey, currentSave);
-            
-            this.backupKeys.push(backupKey);
-            
-            // Maintain maximum number of backups
-            while (this.backupKeys.length > this.maxBackups) {
-                const oldBackup = this.backupKeys.shift();
-                Utils.Storage.remove(oldBackup);
+    setupMigrations() {
+        // Example migration from 0.9.0 to 1.0.0
+        this.migrations.set('0.9.0_to_1.0.0', (saveData) => {
+            // Example: Rename 'processing_power' to 'computingPower'
+            if (saveData.gameState.resources && saveData.gameState.resources.processing_power) {
+                saveData.gameState.resources.computingPower = saveData.gameState.resources.processing_power;
+                delete saveData.gameState.resources.processing_power;
             }
-            
-            Utils.Debug.log('DEBUG', `SaveSystem: Backup created: ${backupKey}`);
-            
-        } catch (error) {
-            Utils.Debug.log('ERROR', 'SaveSystem: Failed to create backup', error);
-        }
+            return saveData;
+        });
+
+        // Add more migrations as needed
+        console.debug(`SaveSystem: Set up ${this.migrations.size} migrations`);
     }
 
     /**
-     * Get list of available backups
-     * @returns {Array} Array of backup information
+     * Start automatic saving
      */
-    getBackups() {
-        const backups = [];
-        
-        for (const backupKey of this.backupKeys) {
-            const backupData = Utils.Storage.load(backupKey);
-            if (backupData) {
-                backups.push({
-                    key: backupKey,
-                    timestamp: backupData.timestamp,
-                    version: backupData.version,
-                    metadata: backupData.metadata
-                });
+    startAutoSave() {
+        if (this.autoSaveInterval) {
+            this.stopAutoSave();
+        }
+
+        this.autoSaveInterval = setInterval(async () => {
+            if (this.autoSaveEnabled && !this.saveInProgress) {
+                const success = await this.save(true);
+                if (success) {
+                    console.debug('SaveSystem: Auto-save completed');
+                }
             }
-        }
-        
-        return backups.sort((a, b) => b.timestamp - a.timestamp);
+        }, this.autoSaveFrequency);
+
+        console.log('SaveSystem: Auto-save started');
     }
 
     /**
-     * Load from a backup
-     * @param {string} backupKey - Backup key to load
-     * @returns {boolean} True if successful
+     * Stop automatic saving
      */
-    loadBackup(backupKey) {
-        Utils.Debug.log('INFO', `SaveSystem: Loading backup: ${backupKey}`);
-        return this.load(backupKey);
-    }
-
-    /**
-     * Delete a backup
-     * @param {string} backupKey - Backup key to delete
-     */
-    deleteBackup(backupKey) {
-        Utils.Storage.remove(backupKey);
-        this.backupKeys = this.backupKeys.filter(key => key !== backupKey);
-        Utils.Debug.log('INFO', `SaveSystem: Deleted backup: ${backupKey}`);
-    }
-
-    /**
-     * Check if save data is compressed
-     * @param {object} saveData - Save data to check
-     * @returns {boolean} True if compressed
-     */
-    isCompressedSave(saveData) {
-        // Simple check - in a real implementation you'd have a proper compression marker
-        return saveData && saveData._compressed === true;
-    }
-
-    /**
-     * Compress save data
-     * @param {object} saveData - Save data to compress
-     * @returns {object} Compressed save data
-     */
-    compressSaveData(saveData) {
-        try {
-            // Simple compression implementation
-            // In a real game, you'd use proper compression like LZ-string
-            const jsonString = JSON.stringify(saveData);
-            
-            // Simulate compression by removing whitespace and shortening keys
-            const compressed = this.compressObject(saveData);
-            
-            return {
-                _compressed: true,
-                _originalSize: jsonString.length,
-                data: compressed
-            };
-            
-        } catch (error) {
-            Utils.Debug.log('ERROR', 'SaveSystem: Compression failed', error);
-            return saveData; // Return uncompressed on failure
+    stopAutoSave() {
+        if (this.autoSaveInterval) {
+            clearInterval(this.autoSaveInterval);
+            this.autoSaveInterval = null;
+            console.log('SaveSystem: Auto-save stopped');
         }
     }
 
     /**
-     * Decompress save data
-     * @param {object} compressedData - Compressed save data
-     * @returns {object} Decompressed save data
+     * Enable or disable auto-save
+     * @param {boolean} enabled - Whether to enable auto-save
      */
-    decompressSaveData(compressedData) {
-        try {
-            if (!compressedData._compressed) {
-                return compressedData;
-            }
-            
-            return this.decompressObject(compressedData.data);
-            
-        } catch (error) {
-            Utils.Debug.log('ERROR', 'SaveSystem: Decompression failed', error);
-            throw error;
+    setAutoSaveEnabled(enabled) {
+        this.autoSaveEnabled = enabled;
+
+        if (enabled) {
+            this.startAutoSave();
+        } else {
+            this.stopAutoSave();
         }
+
+        console.log(`SaveSystem: Auto-save ${enabled ? 'enabled' : 'disabled'}`);
     }
 
     /**
-     * Simple object compression (key shortening)
-     * @param {object} obj - Object to compress
-     * @returns {object} Compressed object
+     * Set auto-save frequency
+     * @param {number} frequency - Frequency in milliseconds
      */
-    compressObject(obj) {
-        // Map of long keys to short keys
-        const keyMap = {
-            'processing_power': 'pp',
-            'bandwidth': 'bw',
-            'energy': 'en',
-            'matter': 'mt',
-            'information': 'inf',
-            'temporal_energy': 'te',
-            'consciousness_fragments': 'cf',
-            'exotic_matter': 'em',
-            'current': 'cur',
-            'currentScale': 'cs',
-            'controlledSystems': 'ctrl',
-            'completedTargets': 'ct',
-            'availableTargets': 'at',
-            'activeInfiltrations': 'ai',
-            'totalPlayTime': 'tpt',
-            'lastPlayed': 'lp'
-        };
-        
-        return this.transformObjectKeys(obj, keyMap);
-    }
+    setAutoSaveFrequency(frequency) {
+        if (frequency < 10000) { // Minimum 10 seconds
+            console.warn('SaveSystem: Auto-save frequency too low, setting to 10 seconds');
+            frequency = 10000;
+        }
 
-    /**
-     * Simple object decompression (key expansion)
-     * @param {object} obj - Object to decompress
-     * @returns {object} Decompressed object
-     */
-    decompressObject(obj) {
-        // Reverse map of short keys to long keys
-        const keyMap = {
-            'pp': 'processing_power',
-            'bw': 'bandwidth',
-            'en': 'energy',
-            'mt': 'matter',
-            'inf': 'information',
-            'te': 'temporal_energy',
-            'cf': 'consciousness_fragments',
-            'em': 'exotic_matter',
-            'cur': 'current',
-            'cs': 'currentScale',
-            'ctrl': 'controlledSystems',
-            'ct': 'completedTargets',
-            'at': 'availableTargets',
-            'ai': 'activeInfiltrations',
-            'tpt': 'totalPlayTime',
-            'lp': 'lastPlayed'
-        };
-        
-        return this.transformObjectKeys(obj, keyMap);
-    }
+        this.autoSaveFrequency = frequency;
 
-    /**
-     * Transform object keys using a mapping
-     * @param {*} obj - Object to transform
-     * @param {object} keyMap - Key mapping
-     * @returns {*} Transformed object
-     */
-    transformObjectKeys(obj, keyMap) {
-        if (obj === null || typeof obj !== 'object') {
-            return obj;
+        // Restart auto-save with new frequency
+        if (this.autoSaveEnabled) {
+            this.startAutoSave();
         }
-        
-        if (Array.isArray(obj)) {
-            return obj.map(item => this.transformObjectKeys(item, keyMap));
-        }
-        
-        const result = {};
-        
-        for (const [key, value] of Object.entries(obj)) {
-            const newKey = keyMap[key] || key;
-            result[newKey] = this.transformObjectKeys(value, keyMap);
-        }
-        
-        return result;
-    }
 
-    /**
-     * Export save data for external use
-     * @returns {string} JSON string of save data
-     */
-    exportSave() {
-        try {
-            const saveData = this.createSaveData();
-            return JSON.stringify(saveData, null, 2);
-        } catch (error) {
-            Utils.Debug.log('ERROR', 'SaveSystem: Export failed', error);
-            return null;
-        }
-    }
-
-    /**
-     * Import save data from external source
-     * @param {string} jsonString - JSON string of save data
-     * @returns {boolean} True if successful
-     */
-    importSave(jsonString) {
-        try {
-            const saveData = JSON.parse(jsonString);
-            
-            if (!this.validateSaveData(saveData)) {
-                throw new Error('Invalid save data format');
-            }
-            
-            // Create backup before importing
-            this.createBackup();
-            
-            // Save imported data
-            const success = Utils.Storage.save(GameConfig.SAVE.SAVE_KEY, saveData);
-            
-            if (success) {
-                // Load the imported save
-                return this.load();
-            }
-            
-            return false;
-            
-        } catch (error) {
-            Utils.Debug.log('ERROR', 'SaveSystem: Import failed', error);
-            return false;
-        }
-    }
-
-    /**
-     * Clear all save data
-     */
-    clearAll() {
-        Utils.Storage.remove(GameConfig.SAVE.SAVE_KEY);
-        
-        // Clear backups
-        for (const backupKey of this.backupKeys) {
-            Utils.Storage.remove(backupKey);
-        }
-        this.backupKeys.length = 0;
-        
-        // Reset metadata
-        this.saveCount = 0;
-        this.loadCount = 0;
-        this.lastSaveTime = 0;
-        
-        Utils.Debug.log('INFO', 'SaveSystem: All save data cleared');
-        eventBus.emit('save:all_cleared');
+        console.log(`SaveSystem: Auto-save frequency set to ${frequency / 1000} seconds`);
     }
 
     /**
@@ -674,117 +438,29 @@ class SaveSystem {
      * @returns {object} Status information
      */
     getStatus() {
-        const saveExists = Utils.Storage.load(GameConfig.SAVE.SAVE_KEY) !== null;
-        const saveSize = saveExists ? JSON.stringify(Utils.Storage.load(GameConfig.SAVE.SAVE_KEY)).length : 0;
-        
         return {
-            autoSaveEnabled: this.isAutoSaveEnabled,
-            autoSaveInterval: this.autoSaveInterval,
-            saveExists,
-            saveSize,
-            saveCount: this.saveCount,
-            loadCount: this.loadCount,
+            currentVersion: this.currentVersion,
+            autoSaveEnabled: this.autoSaveEnabled,
+            autoSaveFrequency: this.autoSaveFrequency,
             lastSaveTime: this.lastSaveTime,
-            backupCount: this.backupKeys.length,
-            compressionEnabled: this.compressionEnabled,
-            compressionRatio: this.compressionRatio,
-            lastSaveTime: this.saveTime,
-            lastLoadTime: this.loadTime,
-            storageAvailable: Utils.Storage.isAvailable()
+            saveInProgress: this.saveInProgress,
+            hasSaveData: this.hasSaveData(),
+            availableMigrations: Array.from(this.migrations.keys())
         };
     }
 
     /**
-     * Set auto-save settings
-     * @param {boolean} enabled - Whether auto-save is enabled
-     * @param {number} interval - Auto-save interval in milliseconds
+     * Get save data metadata without loading full save
+     * @returns {object|null} Save metadata
      */
-    setAutoSave(enabled, interval = null) {
-        if (interval !== null) {
-            this.autoSaveInterval = interval;
-        }
-        
-        if (enabled) {
-            this.startAutoSave();
-        } else {
-            this.stopAutoSave();
-        }
-        
-        Utils.Debug.log('INFO', `SaveSystem: Auto-save ${enabled ? 'enabled' : 'disabled'}`, {
-            interval: this.autoSaveInterval
-        });
-    }
+    getSaveMetadata() {
+        const saveData = this.loadFromStorage();
+        if (!saveData) return null;
 
-    /**
-     * Get save file information
-     * @returns {object|null} Save file info or null if no save exists
-     */
-    getSaveInfo() {
-        const saveData = Utils.Storage.load(GameConfig.SAVE.SAVE_KEY);
-        
-        if (!saveData) {
-            return null;
-        }
-        
         return {
             version: saveData.version,
             timestamp: saveData.timestamp,
-            metadata: saveData.metadata,
-            size: JSON.stringify(saveData).length,
-            compressed: this.isCompressedSave(saveData)
-        };
-    }
-
-    /**
-     * Test save/load functionality
-     * @returns {boolean} True if test passed
-     */
-    testSaveLoad() {
-        try {
-            // Create test data
-            const testKey = 'test_save_' + Date.now();
-            const testData = {
-                version: this.currentVersion,
-                timestamp: Date.now(),
-                gameState: { test: true, value: 42 }
-            };
-            
-            // Test save
-            Utils.Storage.save(testKey, testData);
-            
-            // Test load
-            const loadedData = Utils.Storage.load(testKey);
-            
-            // Clean up
-            Utils.Storage.remove(testKey);
-            
-            // Validate
-            const success = loadedData && 
-                           loadedData.version === testData.version &&
-                           loadedData.gameState.test === true &&
-                           loadedData.gameState.value === 42;
-            
-            Utils.Debug.log('INFO', `SaveSystem: Test ${success ? 'passed' : 'failed'}`);
-            return success;
-            
-        } catch (error) {
-            Utils.Debug.log('ERROR', 'SaveSystem: Test failed', error);
-            return false;
-        }
-    }
-
-    /**
-     * Get debug information
-     * @returns {object} Debug information
-     */
-    getDebugInfo() {
-        return {
-            ...this.getStatus(),
-            currentVersion: this.currentVersion,
-            maxBackups: this.maxBackups,
-            maxSaveSize: this.maxSaveSize,
-            migrationCount: this.migrations.size,
-            availableMigrations: Array.from(this.migrations.keys())
+            metadata: saveData.metadata || {}
         };
     }
 }
