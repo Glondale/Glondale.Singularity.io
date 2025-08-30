@@ -36,6 +36,7 @@ class EventBus {
     on(eventType, callback, context = null) {
         if (!eventType || typeof eventType !== 'string') {
             console.error('EventBus.on: Invalid event type', eventType);
+            try { if (typeof console.trace === 'function') console.trace(); } catch (e) {}
             return () => {};
         }
 
@@ -146,6 +147,7 @@ class EventBus {
 
         if (!eventType || typeof eventType !== 'string') {
             console.error('EventBus.emit: Invalid event type', eventType);
+            try { if (typeof console.trace === 'function') console.trace(); } catch (e) {}
             return;
         }
 
@@ -206,6 +208,7 @@ class EventBus {
     queue(eventType, data = null, options = {}) {
         if (!eventType || typeof eventType !== 'string') {
             console.error('EventBus.queue: Invalid event type', eventType);
+            try { if (typeof console.trace === 'function') console.trace(); } catch (e) {}
             return;
         }
 
