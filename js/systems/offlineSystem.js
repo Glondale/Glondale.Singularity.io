@@ -710,7 +710,7 @@ class OfflineSystem {
 
     // Welcome Back Interface
     generateWelcomeBackInterface(summary) {
-        const interface = {
+        const welcomeInterface = {
             title: "Welcome Back, Consciousness",
             subtitle: `You were absent for ${summary.duration.hours}h ${summary.duration.minutes}m`,
             
@@ -741,7 +741,7 @@ class OfflineSystem {
             continueOptions: this.generateContinueOptions(summary)
         };
         
-        return interface;
+    return welcomeInterface;
     }
 
     getPersonalityDescription(personalityName) {
