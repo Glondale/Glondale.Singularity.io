@@ -490,7 +490,16 @@ class RandomEventsSystem {
     // Helper methods for context requirements
     hasActiveConstruction() {
         // Check if construction system has active projects
-        return eventBus.query('has-active-construction') || false;
+        try {
+            if (typeof window !== 'undefined' && window.constructionSystem) {
+                const cs = window.constructionSystem;
+                const hasActive = (cs.activeProjects && cs.activeProjects.size > 0) || (cs.queue && cs.queue.length > 0);
+                return !!hasActive;
+            }
+        } catch (e) {
+            console.warn('RandomEventsSystem: hasActiveConstruction check failed', e);
+        }
+        return false;
     }
 
     hasLowResources(threshold) {
@@ -504,12 +513,27 @@ class RandomEventsSystem {
     }
 
     hasHighProduction(threshold) {
-        const productionRates = eventBus.query('get-production-rates') || {};
-        for (const [resource, minRate] of Object.entries(threshold)) {
-            if ((productionRates[resource] || 0) >= minRate) {
-                return true;
+        // Derive simple production rate estimates from resourceSystem.generators
+        try {
+            if (typeof window !== 'undefined' && window.resourceSystem) {
+                const rs = window.resourceSystem;
+                const productionRates = {};
+
+                // Use generator baseRate as a conservative estimate
+                for (const [resource, gen] of rs.generators) {
+                    productionRates[resource] = gen.baseRate || 0;
+                }
+
+                for (const [resource, minRate] of Object.entries(threshold)) {
+                    if ((productionRates[resource] || 0) >= minRate) {
+                        return true;
+                    }
+                }
             }
+        } catch (e) {
+            console.warn('RandomEventsSystem: hasHighProduction check failed', e);
         }
+
         return false;
     }
 
