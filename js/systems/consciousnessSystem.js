@@ -120,6 +120,20 @@ class ConsciousnessSystem {
         this.on('moralityShift', this.handleMoralityShift.bind(this));
     }
 
+    // Safe handler for absorption attempts (was missing in earlier version)
+    handleAbsorptionAttempt(target) {
+        try {
+            this.attemptAbsorption(target);
+        } catch (e) {
+            // Log but don't throw during initialization
+            if (typeof Utils !== 'undefined' && Utils.Debug) {
+                Utils.Debug.log('ERROR', 'ConsciousnessSystem: handleAbsorptionAttempt error', e);
+            } else {
+                console.error('ConsciousnessSystem: handleAbsorptionAttempt error', e);
+            }
+        }
+    }
+
     startConsciousnessProcessing() {
         setInterval(() => {
             this.processConsciousnessIntegration();
