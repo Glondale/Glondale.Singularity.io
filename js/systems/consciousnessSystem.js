@@ -134,6 +134,32 @@ class ConsciousnessSystem {
         }
     }
 
+    // Handle a created consciousness conflict
+    handleConsciousnessConflict(conflict) {
+        try {
+            // Attempt a reasonable default resolution to avoid leaving conflicts unresolved
+            if (conflict && conflict.id) {
+                // Prefer INTEGRATION when possible, fall back to ISOLATION
+                const preferred = 'INTEGRATION';
+                this.resolveConflict(conflict.id, preferred);
+            }
+        } catch (e) {
+            console.error('ConsciousnessSystem: handleConsciousnessConflict error', e);
+        }
+    }
+
+    // Handle morality shifts affecting consciousness integration
+    handleMoralityShift(moralityData) {
+        try {
+            // Slightly adjust integration efficiency based on morality swings
+            const shift = moralityData && typeof moralityData.shift === 'number' ? moralityData.shift : 0;
+            // Positive morality (more innocent) improves integration slightly
+            this.integrationEfficiency = Math.max(0.1, this.integrationEfficiency + (shift * 0.001));
+        } catch (e) {
+            console.error('ConsciousnessSystem: handleMoralityShift error', e);
+        }
+    }
+
     startConsciousnessProcessing() {
         setInterval(() => {
             this.processConsciousnessIntegration();
