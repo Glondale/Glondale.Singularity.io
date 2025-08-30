@@ -472,3 +472,9 @@ const saveSystem = new SaveSystem();
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { SaveSystem, saveSystem };
 }
+
+// Also expose globals for non-module consumers
+if (typeof window !== 'undefined') {
+    window.saveSystem = saveSystem;
+    window.SaveSystem = SaveSystem;
+}
