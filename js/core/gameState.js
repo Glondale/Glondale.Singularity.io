@@ -632,3 +632,9 @@ setInterval(() => {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { GameState, gameState };
 }
+
+// Also expose globals for non-module consumers / HTML script loading order
+if (typeof window !== 'undefined') {
+    window.gameState = gameState;
+    window.GameState = GameState;
+}
