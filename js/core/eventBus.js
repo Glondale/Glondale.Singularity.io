@@ -380,3 +380,10 @@ const EventTypes = {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { EventBus, eventBus, EventTypes };
 }
+
+// Also expose globals for non-module script consumers
+if (typeof window !== 'undefined') {
+    window.eventBus = eventBus;
+    window.EventTypes = EventTypes;
+    window.EventBus = EventBus;
+}

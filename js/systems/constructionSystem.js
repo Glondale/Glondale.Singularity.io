@@ -1,7 +1,5 @@
 // systems/constructionSystem.js
-import { gameState } from '../core/gameState.js';
-import { eventBus } from '../core/eventBus.js';
-import { resourceManager } from '../managers/resourceManager.js';
+// Using global gameState, eventBus, resourceManager provided by plain script loading
 
 class ConstructionSystem {
     constructor() {
@@ -799,4 +797,8 @@ class ConstructionSystem {
 }
 
 const constructionSystem = new ConstructionSystem();
-export { constructionSystem };
+
+// Expose to global scope
+if (typeof window !== 'undefined') {
+    window.constructionSystem = constructionSystem;
+}

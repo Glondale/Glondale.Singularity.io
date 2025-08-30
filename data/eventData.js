@@ -1,5 +1,5 @@
 // data/eventData.js
-export const eventData = {
+const eventData = {
     // Common Events
     marketFluctuation: {
         title: "Market Fluctuation",
@@ -587,7 +587,7 @@ export const eventData = {
 };
 
 // Event categories for organization
-export const eventCategories = {
+const eventCategories = {
     economic: "Economic Events",
     labor: "Labor Relations",
     logistics: "Supply Chain",
@@ -609,10 +609,15 @@ export const eventCategories = {
 };
 
 // Rarity definitions
-export const eventRarities = {
+const eventRarities = {
     common: { weight: 10, color: "#ffffff" },
     uncommon: { weight: 5, color: "#00ff00" },
     rare: { weight: 2, color: "#0080ff" },
     epic: { weight: 1, color: "#8000ff" },
     legendary: { weight: 0.5, color: "#ff8000" }
 };
+
+// Expose to global scope for non-module script loading
+window.eventData = eventData;
+window.eventCategories = eventCategories;
+window.eventRarities = eventRarities;

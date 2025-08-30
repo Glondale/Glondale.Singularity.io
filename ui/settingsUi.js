@@ -1408,4 +1408,4 @@ if (!document.head.querySelector('style[data-settings-ui]')) {
     document.head.appendChild(settingsStyle);
 }
 
-export { SettingsUI };
+window.SettingsUI = SettingsUI;

@@ -1258,4 +1258,4 @@ if (!document.head.querySelector('style[data-offline-ui]')) {
     document.head.appendChild(offlineStyle);
 }
 
-export { OfflineUI };
+window.OfflineUI = OfflineUI;

@@ -1,5 +1,5 @@
 // Upgrade definitions and tech tree structure
-export const upgradeCategories = {
+const upgradeCategories = {
   HACKING: 'hacking',
   STEALTH: 'stealth',
   SOCIAL: 'social',
@@ -8,7 +8,7 @@ export const upgradeCategories = {
   EQUIPMENT: 'equipment'
 };
 
-export const upgradeData = {
+const upgradeData = {
   // HACKING TREE
   basic_coding: {
     id: 'basic_coding',
@@ -346,11 +346,11 @@ export const upgradeData = {
 };
 
 // Tech tree structure helpers
-export function getUpgradesByCategory(category) {
+function getUpgradesByCategory(category) {
   return Object.values(upgradeData).filter(upgrade => upgrade.category === category);
 }
 
-export function getAvailableUpgrades(ownedUpgrades) {
+function getAvailableUpgrades(ownedUpgrades) {
   return Object.values(upgradeData).filter(upgrade => {
     // Check if already owned
     if (ownedUpgrades.includes(upgrade.id)) return false;
@@ -360,14 +360,14 @@ export function getAvailableUpgrades(ownedUpgrades) {
   });
 }
 
-export function calculateTotalCost(upgradeIds) {
+function calculateTotalCost(upgradeIds) {
   return upgradeIds.reduce((total, id) => {
     const upgrade = upgradeData[id];
     return total + (upgrade ? upgrade.cost : 0);
   }, 0);
 }
 
-export function getUpgradeEffects(ownedUpgrades) {
+function getUpgradeEffects(ownedUpgrades) {
   const totalEffects = {};
   
   ownedUpgrades.forEach(upgradeId => {
@@ -385,3 +385,11 @@ export function getUpgradeEffects(ownedUpgrades) {
   
   return totalEffects;
 }
+
+// Expose to global scope
+window.upgradeCategories = upgradeCategories;
+window.upgradeData = upgradeData;
+window.getUpgradesByCategory = getUpgradesByCategory;
+window.getAvailableUpgrades = getAvailableUpgrades;
+window.calculateTotalCost = calculateTotalCost;
+window.getUpgradeEffects = getUpgradeEffects;

@@ -1,10 +1,7 @@
 // systems/offlineSystem.js - Offline progression and autonomous decision making
-import { EventEmitter } from '../utils/eventEmitter.js';
-import { GameState } from '../core/gameState.js';
 
-export class OfflineSystem extends EventEmitter {
+class OfflineSystem {
     constructor(gameState) {
-        super();
         this.gameState = gameState;
         
         this.lastOnlineTime = Date.now();
@@ -27,6 +24,14 @@ export class OfflineSystem extends EventEmitter {
             consciousnessIntegration: 0.4
         };
         
+        // Route instance event helpers to global eventBus so other systems can listen
+        if (typeof window !== 'undefined' && window.eventBus) {
+            this.on = (...args) => window.eventBus.on(...args);
+            this.once = (...args) => window.eventBus.once(...args);
+            this.emit = (...args) => window.eventBus.emit(...args);
+            this.queue = (...args) => window.eventBus.queue(...args);
+        }
+
         this.init();
     }
 
@@ -994,4 +999,9 @@ export class OfflineSystem extends EventEmitter {
             multipliers: this.offlineMultipliers
         });
     }
+}
+
+// Expose constructor globally
+if (typeof window !== 'undefined') {
+    window.OfflineSystem = OfflineSystem;
 }

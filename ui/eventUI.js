@@ -744,4 +744,4 @@ if (!document.head.querySelector('style[data-event-ui]')) {
     document.head.appendChild(style);
 }
 
-export { EventUI };
+window.EventUI = EventUI;

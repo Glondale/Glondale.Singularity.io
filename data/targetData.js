@@ -1,5 +1,5 @@
 // Infiltration target definitions and properties
-export const targetTypes = {
+const targetTypes = {
   CORPORATE: 'corporate',
   GOVERNMENT: 'government',
   CRIMINAL: 'criminal',
@@ -8,7 +8,7 @@ export const targetTypes = {
   FINANCIAL: 'financial'
 };
 
-export const securityLevels = {
+const securityLevels = {
   LOW: 1,
   MEDIUM: 2,
   HIGH: 3,
@@ -16,14 +16,14 @@ export const securityLevels = {
   CLASSIFIED: 5
 };
 
-export const infiltrationMethods = {
+const infiltrationMethods = {
   DIGITAL: 'digital',
   PHYSICAL: 'physical',
   SOCIAL: 'social',
   HYBRID: 'hybrid'
 };
 
-export const targetData = {
+const targetData = {
   // LOW SECURITY TARGETS
   local_business: {
     id: 'local_business',
@@ -67,7 +67,7 @@ export const targetData = {
       reputation: 10,
       information: ['employee_records', 'financial_data_basic']
     },
-    
+
     risks: {
       detectionChance: 0.1,
       consequences: {
@@ -497,17 +497,16 @@ export const targetData = {
     }
   }
 };
-
 // Target utility functions
-export function getTargetsByType(type) {
+function getTargetsByType(type) {
   return Object.values(targetData).filter(target => target.type === type);
 }
 
-export function getTargetsBySecurityLevel(level) {
+function getTargetsBySecurityLevel(level) {
   return Object.values(targetData).filter(target => target.securityLevel === level);
 }
 
-export function getAvailableTargets(playerSkills, ownedUpgrades) {
+function getAvailableTargets(playerSkills, ownedUpgrades) {
   return Object.values(targetData).filter(target => {
     // Check skill requirements
     const skillsOk = Object.entries(target.requirements.minimumSkills).every(
@@ -523,7 +522,7 @@ export function getAvailableTargets(playerSkills, ownedUpgrades) {
   });
 }
 
-export function calculateSuccessChance(target, playerSkills, infiltrationMethod) {
+function calculateSuccessChance(target, playerSkills, infiltrationMethod) {
   const method = target.infiltrationMethods.find(m => m.method === infiltrationMethod);
   if (!method) return 0;
   
@@ -552,7 +551,7 @@ export function calculateSuccessChance(target, playerSkills, infiltrationMethod)
   return Math.min(successChance, 0.95);
 }
 
-export function getTargetDifficulty(target) {
+function getTargetDifficulty(target) {
   const avgDifficulty = target.infiltrationMethods.reduce((sum, method) => 
     sum + method.difficulty, 0) / target.infiltrationMethods.length;
   
@@ -563,10 +562,22 @@ export function getTargetDifficulty(target) {
   return 'Impossible';
 }
 
-export function estimateReward(target, successChance) {
+function estimateReward(target, successChance) {
   const baseReward = target.rewards.money;
   const riskMultiplier = target.risks.detectionChance + 1;
   const skillMultiplier = successChance;
   
   return Math.floor(baseReward * riskMultiplier * skillMultiplier);
 }
+
+// Expose to global scope
+window.targetTypes = targetTypes;
+window.securityLevels = securityLevels;
+window.infiltrationMethods = infiltrationMethods;
+window.targetData = targetData;
+window.getTargetsByType = getTargetsByType;
+window.getTargetsBySecurityLevel = getTargetsBySecurityLevel;
+window.getAvailableTargets = getAvailableTargets;
+window.calculateSuccessChance = calculateSuccessChance;
+window.getTargetDifficulty = getTargetDifficulty;
+window.estimateReward = estimateReward;

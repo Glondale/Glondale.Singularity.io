@@ -877,6 +877,9 @@ class GameData {
     }
 }
 
-// Export singleton instance
+// Export singleton instance replacement for non-module environments
 const gameData = new GameData();
-export { gameData, GameData };
+if (typeof window !== 'undefined') {
+    window.gameData = gameData;
+    window.GameData = GameData;
+}

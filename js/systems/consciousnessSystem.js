@@ -1,10 +1,7 @@
 // systems/consciousnessSystem.js - Mind absorption and consciousness mechanics
-import { EventEmitter } from '../utils/eventEmitter.js';
-import { GameState } from '../core/gameState.js';
 
-export class ConsciousnessSystem extends EventEmitter {
+class ConsciousnessSystem {
     constructor(moralitySystem) {
-        super();
         this.moralitySystem = moralitySystem;
         
         this.absorbedConsciousnesses = new Map();
@@ -23,6 +20,14 @@ export class ConsciousnessSystem extends EventEmitter {
         this.integrationEfficiency = 1.0;
         this.conflictResolution = 1.0;
         
+        // Route instance event helpers to global eventBus
+        if (typeof window !== 'undefined' && window.eventBus) {
+            this.on = (...args) => window.eventBus.on(...args);
+            this.once = (...args) => window.eventBus.once(...args);
+            this.emit = (...args) => window.eventBus.emit(...args);
+            this.queue = (...args) => window.eventBus.queue(...args);
+        }
+
         this.init();
     }
 
@@ -762,4 +767,9 @@ export class ConsciousnessSystem extends EventEmitter {
         
         this.emit('stateRestored');
     }
+}
+
+// Expose constructor globally
+if (typeof window !== 'undefined') {
+    window.ConsciousnessSystem = ConsciousnessSystem;
 }

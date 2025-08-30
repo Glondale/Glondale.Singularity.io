@@ -1,7 +1,6 @@
 // systems/moralitySystem.js
-import { gameState } from '../core/gameState.js';
-import { eventBus } from '../core/eventBus.js';
-import { uiManager } from '../managers/uiManager.js';
+// Using global gameState, eventBus, uiManager provided by plain script loading
+// (previously used ES module imports)
 
 class MoralitySystem {
     constructor() {
@@ -636,4 +635,7 @@ Object.entries(defaultChoices).forEach(([id, choice]) => {
     moralitySystem.registerChoice(id, choice);
 });
 
-export { moralitySystem };
+// Expose to global scope
+if (typeof window !== 'undefined') {
+    window.moralitySystem = moralitySystem;
+}

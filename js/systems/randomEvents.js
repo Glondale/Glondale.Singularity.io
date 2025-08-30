@@ -1,7 +1,5 @@
 // systems/randomEvents.js
-import { gameState } from '../core/gameState.js';
-import { eventBus } from '../core/eventBus.js';
-import { eventData } from '../data/eventData.js';
+// Using global gameState, eventBus, eventData provided by plain script loading
 
 class RandomEventsSystem {
     constructor() {
@@ -730,4 +728,7 @@ eventBus.on('event-choice-selected', (data) => {
     randomEventsSystem.handleEventChoice(data.eventRecordId, data.choiceIndex);
 });
 
-export { randomEventsSystem };
+// Expose to global scope
+if (typeof window !== 'undefined') {
+    window.randomEventsSystem = randomEventsSystem;
+}

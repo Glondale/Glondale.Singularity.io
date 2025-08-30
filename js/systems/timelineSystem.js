@@ -1,10 +1,14 @@
 // systems/timelineSystem.js - Temporal manipulation mechanics
-import { EventEmitter } from '../utils/eventEmitter.js';
-import { GameState } from '../core/gameState.js';
 
-export class TimelineSystem extends EventEmitter {
+class TimelineSystem {
     constructor() {
-        super();
+        // Route instance event helpers to global eventBus
+        if (typeof window !== 'undefined' && window.eventBus) {
+            this.on = (...args) => window.eventBus.on(...args);
+            this.once = (...args) => window.eventBus.once(...args);
+            this.emit = (...args) => window.eventBus.emit(...args);
+            this.queue = (...args) => window.eventBus.queue(...args);
+        }
         this.temporalEnergy = 0;
         this.maxTemporalEnergy = 100;
         this.paradoxRisk = 0;
@@ -424,4 +428,9 @@ export class TimelineSystem extends EventEmitter {
         
         this.emit('stateRestored');
     }
+}
+
+// Expose constructor globally
+if (typeof window !== 'undefined') {
+    window.TimelineSystem = TimelineSystem;
 }
