@@ -450,3 +450,9 @@ if (typeof eventBus !== 'undefined') {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { GameLoop, gameLoop };
 }
+
+// Also expose globals for non-module consumers
+if (typeof window !== 'undefined') {
+    window.gameLoop = gameLoop;
+    window.GameLoop = GameLoop;
+}
