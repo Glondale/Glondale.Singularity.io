@@ -76,7 +76,8 @@ class RandomEventsSystem {
 
     // Calculate current event chance based on various factors
     calculateEventChance() {
-        let chance = this.baseEventChance;
+    const now = Date.now();
+    let chance = this.baseEventChance;
         
         // Apply morality effects
         const moralityEffects = gameState.data.moralityEffects || {};
