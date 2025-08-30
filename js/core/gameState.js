@@ -618,6 +618,26 @@ class GameState {
         const playTime = currentTime - startTime;
         this.set('meta.playTime', playTime, true); // Silent update to avoid spam
     }
+
+    /**
+     * Compatibility shim for older code that calls gameState.saveData()
+     * Delegates to the global saveSystem if available.
+     * @param {boolean} isAutoSave
+     * @returns {Promise<boolean>|boolean}
+     */
+    saveData(isAutoSave = false) {
+        try {
+            if (typeof window !== 'undefined' && window.saveSystem && typeof window.saveSystem.save === 'function') {
+                // call and return promise (callers may not await)
+                return window.saveSystem.save(isAutoSave);
+            }
+            console.warn('GameState.saveData: saveSystem.save not available — no-op');
+            return false;
+        } catch (e) {
+            console.error('GameState.saveData: Error delegating to saveSystem', e);
+            return false;
+        }
+    }
 }
 
 // Create global game state instance

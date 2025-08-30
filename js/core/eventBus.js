@@ -379,6 +379,33 @@ const EventTypes = {
     PERFORMANCE_WARNING: 'systems:performance_warning'
 };
 
+// Backwards-compatibility aliases for older/kebab-case event names found in the codebase
+// This maps common literal event string names to the canonical EventTypes values where possible.
+const EventTypeAliases = {
+    'game-tick': 'game:tick',
+    'game-started': EventTypes.GAME_STARTED,
+    'game-stopped': EventTypes.GAME_STOPPED,
+    'game-paused': EventTypes.GAME_PAUSED,
+    'game-resumed': EventTypes.GAME_RESUMED,
+    'resourcesUpdated': EventTypes.RESOURCES_UPDATED,
+    'heatPurgeTriggered': EventTypes.HEAT_PURGE_TRIGGERED,
+    'infiltrationCompleted': EventTypes.INFILTRATION_COMPLETED,
+    'gameSaved': EventTypes.GAME_SAVED,
+    'gameLoaded': EventTypes.GAME_LOADED,
+    // UI kebab-case aliases
+    'resources:updated': EventTypes.RESOURCES_UPDATED,
+    'heat:increased': EventTypes.HEAT_INCREASED,
+    'heat:decreased': EventTypes.HEAT_DECREASED,
+    'expansion:infiltration_completed': EventTypes.INFILTRATION_COMPLETED
+};
+
+// Merge aliases into EventTypes for convenient lookup: missing keys will be added as strings
+for (const [alias, target] of Object.entries(EventTypeAliases)) {
+    if (!(alias in EventTypes)) {
+        EventTypes[alias.toUpperCase().replace(/[:\-]/g, '_')] = typeof target === 'string' ? target : target;
+    }
+}
+
 // Export for module systems (if supported)
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { EventBus, eventBus, EventTypes };
